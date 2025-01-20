@@ -8,17 +8,15 @@ import os
 app.config.from_object(Config)
 load_dotenv()
 
-print(os.environ['API_KEY'])
-
 firebaseConfig = {
-    'apiKey': "API_KEY",
-    'authDomain': "YOUR_API_DOMAIN",
-    'databaseURL': "YOUR_URL",
-    'projectId': "YOUR_APP",
-    'storageBucket': "YOUR_STORAGE_BUCKET",
-    'messagingSenderId': "YOUR_MESSENGER_ID",
-    'appId': "YOUR_APP_ID",
-    'measurementId': "YOUR_MEASUREMENT_ID"
+    'apiKey': os.environ['API_KEY'],
+    'authDomain': os.environ['AUTH_DOMAIN'],
+    'databaseURL': os.environ['DATABASE_URL'],
+    'projectId': os.environ['PROJECT_ID'],
+    'storageBucket': os.environ['STORAGE_BUCKET'],
+    'messagingSenderId': os.environ['MESSAGING_SENDER_ID'],
+    'appId': os.environ['APP_ID'],
+    'measurementId': os.environ['MEASUREMENT_ID']
     }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
