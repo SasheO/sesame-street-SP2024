@@ -1,5 +1,9 @@
+# pip3 install flask (in terminal)
 from flask import Flask, render_template, request
+
+# pip3 install googlesearch-python
 from googlesearch import search
+
 app = Flask(__name__)
 
 @app.route("/", methods = ["GET", "POST"])
