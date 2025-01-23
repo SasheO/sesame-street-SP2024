@@ -31,8 +31,6 @@ db = firebase.database()
 def hello_world():
     return "hello world"
 
-
-
 @app.route('/sign_up')
 def sign_up():
     print("Sign up...")
@@ -41,11 +39,10 @@ def sign_up():
     try:
         # TODO: get user credentials and sign in
         user = auth.create_user_with_email_and_password(email, password)
-    except:
-        print("could not sign up")
-    # TODO: index.html does not exist. use text response to test then connect to front end
-    # return render_template('index.html')
-    return "signed up"
+        return "signed up"
+    except Exception as e:
+        print("Some thing happend!! could not sign up:", e)
+        return "not signed up"
 
 @app.route('/sign_in')
 def sign_in():
@@ -72,11 +69,10 @@ def sign_in():
 
         #Sending the account confirmation mail to the user email on successfull sign in
         # auth.send_email_verification(user['idToken'])
-    except:
-        print("Some thing happend!! could not sign in")
-    # TODO: index.html does not exist. use text response to test then connect to front end
-    # return render_template('index.html')
-    return "signed in"
+        return "signed in"
+    except Exception as e:
+        print("Some thing happend!! could not sign in:", e)
+        return "not signed in"
 
 @app.route('/reset_password')
 def reset():
@@ -84,11 +80,15 @@ def reset():
     # Sending Password reset email
     # TODO: get user credentials and sign in
     reset_email = auth.send_password_reset_email("sasheojuba@gmail.com")
-    # TODO: index.html does not exist. use text response to test then connect to front end
-    # return render_template("index.html")
 
-
-# import routes
+@app.route('/sign_out')
+def sign_out():
+    try:
+        auth.current_user = None
+        return "signed out"
+    except Exception as e:
+        print("Some thing happend!! could not sign out:", e)
+        return "not signed out"
 
 if __name__ == "__main__":
     app.run(debug = True)
