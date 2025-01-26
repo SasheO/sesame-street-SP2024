@@ -19,11 +19,31 @@ const SignUp = () => {
 
   // Handle Sign Up
   const handleSignUp = (values) => {
-    console.log("User Signed Up:", values);
-    setSuccessMessage("Account created successfully! Redirecting...");
-    
-    setTimeout(() => navigate("/"), 2000); // Redirect to login page after 2s
+    let users = JSON.parse(localStorage.getItem("users")) || []; // ✅ Get existing users array
+  
+    // Check if user already exists
+    const userExists = users.some(user => user.email === values.email);
+    if (userExists) {
+      setErrorMessage("User already exists. Please log in.");
+      return;
+    }
+  
+    // Create new user object without "confirmPassword"
+    const newUser = {
+      name: values.name,
+      email: values.email,
+      password: values.password
+    };
+  
+    users.push(newUser); // ✅ Add new user to array
+    localStorage.setItem("users", JSON.stringify(users)); // ✅ Save updated users array
+  
+    console.log("✅ User successfully saved:", newUser);
+    setSuccessMessage("Account created! Redirecting...");
+  
+    setTimeout(() => navigate("/"), 2000); // Redirect after 2s
   };
+  
 
   return (
     <div className="signup-container">
