@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { BiMap, BiMessageRoundedDetail, BiSolidUserPlus} from 'react-icons/bi';
+import { TbStethoscope } from "react-icons/tb";
+import Header from './homepage_components/header';
+import SearchBar from './homepage_components/searchbar';
+import FeatureCard from './HomePage_components/featurecard';
 import { useNavigate } from "react-router-dom";
-import "./Home.css"; // Make sure this file exists
+import React, { useEffect, useState } from "react";
+import './home.css';
 
-const Home = () => {
+function HomePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
@@ -15,34 +20,24 @@ const Home = () => {
     }
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("loggedInUser"); // Clear login session
-    navigate("/"); // Redirect to login
-  };
+  if (!user) return <p>Loading...</p>;
 
   return (
-    <div className="home-container">
-      {/* Profile Icon in the Top Right Corner */}
+    <div className="home-page">
+      <Header />  {/* This contains the profile picture */}
       <div className="top-bar">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" // ✅ Profile Icon (Replace if needed)
-          alt="Profile"
-          className="profile-icon"
-          onClick={() => navigate("/profile")}
-        />
+        <SearchBar />
+        
       </div>
 
-      <h2>Welcome, {user ? user.name : "User"}!</h2>
-      <p>Select an option below:</p>
-
-      <div className="button-container">
-        <button className="disabled-button">Chat Forum (Coming Soon)</button>
-        <button className="disabled-button">Healthcare Near You (Coming Soon)</button>
+      <div className="features-container">
+        <FeatureCard Icon={BiMap} label="Healthcare near you" />
+        <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" />
+        <FeatureCard Icon={BiMessageRoundedDetail} label="Community forum" />
+        <FeatureCard Icon={BiSolidUserPlus} label="Patient requests" />
       </div>
-      
-      <button className="logout-button" onClick={handleLogout}>Logout</button>
     </div>
   );
-};
+}
 
-export default Home;
+export default HomePage;
