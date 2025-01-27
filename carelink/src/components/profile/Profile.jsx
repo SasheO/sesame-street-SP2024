@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BiHome } from "react-icons/bi"; // ✅ Import home icon
+import { BiHome } from "react-icons/bi";
 import "./Profile.css";
 
 const Profile = () => {
@@ -12,16 +12,14 @@ const Profile = () => {
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (!loggedInUser) {
-      navigate("/"); // Redirect to login if not authenticated
+      navigate("/");
     } else {
       setUser(loggedInUser);
       setUpdatedUser({ name: loggedInUser.name, email: loggedInUser.email, bio: loggedInUser.bio || "" });
     }
   }, [navigate]);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  const handleEdit = () => setIsEditing(true);
 
   const handleSave = () => {
     const updatedUserData = { ...user, ...updatedUser };
@@ -57,21 +55,20 @@ const Profile = () => {
         className="profile-picture"
       />
 
-      {/* Home Icon above Edit Profile Button */}
       <div className="home-icon-container">
         <BiHome className="home-icon" onClick={() => navigate("/home")} />
       </div>
 
       {isEditing ? (
         <div className="profile-form">
-          <label>Name:</label>
-          <input type="text" value={updatedUser.name} onChange={(e) => setUpdatedUser({ ...updatedUser, name: e.target.value })} />
+          <label htmlFor="name">Name:</label>
+          <input id="name" type="text" value={updatedUser.name} onChange={(e) => setUpdatedUser({ ...updatedUser, name: e.target.value })} />
 
-          <label>Email:</label>
-          <input type="email" value={updatedUser.email} disabled />
+          <label htmlFor="email">Email:</label>
+          <input id="email" type="email" value={updatedUser.email} disabled />
 
-          <label>Bio:</label>
-          <textarea value={updatedUser.bio} onChange={(e) => setUpdatedUser({ ...updatedUser, bio: e.target.value })} />
+          <label htmlFor="bio">Bio:</label>
+          <textarea id="bio" value={updatedUser.bio} onChange={(e) => setUpdatedUser({ ...updatedUser, bio: e.target.value })} />
 
           <button className="save-button" onClick={handleSave}>Save Changes</button>
         </div>
@@ -83,7 +80,6 @@ const Profile = () => {
         </div>
       )}
 
-      {/* Buttons Section */}
       <div className="profile-actions">
         {!isEditing && <button className="edit-button" onClick={handleEdit}>Edit Profile</button>}
         <button className="logout-button" onClick={handleLogout}>Logout</button>

@@ -5,7 +5,21 @@ import Profile from "../components/profile/Profile";
 
 describe("Profile Component", () => {
   beforeEach(() => {
-    localStorage.setItem("loggedInUser", JSON.stringify({ name: "Test User", email: "test@example.com" }));
+    jest.spyOn(window, "confirm").mockImplementation(() => true); // ✅ Mock window.confirm()
+
+    localStorage.setItem(
+      "loggedInUser",
+      JSON.stringify({ name: "Test User", email: "test@example.com", bio: "No bio set" })
+    );
+
+    localStorage.setItem(
+      "users",
+      JSON.stringify([{ name: "Test User", email: "test@example.com", bio: "No bio set" }])
+    );
+  });
+
+  afterEach(() => {
+    localStorage.clear(); // ✅ Reset local storage after each test
   });
 
   test("renders profile page", () => {
@@ -15,7 +29,7 @@ describe("Profile Component", () => {
       </BrowserRouter>
     );
 
-    expect(screen.getByText(/profile/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /profile/i })).toBeInTheDocument();
     expect(screen.getByText(/test user/i)).toBeInTheDocument();
   });
 
@@ -27,10 +41,17 @@ describe("Profile Component", () => {
     );
 
     fireEvent.click(screen.getByText(/edit profile/i));
-    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Updated User" } });
+
+    const nameInput = screen.getByRole("textbox", { name: /name/i });
+    fireEvent.change(nameInput, { target: { value: "Updated User" } });
+
+    const bioInput = screen.getByRole("textbox", { name: /bio/i });
+    fireEvent.change(bioInput, { target: { value: "Updated Bio" } });
+
     fireEvent.click(screen.getByText(/save changes/i));
 
     expect(screen.getByText(/updated user/i)).toBeInTheDocument();
+    expect(screen.getByText(/updated bio/i)).toBeInTheDocument();
   });
 
   test("logs out user", () => {
@@ -54,6 +75,8 @@ describe("Profile Component", () => {
 
     fireEvent.click(screen.getByText(/delete account/i));
 
-    expect(localStorage.getItem("users")).not.toContain("test@example.com");
+    // ✅ Ensure local storage is updated correctly
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+    expect(storedUsers.some(user => user.email === "test@example.com")).toBe(false);
   });
 });
