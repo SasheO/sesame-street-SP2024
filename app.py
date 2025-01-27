@@ -8,7 +8,6 @@ from flask import Flask, render_template, request, json, Response,redirect,flash
 
 app.config.from_object(Config)
 load_dotenv()
-# port = 5100 # for testing
 
 firebaseConfig = {
     'apiKey': os.environ['API_KEY'],
@@ -46,11 +45,6 @@ def sign_up():
 
 @app.route('/sign_in')
 def sign_in():
-    # try:
-    #     user = auth.create_user_with_email_and_password("Parasmani300@gmail.com","1234567")
-    # except:
-    #     print("Error Signing up")
-
     print("Sign in...")
     email = input("Enter email: ")
     password=input("Enter password: ")
@@ -61,7 +55,7 @@ def sign_in():
         user = auth.sign_in_with_email_and_password(email, password)
 
         # before the 1 hour expiry:
-        user = auth.refresh(user['refreshToken'])
+        user = auth.refresh(user['refreshToken']) # this token holds the session. see here for more info https://firebase.google.com/docs/auth/admin/manage-sessions
         # now we have a fresh token
         print(user['idToken'])
         session['user'] = user['idToken']
@@ -75,21 +69,29 @@ def sign_in():
         return "not signed in"
 
 @app.route('/reset_password')
-def reset():
-    token = session['user']
+def reset_password():
     # Sending Password reset email
     # TODO: get user credentials and sign in
-    reset_email = auth.send_password_reset_email("sasheojuba@gmail.com")
+    print("Reset password...")
+    email = input("Enter email: ")
+    reset_email = auth.send_password_reset_email(email)
+    return "link to reset password has been sent to your email"
 
 @app.route('/sign_out')
 def sign_out():
+    # token = session['user']
+    # print("token", token)
     try:
         auth.current_user = None
+        print("signed out")
         return "signed out"
     except Exception as e:
         print("Some thing happend!! could not sign out:", e)
-        return "not signed out"
+        return "not signed out" # should return redirect to home
 
 if __name__ == "__main__":
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config["SESSION_PERMANENT"] = False
+    app.secret_key = os.environ['SECRET_KEY'] # TODO: have a more secure way of storing this locally than .env file
     app.run(debug = True)
     # app.run(host="0.0.0.0", port=port) # for testing

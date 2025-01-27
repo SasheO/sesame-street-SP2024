@@ -1,2 +1,0 @@
-references:
-1. Authentication: https://parasmani300.medium.com/pyrebase-firebase-in-flask-d249a065e0df 
