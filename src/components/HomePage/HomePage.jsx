@@ -1,12 +1,12 @@
 import React from 'react';
 import { BiMap, BiMessageRoundedDetail, BiSolidUserPlus} from 'react-icons/bi';
 import { TbStethoscope } from "react-icons/tb";
-import Header from './components/Header';
-import SearchBar from './components/SearchBar';
-import FeatureCard from './components/FeatureCard';
-import './App.css';
+import Header from './HomePage_components/Header';
+import SearchBar from './HomePage_components/SearchBar';
+import FeatureCard from './HomePage_components/FeatureCard';
+import './HomePage.css';
 
-function App() {
+function HomePage() {
   return (
     <div>
       <Header />
@@ -21,4 +21,4 @@ function App() {
   );
 }
 
-export default App;
+export default HomePage;
