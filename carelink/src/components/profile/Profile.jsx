@@ -1,93 +1,94 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./profile.css";
+import { BiHome } from "react-icons/bi"; // ✅ Import home icon
+import "./Profile.css";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [editing, setEditing] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState({ name: "", email: "", bio: "", contact: "", notifications: false, profilePic: "" });
+  const [isEditing, setIsEditing] = useState(false);
+  const [updatedUser, setUpdatedUser] = useState({ name: "", email: "", bio: "" });
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
     if (!loggedInUser) {
-      navigate("/");
+      navigate("/"); // Redirect to login if not authenticated
     } else {
       setUser(loggedInUser);
-      setUpdatedUser(loggedInUser);
+      setUpdatedUser({ name: loggedInUser.name, email: loggedInUser.email, bio: loggedInUser.bio || "" });
     }
   }, [navigate]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setUpdatedUser({ ...updatedUser, [name]: type === "checkbox" ? checked : value });
+  const handleEdit = () => {
+    setIsEditing(true);
   };
 
   const handleSave = () => {
-    setUser(updatedUser);
-    localStorage.setItem("loggedInUser", JSON.stringify(updatedUser));
-
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    users = users.map(u => (u.email === updatedUser.email ? updatedUser : u));
-    localStorage.setItem("users", JSON.stringify(users));
-
-    setEditing(false);
+    const updatedUserData = { ...user, ...updatedUser };
+    setUser(updatedUserData);
+    localStorage.setItem("loggedInUser", JSON.stringify(updatedUserData));
+    setIsEditing(false);
   };
 
-  const handleProfilePicChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUpdatedUser({ ...updatedUser, profilePic: reader.result });
-      };
-      reader.readAsDataURL(file);
+  const handleLogout = () => {
+    localStorage.removeItem("loggedInUser");
+    navigate("/");
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete your account?")) {
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+      users = users.filter((u) => u.email !== user.email);
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.removeItem("loggedInUser");
+      navigate("/");
     }
   };
 
+  if (!user) return <p>Loading...</p>;
+
   return (
     <div className="profile-container">
-      <div className="top-bar">
-        <button className="home-button" onClick={() => navigate("/home")}>🏠 Home</button>
-      </div>
-
       <h2>Profile</h2>
 
-      <div className="profile-picture">
-        <img src={user?.profilePic || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} alt="Profile" />
-        {editing && <input type="file" accept="image/*" onChange={handleProfilePicChange} />}
+      <img
+        src={user?.profilePic || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
+        alt="Profile"
+        className="profile-picture"
+      />
+
+      {/* Home Icon above Edit Profile Button */}
+      <div className="home-icon-container">
+        <BiHome className="home-icon" onClick={() => navigate("/home")} />
       </div>
 
-      <div className="profile-details">
-        <label>Name:</label>
-        {editing ? <input type="text" name="name" value={updatedUser.name} onChange={handleChange} /> : <p>{user?.name}</p>}
+      {isEditing ? (
+        <div className="profile-form">
+          <label>Name:</label>
+          <input type="text" value={updatedUser.name} onChange={(e) => setUpdatedUser({ ...updatedUser, name: e.target.value })} />
 
-        <label>Email:</label>
-        <p>{user?.email}</p>
+          <label>Email:</label>
+          <input type="email" value={updatedUser.email} disabled />
 
-        <label>Bio:</label>
-        {editing ? <textarea name="bio" value={updatedUser.bio} onChange={handleChange} /> : <p>{user?.bio || "No bio yet."}</p>}
+          <label>Bio:</label>
+          <textarea value={updatedUser.bio} onChange={(e) => setUpdatedUser({ ...updatedUser, bio: e.target.value })} />
 
-        <label>Contact Info:</label>
-        {editing ? <input type="text" name="contact" value={updatedUser.contact} onChange={handleChange} /> : <p>{user?.contact || "No contact info yet."}</p>}
-
-        <label>Notifications:</label>
-        {editing ? (
-          <input type="checkbox" name="notifications" checked={updatedUser.notifications} onChange={handleChange} />
-        ) : (
-          <p>{user?.notifications ? "Enabled" : "Disabled"}</p>
-        )}
-      </div>
-
-      {editing ? (
-        <button className="save-button" onClick={handleSave}>Save Changes</button>
+          <button className="save-button" onClick={handleSave}>Save Changes</button>
+        </div>
       ) : (
-        <button className="edit-button" onClick={() => setEditing(true)}>Edit Profile</button>
+        <div className="profile-details">
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Bio:</strong> {user.bio || "No bio set"}</p>
+        </div>
       )}
 
-      <button className="logout-button" onClick={() => { localStorage.removeItem("loggedInUser"); navigate("/"); }}>
-        Logout
-      </button>
+      {/* Buttons Section */}
+      <div className="profile-actions">
+        {!isEditing && <button className="edit-button" onClick={handleEdit}>Edit Profile</button>}
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
+        <button className="delete-button" onClick={handleDelete}>Delete Account</button>
+      </div>
     </div>
   );
 };
