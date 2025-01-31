@@ -1,0 +1,23 @@
+.location-details {
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .back-button {
+    background: none;
+    border: none;
+    color: #a2b9f0;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  
+  .map-placeholder {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #e5e5e5;
+    text-align: center;
+    border-radius: 10px;
+  }
+  

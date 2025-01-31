@@ -1,0 +1,11 @@
+.locations-page {
+    padding: 20px;
+    background-color: #f5f5f5;
+  }
+  
+  .facility-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
