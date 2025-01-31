@@ -8,7 +8,7 @@ const SearchBar = () => {
         <BiSearch aria-label="Search icon" className="icon-btn" />
         <BiMicrophone aria-label="Microphone icon" className="icon-btn" />
       </div>
-      <input type="text" placeholder="Find a simple remedy" className="search-input" />
+      <input type="text" placeholder="Find a healthcare facility near you" className="search-input" />
     </div>
   );
 };
