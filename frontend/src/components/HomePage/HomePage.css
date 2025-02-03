@@ -28,40 +28,6 @@ body {
     cursor: pointer;
   }
   
-  /* Search Bar Container */
-  .search-bar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 30px;
-    position: relative;
-  }
-  
-  /* Icon Buttons Above Search Bar */
-  .icon-buttons {
-    display: flex;
-    justify-content: flex-end;
-    width: 90%;
-    z-index: 10;
-    margin-bottom: -32px; /* Move closer to the search bar */
-  }
-  
-  .icon-btn {
-    font-size: 24px;
-    color: #6979F8;
-    cursor: pointer;
-  }
-  
-  /* Search Input */
-  .search-input {
-    width: 90%;
-    padding: 10px;
-    border: 2px solid #6979F8;
-    border-radius: 20px; /* Fully rounded edges */
-    outline: none;
-    font-size: 16px;
-  }
-  
   .feature-card {
     display: flex;
     flex-direction: column;
