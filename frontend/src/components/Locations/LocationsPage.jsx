@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SearchBar from './Locations_components/SearchBar';
+import SearchBar from '../shared/SearchBar';
+import Header from '../shared/Header';
 import LocationCard from './Locations_components/LocationCard';
 import LocationDetails from './Locations_components/LocationDetails';
 import './LocationsPage.css';
@@ -47,8 +48,9 @@ const LocationsPage  = ({ onClick }) => {
 
   return (
     <div className="locations-page" onClick={onClick}>
-        <button className="back-button" onClick={() => navigate('/')}>← Back to Home</button>
+        <Header label="Carelink"/>
         <SearchBar placeholder="Hospitals near me" />
+        <button className="back-button" onClick={() => navigate('/')}>← Back to Home</button>
 
         {selectedFacility ? (
         <LocationDetails
