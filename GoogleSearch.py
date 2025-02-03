@@ -13,7 +13,7 @@ def search_query():
         # return "\n".join(list(search(query)))
         return render_template("GoogleResults.html", results=list(search(query)))
     else:
-        return render_template("GoogleSearch.html")
+        return render_template("GoogleMaps.html")
 
 if __name__ == "__main__":
     app.run()

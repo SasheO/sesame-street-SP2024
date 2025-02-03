@@ -19,6 +19,10 @@
         <li>Full Address: <span id="location"></span></li>
         <li>Postal Code: <span id="postal_code"></span></li>
         <li>Country: <span id="country"></span></li>
+        <li>Phone Number: <span id="phone_number"></span></li>
+        <li>Website: <span id="website"></span></li>
+        <li>Business Hours: <span id="business_hours"></span></li>
+        <li>Currently Open: <span id="currently_open"></span></li>
         <li>Latitude: <span id="lat"></span></li>
         <li>Longitude: <span id="lon"></span></li>
     </ul>
@@ -92,6 +96,10 @@
                 }
             }
             document.getElementById('location').innerHTML = place.formatted_address;
+            document.getElementById('phone_number').innerHTML = place.formatted_phone_number;
+            document.getElementById('website').innerHTML = place.website;
+            document.getElementById('business_hours').innerHTML = place.opening_hours.weekday_text;
+            document.getElementById('currently_open').innerHTML = place.opening_hours.open_now;
             document.getElementById('lat').innerHTML = place.geometry.location.lat();
             document.getElementById('lon').innerHTML = place.geometry.location.lng();
         });
