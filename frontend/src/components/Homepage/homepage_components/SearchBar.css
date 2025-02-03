@@ -1,0 +1,31 @@
+.search-bar-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 12px 40px 12px 12px; /* Space for the 'X' icon */
+    font-size: 16px;
+    border: 2px solid #6979F8;
+    border-radius: 25px;
+    outline: none;
+    text-align: left;
+  }
+  
+  /* Small 'X' icon positioned inside input */
+  .clear-icon {
+    position: absolute;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #6979F8;
+  }
+  
+  .clear-icon:hover {
+    color: #ff0000; /* Change color when hovering */
+  }
