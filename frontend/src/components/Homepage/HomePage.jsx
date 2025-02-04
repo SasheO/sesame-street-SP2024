@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BiMap, BiMessageRoundedDetail, BiSolidUserPlus } from "react-icons/bi";
 import { TbStethoscope } from "react-icons/tb";
-import Header from "./homepage_components/Header";
-import SearchBar from "./homepage_components/SearchBar";
-import FeatureCard from "./Homepage_components/FeatureCard"; // ✅ Fixed import path
+import Header from "./HomePage_Components/Header";
+import SearchBar from "./HomePage_Components/SearchBar";
+import FeatureCard from "./HomePage_Components/FeatureCare"; // ✅ Fixed import path
 import "./home.css";
 
 const HomePage = () => {
