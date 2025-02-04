@@ -121,9 +121,30 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
                 user_type: _user_type,
                 first_name: _first_name,
                 surname: _surname,
-                specialty: req.body.specialty,
-                certification: req.body.certification,
+                
             };
+
+            if ("specialty" in req.body){
+                if (req.body.specialty===""){
+                    return res.status(422).json({message: "no specialty entered"});
+                }
+                userData['specialty'] = req.body.specialty;
+            }
+            else{
+                return res.status(422).json({message: "no specialty entered"});
+            }
+
+            if ("certification" in req.body){
+                if (req.body.certification===""){
+                    return res.status(422).json({message: "no certification provided"});
+                }
+
+                userData['certification'] = req.body.certification;
+            }
+            else{
+                return res.status(422).json({message: "no certification entered"});
+            }
+            
             
             // optional fields below. if not filled by user, fill them in as null
             if ("hospital_id" in req.body){
