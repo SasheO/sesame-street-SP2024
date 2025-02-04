@@ -39,6 +39,7 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
     const _user_type = req.body.user_type;
     const _first_name = req.body.first_name;
     const _surname = req.body.surname;
+    var _gender = req.body.gender;
 
     console.log("\n\n\nuser_type: "+_user_type);
 
@@ -46,6 +47,10 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
     if (email === "" || !email) {
         // strValue was empty string
         return res.status(400).json({message: "email or password inaccurately entered"});
+    }
+    if (email === "" || !email) {
+        // strValue was empty string
+        gender = "undisclosed";
     }
     if (password === "" || !password) {
         // strValue was empty string
@@ -75,9 +80,15 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
         const _uid = userCred.uid;
         
         if (_user_type=="patient"){
+            if (!("dob" in req.body)){
+                return res.status(422).json({message: "no dob entered"});
+            }
             var date_st = req.body.dob;
             var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
             const _dob = new Date(date_st.replace(pattern,'$3-$2-$1'));
+            if (_dob === "Invalid Date" || isNaN(_dob)){
+                return res.status(422).json({message: "invalid dob format"});
+            }
             var userData = {
                 // all these are required fields for patients
                 uid: _uid,
@@ -89,13 +100,13 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
             };
             
             // optional fields below. if not filled by user, fill them in as null
-            if ("preferred_lang" in req.params){
+            if ("preferred_lang" in req.body){
                 userData['preferred_lang'] = req.body.preferred_lang; 
             }
             else{
                 userData['preferred_lang'] = null;
             }
-            if ("gender" in req.params){
+            if ("gender" in req.body){
                 userData['gender'] = req.body.gender;
             }
             else{
@@ -115,13 +126,13 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
             };
             
             // optional fields below. if not filled by user, fill them in as null
-            if ("hospital_id" in req.params){
+            if ("hospital_id" in req.body){
                 userData['hospital_id'] = req.body.hospital_id;
             }
             else{
                 userData['hospital_id'] = null;
             }
-            if ("gender" in req.params){
+            if ("gender" in req.body){
                 userData['gender'] = req.body.gender;
             }
             else{
