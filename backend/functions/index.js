@@ -37,10 +37,32 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
     const email = req.body.email;
     const password = req.body.password;
     const _user_type = req.body.user_type;
-    console.log("\n\n\nuser_type: "+_user_type);
-    const _gender = req.body.gender;
     const _first_name = req.body.first_name;
     const _surname = req.body.surname;
+
+    console.log("\n\n\nuser_type: "+_user_type);
+
+    // check that values are not empty and return accurate error message
+    if (email === "" || !email) {
+        // strValue was empty string
+        return res.status(400).json({message: "email or password inaccurately entered"});
+    }
+    if (password === "" || !password) {
+        // strValue was empty string
+        return res.status(400).json({message: "email or password inaccurately entered"});
+    }
+    if (_first_name === "") {
+        // strValue was empty string
+        return res.status(422).json({message: "no first  name entered"});
+    }
+    if (_surname === "") {
+        // strValue was empty string
+        return res.status(422).json({message: "no surname  name entered"});
+    }
+    if (!(_user_type==="practitioner" || _user_type==="patient")){
+        return res.status(422).json({message: "invalid user type"});
+    }
+
     
     firebase.auth().createUser({
         email: email,
@@ -81,7 +103,7 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
             }
             // console.log(userData);
         }
-        else{ // user_type = practitioner
+        else if (_user_type=="practitioner") { // user_type = practitioner
             var userData = { 
                 // all these are required fields for healthcare practictioners
                 uid: _uid,
@@ -126,7 +148,7 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
         
       })
       .catch(error => {
-        console.log("Error: "+error.code);
+        console.log("Error: "+error.code+" "+error.message);
         res.status(500).json({error: "Error"});
         // res.send("Error: "+error.code);
       });
