@@ -4,7 +4,7 @@ import { BiMap, BiMessageRoundedDetail, BiSolidUserPlus } from "react-icons/bi";
 import { TbStethoscope } from "react-icons/tb";
 import Header from "./homepage_components/Header";
 import SearchBar from "./homepage_components/SearchBar";
-import FeatureCard from "./homepage_components/FeatureCard"; // ✅ Fixed import path
+import FeatureCard from "./Homepage_components/FeatureCard"; // ✅ Fixed import path
 import "./home.css";
 
 const HomePage = () => {
