@@ -56,11 +56,11 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
         // strValue was empty string
         return res.status(400).json({message: "email or password inaccurately entered"});
     }
-    if (_first_name === "") {
+    if (_first_name === "" || !_first_name) {
         // strValue was empty string
         return res.status(422).json({message: "no first  name entered"});
     }
-    if (_surname === "") {
+    if (_surname === "" || !_surname) {
         // strValue was empty string
         return res.status(422).json({message: "no surname  name entered"});
     }
@@ -106,7 +106,7 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
             else{
                 userData['preferred_lang'] = null;
             }
-            if ("gender" in req.body){
+            if ("gender" in req.body && !(req.body.gender==="")){
                 userData['gender'] = req.body.gender;
             }
             else{
@@ -132,7 +132,7 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
             else{
                 userData['hospital_id'] = null;
             }
-            if ("gender" in req.body){
+            if ("gender" in req.body && !(req.body.gender==="")){
                 userData['gender'] = req.body.gender;
             }
             else{
@@ -160,7 +160,7 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
       })
       .catch(error => {
         console.log("Error: "+error.code+" "+error.message);
-        res.status(500).json({error: "Error"});
+        res.status(500).json({error: "Some error has occured..."});
         // res.send("Error: "+error.code);
       });
 });
