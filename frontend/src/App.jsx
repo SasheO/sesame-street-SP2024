@@ -6,6 +6,7 @@ import Login from "./components/login/login";
 import SignUp from "./components/login/signup";
 import ForgotPassword from "./components/login/forgot_pass";
 import Profile from "./components/profile/Profile";
+import Forum from "./components/forum/forum"
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<Profile />} /> 
+        <Route path="/forum" element={<Forum />} />
       </Routes>
     </Router>
   );

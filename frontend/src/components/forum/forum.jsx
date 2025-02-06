@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { BiHome, BiPlus, BiMessageRounded } from "react-icons/bi";
-import Header from "../HomePage/homepage_components/Header";
-import SearchBar from "../HomePage/homepage_components/SearchBar";
+import Header from "../shared/Header";
+import SearchBar from "../shared/SearchBar";
 import "./Forum.css";
 
 const Forum = () => {
@@ -11,8 +11,8 @@ const Forum = () => {
   return (
     <div className="forum-container">
       {/* Full-width header */}
-      <div className="header">
-        <Header />
+      <div>
+        <Header label="Carelink Forum"/>
       </div>
 
       <SearchBar />
@@ -24,7 +24,7 @@ const Forum = () => {
 
       {/* Bottom Navigation Bar */}
       <div className="bottom-nav">
-        <button className="nav-button" onClick={() => navigate("/home")}>
+        <button className="nav-button" onClick={() => navigate("/")}>
           <BiHome />
         </button>
         <button className="nav-button" onClick={() => console.log("Create new thread")}>

@@ -10,7 +10,6 @@ const Header = ({ label }) => {
   return (
     <header className="header">
       <GiHamburgerMenu className="menu-btn" aria-label="Menu"/>
-      {/* <button className="menu-btn" aria-label="Menu">☰</button> */}
       <h1 className="header-title">{label}</h1>
       <BiSolidUser aria-label="Profile icon" className="profile-btn" onClick={() => navigate('/profile')} />
     </header>
