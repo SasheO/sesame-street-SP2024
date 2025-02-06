@@ -1,9 +1,14 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import HomePage from '../../components/HomePage/HomePage';
 
 test('renders header, search bar, and feature cards', () => {
-  render(<HomePage/>);
+  render(
+    <MemoryRouter>
+      <HomePage />
+    </MemoryRouter>
+  );
 
   // Check if the header exists
   expect(screen.getByText(/CareLink Home/i)).toBeInTheDocument();
