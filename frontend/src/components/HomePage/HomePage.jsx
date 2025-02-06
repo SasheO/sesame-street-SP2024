@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { BiMap, BiMessageRoundedDetail, BiSolidUserPlus} from 'react-icons/bi';
 import { TbStethoscope } from "react-icons/tb";
 import Header from '../shared/Header';
-import SearchBar from '../shared/SearchBar';
+import SearchBar from "./HomePage_Components/SearchBar_Components/SearchBar";
 import FeatureCard from './HomePage_components/FeatureCard';
 import './HomePage.css';
 
 function HomePage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!loggedInUser) {
+      navigate("/");
+    } else {
+      setUser(loggedInUser);
+    }
+  }, [navigate]);
+
+  if (!user) return <p>Loading...</p>;
+
   return (
     <div>
       <Header label="Carelink Home"/>
