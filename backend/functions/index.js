@@ -23,11 +23,15 @@ function verifyIdToken(idToken){
     firebase.auth()
     .verifyIdToken(idToken)
     .then((decodedToken) => {
+        console.log(1)
     const uid = decodedToken.uid;
+    console.log(2)
+    console.log(uid);
     return uid;
     })
     .catch((error) => {
-    return null;
+        console.log(4); 
+        return null;
     });
 }
 
@@ -186,12 +190,20 @@ app.post('/sign_up', (req, res) => {
       });
 });
 
-app.post('/edit_profile', (req, res) => { 
+app.post('/edit_profile', async (req, res) => { 
     const idToken = req.body.idToken;
-    const uid = verifyIdToken(idToken);
+    if (idToken==null    ){
+        console.log("idToken==null");
+        return res.status(401).json({message: "User is not logged in"});
+    }
+    const uid = await verifyIdToken(idToken); // TODO: this runs out of order, getting uid as null even when the idToken is valid since the verifyIdToken function runs and returns after. do this to fix out of order node js execution:
+    // https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
+    console.log(5);
+    console.log(uid);
     if (uid == null){
+        console.log("uid==null");
         // user is not authenticated
-        res.status(401).json({message: "User is not logged in"});
+        return res.status(401).json({message: "User is not logged in"});
     }
     else{
         // TODO:update each profile field
