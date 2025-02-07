@@ -1,6 +1,6 @@
 import requests
 import time
-# data = {"email":input("email: "), "password":input("password: ")}
+
 test_examples = {
     "good patient- patient": {"email":"tester.person@gmail.com", "password":"12.3rdaskufq24eS", "user_type":"patient", "dob":"11-23-2002", "gender":"F", "first_name": "tester", "surname": "person", "preferred_lang": "English"}, # good patient
     "empty email- patient": {"email":"", "password":"12.3rdaskufq24eS", "user_type":"patient", "dob":"11-23-2002", "gender":"F", "first_name": "Test", "surname": "User1", "preferred_lang": "English"}, # empty email

@@ -32,7 +32,7 @@ function verifyIdToken(idToken){
 }
 
 
-app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed here as well as in ..\firebase.json hosting
+app.post('/sign_up', (req, res) => { 
     
     const email = req.body.email;
     const password = req.body.password;
@@ -186,21 +186,23 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
       });
 });
 
-app.post('/edit_profile', (req, res) => { // each endpoint of app should be expressed here as well as in ..\firebase.json hosting
+app.post('/edit_profile', (req, res) => { 
     const idToken = req.body.idToken;
     const uid = verifyIdToken(idToken);
     if (uid == null){
         // user is not authenticated
-        res.status(401).json({message: "Please log in to edit profile information"});
-        res.send("User is not logged in");
+        res.status(401).json({message: "User is not logged in"});
     }
     else{
         // TODO:update each profile field
         // use update instead of set function
+        const userRef = db.collection('user');
+        const user = query(userRef, where("uid", "==", uid));
+        console.log(user);
     }
 });
 
-app.get('/user_profile', (req, res) => { // each endpoint of app should be expressed here as well as in ..\firebase.json hosting
+app.get('/user_profile', (req, res) => { 
     
 });
 
