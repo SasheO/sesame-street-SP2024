@@ -15,9 +15,6 @@ const LocationsPage  = ({ onClick }) => {
     <div className="locations-page" onClick={onClick}>
       <Header label="Carelink" />
       <SearchBar placeholder="Hospitals near me" />
-      <button className="back-button" onClick={() => navigate('/')}>
-        ← Back to Home
-      </button>
 
       {selectedFacility ? (
         <LocationDetails

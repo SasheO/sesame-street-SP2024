@@ -1,0 +1,57 @@
+.slide-out-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    z-index: 10;
+  }
+  
+  .slide-out-menu.open {
+    transform: translateX(0);
+  }
+  
+  .close-btn {
+    display: flex;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #6979F8;
+    cursor: pointer;
+  }
+  
+  .menu-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .menu-item {
+    font-size: 18px;
+    color: #2d1e6b;
+    cursor: pointer;
+  }
+  
+  .menu-item.active {
+    background: #6979F8;
+    color: white;
+    font-size: 18px;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: auto;
+  }
