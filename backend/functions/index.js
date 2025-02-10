@@ -7,51 +7,74 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+const { onRequest } = require("firebase-functions/v2/https");
+//const logger = require("firebase-functions/logger");
 const firebase = require("firebase-admin");
-const functions = require("firebase-functions");
+//const functions = require("firebase-functions");
 const express = require("express");
+const cors = require("cors"); //-angelica
+const admin = require("firebase-admin"); //-angelica
 
+// const app = express();
+
+// const firebaseApp = firebase.initializeApp(functions.config().firebase); // initializa according to the project logged into lcoally i.e. carelink
+// const db = firebase.firestore();
+
+admin.initializeApp(); // No need for `functions.config()`
+const db = admin.firestore();
+const auth = admin.auth();
 const app = express();
 
-const firebaseApp = firebase.initializeApp(functions.config().firebase); // initializa according to the project logged into lcoally i.e. carelink
-const db = firebase.firestore();
+app.use(express.json()); // Middleware to parse JSON body
+app.use(cors({ origin: true })); // Enable CORS for frontend access
 
-function verifyIdToken(idToken){
-    // idToken comes from the client app
-    firebase.auth()
-    .verifyIdToken(idToken)
-    .then((decodedToken) => {
-    const uid = decodedToken.uid;
-    return uid;
-    })
-    .catch((error) => {
-    return null;
-    });
+
+// async function verifyIdToken(idToken){
+//     // idToken comes from the client app
+//     firebase.auth()
+//     .verifyIdToken(idToken)
+//     .then((decodedToken) => {
+//     const uid = decodedToken.uid;
+//     return uid;
+//     })
+//     .catch((error) => {
+//     return null;
+//     });
+// }
+
+async function verifyIdToken(idToken) {
+    try {
+        const decodedToken = await auth.verifyIdToken(idToken);
+        return decodedToken.uid;
+    } catch (error) {
+        return null;
+    }
 }
 
 
+
 app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed here as well as in ..\firebase.json hosting
-    
+
     const email = req.body.email;
     const password = req.body.password;
-    const _user_type = req.body.user_type;
+    //const _user_type = req.body.user_type;
     const _first_name = req.body.first_name;
     const _surname = req.body.surname;
     var _gender = req.body.gender;
 
-    console.log("\n\n\nuser_type: "+_user_type);
+    //console.log("\n\n\nuser_type: "+_user_type);
+
+    console.log("Received request:", req.body);
 
     // check that values are not empty and return accurate error message
     if (email === "" || !email) {
         // strValue was empty string
         return res.status(400).json({message: "email or password inaccurately entered"});
     }
-    if (email === "" || !email) {
-        // strValue was empty string
-        gender = "undisclosed";
-    }
+    // if (email === "" || !email) {
+    //     // strValue was empty string
+    //     gender = "undisclosed";
+    // }
     if (password === "" || !password) {
         // strValue was empty string
         return res.status(400).json({message: "email or password inaccurately entered"});
@@ -64,10 +87,12 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
         // strValue was empty string
         return res.status(422).json({message: "no surname  name entered"});
     }
-    if (!(_user_type==="practitioner" || _user_type==="patient")){
-        return res.status(422).json({message: "invalid user type"});
-    }
+    // if (!(_user_type==="practitioner" || _user_type==="patient")){
+    //     return res.status(422).json({message: "invalid user type"});
+    // }
 
+    const _user_type = "patient"; // Automatically assign "patient" or another default
+    console.log("🛠 Creating user...");
     
     firebase.auth().createUser({
         email: email,
@@ -79,89 +104,91 @@ app.post('/sign_up', (req, res) => { // each endpoint of app should be expressed
         // const user = userCred.user;
         const _uid = userCred.uid;
         
-        if (_user_type=="patient"){
-            if (!("dob" in req.body)){
-                return res.status(422).json({message: "no dob entered"});
-            }
-            var date_st = req.body.dob;
-            var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-            const _dob = new Date(date_st.replace(pattern,'$3-$2-$1'));
-            if (_dob === "Invalid Date" || isNaN(_dob)){
-                return res.status(422).json({message: "invalid dob format"});
-            }
+        // if (_user_type=="patient"){
+        //     if (!("dob" in req.body)){
+        //         return res.status(422).json({message: "no dob entered"});
+        //     }
+        //     var date_st = req.body.dob;
+        //     var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+        //     const _dob = new Date(date_st.replace(pattern,'$3-$2-$1'));
+        //     if (_dob === "Invalid Date" || isNaN(_dob)){
+        //         return res.status(422).json({message: "invalid dob format"});
+        //     }
             var userData = {
                 // all these are required fields for patients
                 uid: _uid,
-                dob: _dob,
-                user_type: _user_type,
-                gender: _gender,
-                first_name: _first_name,
-                surname: _surname
-            };
-            
-            // optional fields below. if not filled by user, fill them in as null
-            if ("preferred_lang" in req.body){
-                userData['preferred_lang'] = req.body.preferred_lang; 
-            }
-            else{
-                userData['preferred_lang'] = null;
-            }
-            if ("gender" in req.body && !(req.body.gender==="")){
-                userData['gender'] = req.body.gender;
-            }
-            else{
-                userData['gender'] = null;
-            }
-            // console.log(userData);
-        }
-        else if (_user_type=="practitioner") { // user_type = practitioner
-            var userData = { 
-                // all these are required fields for healthcare practictioners
-                uid: _uid,
-                user_type: _user_type,
+                //dob: _dob,
+                //user_type: _user_type,
+                //gender: _gender,
                 first_name: _first_name,
                 surname: _surname,
-                
+                email: email // Store email for reference
             };
+            
+        //     // optional fields below. if not filled by user, fill them in as null
+        //     if ("preferred_lang" in req.body){
+        //         userData['preferred_lang'] = req.body.preferred_lang; 
+        //     }
+        //     else{
+        //         userData['preferred_lang'] = null;
+        //     }
+        //     if ("gender" in req.body && !(req.body.gender==="")){
+        //         userData['gender'] = req.body.gender;
+        //     }
+        //     else{
+        //         userData['gender'] = null;
+        //     }
+        //     // console.log(userData);
+        // }
+        // else if (_user_type=="practitioner") { // user_type = practitioner
+        //     var userData = { 
+        //         // all these are required fields for healthcare practictioners
+        //         uid: _uid,
+        //         user_type: _user_type,
+        //         first_name: _first_name,
+        //         surname: _surname,
+                
+        //     };
 
-            if ("specialty" in req.body){
-                if (req.body.specialty===""){
-                    return res.status(422).json({message: "no specialty entered"});
-                }
-                userData['specialty'] = req.body.specialty;
-            }
-            else{
-                return res.status(422).json({message: "no specialty entered"});
-            }
+        //     if ("specialty" in req.body){
+        //         if (req.body.specialty===""){
+        //             return res.status(422).json({message: "no specialty entered"});
+        //         }
+        //         userData['specialty'] = req.body.specialty;
+        //     }
+        //     else{
+        //         return res.status(422).json({message: "no specialty entered"});
+        //     }
 
-            if ("certification" in req.body){
-                if (req.body.certification===""){
-                    return res.status(422).json({message: "no certification provided"});
-                }
+        //     if ("certification" in req.body){
+        //         if (req.body.certification===""){
+        //             return res.status(422).json({message: "no certification provided"});
+        //         }
 
-                userData['certification'] = req.body.certification;
-            }
-            else{
-                return res.status(422).json({message: "no certification entered"});
-            }
+        //         userData['certification'] = req.body.certification;
+        //     }
+        //     else{
+        //         return res.status(422).json({message: "no certification entered"});
+        //     }
             
             
-            // optional fields below. if not filled by user, fill them in as null
-            if ("hospital_id" in req.body){
-                userData['hospital_id'] = req.body.hospital_id;
-            }
-            else{
-                userData['hospital_id'] = null;
-            }
-            if ("gender" in req.body && !(req.body.gender==="")){
-                userData['gender'] = req.body.gender;
-            }
-            else{
-                userData['gender'] = null;
-            }
-            // console.log(userData);
+        //     // optional fields below. if not filled by user, fill them in as null
+        //     if ("hospital_id" in req.body){
+        //         userData['hospital_id'] = req.body.hospital_id;
+        //     }
+        //     else{
+        //         userData['hospital_id'] = null;
+        //     }
+        //     if ("gender" in req.body && !(req.body.gender==="")){
+        //         userData['gender'] = req.body.gender;
+        //     }
+        //     else{
+        //         userData['gender'] = null;
+        //     }
+        //     // console.log(userData);
 
-        }
+        // }
+        console.log("✅ User Created:", userRecord.uid);
 
         // ensure empty values are converted to null
         for (const [key, value] of Object.entries(userData)) {
