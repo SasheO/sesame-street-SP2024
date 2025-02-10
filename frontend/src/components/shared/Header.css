@@ -12,6 +12,7 @@
   .header-title {
     font-size: 24px;
     margin: 0;
+    cursor: pointer;
   }
   
   .menu-btn, .profile-btn {

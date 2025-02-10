@@ -3,10 +3,10 @@
     align-items: center;
     justify-content: space-between;
     width: 90%;
-    margin: 30px auto;
+    margin: 24px auto;
     position: relative;
     border: 2px solid #6979F8;
-    border-radius: 20px;
+    border-radius: 32px;
     padding: 5px 15px;
     background: white;
 }
