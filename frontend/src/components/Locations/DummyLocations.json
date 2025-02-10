@@ -1,0 +1,35 @@
+[
+    {
+      "id": 1,
+      "name": "Children’s National Hospital",
+      "distance": "2 km",
+      "hours": "24 hrs",
+      "rating": 4,
+      "image": "https://medstarhealth-delivery.sitecorecontenthub.cloud/api/public/content/News%2FMedStar-Washington-Hospital-Center-Named-the-Most-Socially-and-Racially-Responsible-Hospital?v=f53dbc3f"
+    },
+    {
+      "id": 2,
+      "name": "St. Mary’s Specialist Clinic",
+      "distance": "1.5 km",
+      "hours": "9 AM - 9 PM",
+      "rating": 5,
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjMwXbgZAAHdic8FfdREE2eUr8CDBaqfKLMA&s"
+    },
+    {
+      "id": 3,
+      "name": "Gbagada General Hospital",
+      "distance": "5 km",
+      "hours": "24 hrs",
+      "rating": 3,
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn_oKC9LTY5lcvVvaoNRJPVkKfgokBNdGm9A&s"
+    },
+    {
+      "id": 4,
+      "name": "Lagos University Teaching Hospital",
+      "distance": "7 km",
+      "hours": "6 AM - 9 PM",
+      "rating": 4,
+      "image": "https://www.mmarchitecturalphotography.com/chicago-architectural-photographer/uploads/2018/04/hospital-medical-facilities-center-education-building-photography.jpg"
+    }
+  ]
+  

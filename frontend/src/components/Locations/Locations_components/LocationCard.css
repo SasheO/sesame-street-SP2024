@@ -1,27 +1,45 @@
 .location-card {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-  }
-  
-  .facility-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 10px;
-    object-fit: cover;
-    margin-right: 10px;
-  }
-  
-  .facility-info h3 {
-    margin: 0;
-  }
-  
-  .rating {
-    color: #ffd700;
-    margin-top: 5px;
-  }
-  
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 16px;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.location-card:hover {
+  transform: scale(1.02);
+}
+
+.facility-image {
+  width: 25%;
+  border-radius: 10px 0px 0px 10px;
+  object-fit: cover;
+  margin-right: 16px;
+}
+
+.facility-info {
+  flex: 1;
+  text-align: left;
+}
+
+.facility-info h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.facility-info p {
+  font-size: 18px;
+  color: #555;
+  margin: 4px 0;
+}
+
+.rating {
+  font-size: 22px;
+  color: #FFD700;
+  margin-top: 8px;
+}
