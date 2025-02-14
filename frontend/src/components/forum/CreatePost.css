@@ -1,0 +1,75 @@
+.create-post-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .create-post-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .create-post-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .create-post-form label {
+    text-align: left;
+    font-weight: bold;
+    margin: 10px 0 5px;
+  }
+  
+  .create-post-form input,
+  .create-post-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .create-post-form textarea {
+    height: 120px;
+    resize: none;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .cancel-btn,
+  .post-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .cancel-btn {
+    background: #ccc;
+    color: black;
+    margin-right: 10px;
+  }
+  
+  .post-btn {
+    background: #6979F8;
+    color: white;
+  }
+  
+  .cancel-btn:hover {
+    background: #b0b0b0;
+  }
+  
+  .post-btn:hover {
+    background: #5764d8;
+  }
+  

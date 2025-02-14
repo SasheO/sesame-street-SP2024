@@ -1,0 +1,137 @@
+/* Full thread page */
+.thread-page {
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: auto;
+  }
+  
+  /* Back button */
+  .back-button {
+    background: none;
+    border: none;
+    color: #6979F8;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  /* Thread header */
+  .thread-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .thread-meta {
+    font-size: 12px;
+    color: gray;
+  }
+  
+  .thread-user {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .thread-content {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .thread-actions {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: gray;
+  }
+  
+  /* Join conversation */
+  .join-conversation {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .join-conversation input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .join-conversation button {
+    background-color: #6979F8;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin-left: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  /* Sorting and search */
+  .comment-options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .comment-options select, .comment-options input {
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Comments Section */
+  .comments-section {
+    margin-top: 15px;
+  }
+  
+  .comment {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .comment:last-child {
+    border-bottom: none;
+  }
+  
+  /* Comment text */
+  .comment-header {
+    margin-left: 10px;
+  }
+  
+  .comment-user {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+  
+  .comment-actions {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: gray;
+  }
+  
+  .comment-actions button {
+    border: none;
+    background: none;
+    color: #6979F8;
+    cursor: pointer;
+  }
+  
+  /* Nested Replies */
+  .nested-comments {
+    margin-left: 20px;
+    border-left: 2px solid #ddd;
+    padding-left: 10px;
+  }
+  
+  .nested-comment {
+    margin-top: 10px;
+  }
+  
