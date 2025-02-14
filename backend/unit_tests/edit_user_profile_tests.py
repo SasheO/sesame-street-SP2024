@@ -32,8 +32,9 @@ try:
     print(response)
     print(response.json())
     print(1)
-except:
-    response = requests.post("http://localhost:5000/edit_profile", json=test_data)
-    print(response)
-    print(response.json())
-    print(2)
+except Exception as e:
+    # response = requests.post("http://localhost:5000/edit_profile", json=test_data)
+    # print(response)
+    # print(response.json())
+    # print(2)
+    print(e)

@@ -18,7 +18,8 @@ const app = express();
 const firebaseApp = firebase.initializeApp(functions.config().firebase); // initializa according to the project logged into lcoally i.e. carelink
 const db = firebase.firestore();
 
-function verifyIdToken(idToken){
+
+function verifyIdToken(idToken, successfulCallback){
     // idToken comes from the client app
     firebase.auth()
     .verifyIdToken(idToken)
@@ -27,14 +28,30 @@ function verifyIdToken(idToken){
     const uid = decodedToken.uid;
     console.log(2)
     console.log(uid);
-    return uid;
+    successfulCallback(uid);
     })
     .catch((error) => {
-        console.log(4); 
+        console.log(5); 
         return null;
     });
 }
 
+async function editProfile(uid){
+    console.log(4); 
+    const userRef = db.collection('user');
+    console.log(4); 
+    const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
+        if(!querySnapshot.empty) {
+          const user = querySnapshot.docs[0].data()
+          console.log(user);
+          // TODO HERE: set user data as request in edit profile, return request to client.
+        }
+      });
+    
+    console.log(4); 
+    console.log(uid);
+    // console.log(user);
+}
 
 app.post('/sign_up', (req, res) => { 
     
@@ -190,28 +207,33 @@ app.post('/sign_up', (req, res) => {
       });
 });
 
-app.post('/edit_profile', async (req, res) => { 
+app.post('/edit_profile', (req, res) => { 
     const idToken = req.body.idToken;
     if (idToken==null    ){
         console.log("idToken==null");
         return res.status(401).json({message: "User is not logged in"});
     }
-    const uid = await verifyIdToken(idToken); // TODO: this runs out of order, getting uid as null even when the idToken is valid since the verifyIdToken function runs and returns after. do this to fix out of order node js execution:
+    verifyIdToken(idToken, editProfile); // TODO: this runs out of order, getting uid as null even when the idToken is valid since the verifyIdToken function runs and returns after. do this to fix out of order node js execution:
     // https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
-    console.log(5);
-    console.log(uid);
-    if (uid == null){
-        console.log("uid==null");
-        // user is not authenticated
-        return res.status(401).json({message: "User is not logged in"});
-    }
-    else{
-        // TODO:update each profile field
-        // use update instead of set function
-        const userRef = db.collection('user');
-        const user = query(userRef, where("uid", "==", uid));
-        console.log(user);
-    }
+    // https://www.youtube.com/watch?v=QvIC2z8ADtU&list=PLC3y8-rFHvwh8shCMHFA5kWxD9PaPwxaY&index=25
+    
+    
+    // console.log(5);
+    // console.log(uid);
+    // if (uid == null){
+    //     console.log("uid==null");
+    //     // user is not authenticated
+    //     return res.status(401).json({message: "User is not logged in"});
+    // }
+    // else{
+    //     // TODO:update each profile field
+    //     // use update instead of set function
+    //     const userRef = db.collection('user');
+    //     const user = query(userRef, where("uid", "==", uid));
+    //     console.log(user);
+    // }
+
+
 });
 
 app.get('/user_profile', (req, res) => { 
