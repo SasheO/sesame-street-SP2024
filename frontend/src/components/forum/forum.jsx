@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BiHome, BiPlus, BiMessageRounded } from "react-icons/bi";
+import { BiHome, BiPlus, BiMessageRounded, BiSearch, BiX } from "react-icons/bi";
 import Header from "../HomePage/HomePage_Components/Header";
-import SearchBar from "../HomePage/HomePage_Components/SearchBar_Components/SearchBar";
-import ForumThread from "./ForumThread"; // Import ForumThread component
 import "./Forum.css";
 
 const mockThreads = [
@@ -15,22 +13,8 @@ const mockThreads = [
     content: "Natural remedies may help prevent the onset of migraine attacks...",
     likes: 3456,
     comments: 254,
-    replies: [
-      {
-        user: "@username1",
-        time: "12h ago",
-        content: "I found it really helpful to drink a ginger tea every night before bed.",
-        likes: 423,
-        replies: [
-          {
-            user: "@username2",
-            time: "2h ago",
-            content: "Same here! I did a warm brew at night and an ice tea in the morning.",
-            likes: 76,
-          },
-        ],
-      },
-    ],
+    tags: ["health", "migraine", "herbs"],
+    replies: [],
   },
   {
     id: 2,
@@ -40,82 +24,118 @@ const mockThreads = [
     content: "I came across this plant, does anyone know what this is?",
     likes: 2540,
     comments: 156,
+    tags: ["plants", "herbs", "identification"],
     replies: [],
   },
+  {
+    id: 3,
+    title: "Benefits of turmeric",
+    user: "@username3",
+    date: "Feb 2, 2024",
+    content: "Turmeric has amazing anti-inflammatory properties...",
+    likes: 1820,
+    comments: 89,
+    tags: ["health", "turmeric", "anti-inflammatory"],
+    replies: [],
+  },
+  {
+    id: 4,
+    title: "Best teas for digestion?",
+    user: "@username4",
+    date: "Feb 10, 2024",
+    content: "Looking for herbal teas that aid in digestion. Any suggestions?",
+    likes: 1324,
+    comments: 97,
+    tags: ["tea", "digestion", "herbs"],
+    replies: [],
+  }
 ];
 
 const Forum = () => {
   const navigate = useNavigate();
-  const [selectedThread, setSelectedThread] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState(null);
 
-  const handleThreadClick = (thread) => {
-    setSelectedThread(thread);
-  };
+  // 🔹 Updated filter function to include BOTH search bar & tag filtering
+  const filteredThreads = mockThreads.filter((thread) =>
+    (thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))) &&
+    (selectedTag ? thread.tags.includes(selectedTag) : true)
+  );
 
   return (
     <div className="forum-page">
       <Header />
-      <SearchBar />
-      <div className="forum-content">
-        {!selectedThread ? (
-          <div className="thread-list">
-            {mockThreads.map((thread) => (
-              <div
-                key={thread.id}
-                className="thread-card"
-                onClick={() => handleThreadClick(thread)}
-              >
-                <h3>{thread.title}</h3>
-                <p>{thread.user} • {thread.date}</p>
-                <p>{thread.content}</p>
-                <div className="thread-actions">
-                  <span>❤️ {thread.likes}</span>
-                  <span>💬 {thread.comments}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+
+      {/* Search Bar */}
+      <div className="forum-search-bar">
+        <input
+          type="text"
+          placeholder="Search forum posts..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        {searchQuery ? (
+          <BiX className="clear-icon" onClick={() => setSearchQuery("")} />
         ) : (
-          <div className="thread-view">
-            <button className="back-button" onClick={() => setSelectedThread(null)}>← Back</button>
-            <h2>{selectedThread.title}</h2>
-            <p>{selectedThread.user} • {selectedThread.date}</p>
-            <p>{selectedThread.content}</p>
-            <div className="thread-actions">
-              <span>❤️ {selectedThread.likes}</span>
-              <span>💬 {selectedThread.comments}</span>
-            </div>
-            <div className="comment-section">
-              <input type="text" placeholder="Join the conversation..." />
-            </div>
-            {selectedThread.replies.map((reply, index) => (
-              <div key={index} className="reply">
-                <p><strong>{reply.user}</strong> • {reply.time}</p>
-                <p>{reply.content}</p>
-                <div className="reply-actions">
-                  <span>❤️ {reply.likes}</span>
-                  <button>Reply</button>
-                </div>
-                {reply.replies && reply.replies.map((subReply, subIndex) => (
-                  <div key={subIndex} className="sub-reply">
-                    <p><strong>{subReply.user}</strong> • {subReply.time}</p>
-                    <p>{subReply.content}</p>
-                    <div className="reply-actions">
-                      <span>❤️ {subReply.likes}</span>
-                      <button>Reply</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
+          <BiSearch className="search-icon" />
         )}
       </div>
+
+      {/* Main Forum Layout */}
+      <div className="forum-container">
+        <div className="forum-sidebar">
+          <h3>Forum Posts</h3>
+          {filteredThreads.length === 0 ? (
+            <p className="no-results">No results found</p>
+          ) : (
+            <div className="thread-list">
+              {filteredThreads.map((thread) => (
+                <div
+                  key={thread.id}
+                  className="thread-card"
+                  onClick={() => navigate(`/forum/${thread.id}`, { state: { thread } })}
+                >
+                  <h3>{thread.title}</h3>
+                  <p>{thread.user} • {thread.date}</p>
+                  <p>{thread.content}</p>
+                  
+                  {/* Tag List */}
+                  <p className="thread-tags">
+                    <strong>Tags: </strong>
+                    {thread.tags.map((tag, index) => (
+                      <span 
+                        key={index} 
+                        className="tag"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent triggering thread click
+                          setSelectedTag(tag);
+                        }}
+                      >
+                        {tag}{index < thread.tags.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
+                  </p>
+
+                  <div className="thread-actions">
+                    <span>❤️ {thread.likes}</span>
+                    <span>💬 {thread.comments}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Navigation Bar */}
+      {/* Bottom Navigation Bar */}
       <div className="bottom-bar">
         <BiHome onClick={() => navigate("/home")} className="bottom-icon" />
-        <BiPlus onClick={() => navigate("/forum/create")} className="bottom-icon" /> 
+        <BiPlus onClick={() => navigate("/forum/create")} className="bottom-icon" />
         <BiMessageRounded className="bottom-icon" />
       </div>
+
     </div>
   );
 };

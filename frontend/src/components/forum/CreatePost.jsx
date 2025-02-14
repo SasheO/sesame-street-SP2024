@@ -1,55 +1,61 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./CreatePost.css"; // Make sure this file exists
+import { BiArrowBack } from "react-icons/bi"; // Import back icon
+import Header from "../HomePage/HomePage_Components/Header";
+import "./CreatePost.css";
 
 const CreatePost = () => {
   const navigate = useNavigate();
-  const [post, setPost] = useState({ title: "", content: "" });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setPost((prev) => ({ ...prev, [name]: value }));
-  };
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [tags, setTags] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Send post to backend (or store locally for now)
-    console.log("New Post:", post);
-    navigate("/forum"); // Redirect to forum after posting
+    console.log({ title, content, tags: tags.split(",").map(tag => tag.trim()) });
+    navigate("/forum"); // Redirect back to forum after posting
   };
 
   return (
-    <div className="create-post-container">
-      <h2>Create a Post</h2>
-      <form onSubmit={handleSubmit} className="create-post-form">
-        <label htmlFor="title">Title</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={post.title}
-          onChange={handleChange}
-          placeholder="Enter post title..."
-          required
-        />
+    <div className="create-post-page">
+      <Header />
 
-        <label htmlFor="content">Description</label>
-        <textarea
-          id="content"
-          name="content"
-          value={post.content}
-          onChange={handleChange}
-          placeholder="Write something..."
-          required
-        ></textarea>
+      {/* Back Button */}
+      <button className="back-button" onClick={() => navigate("/forum")}>
+        <BiArrowBack className="back-icon" /> Back to Forum
+      </button>
 
-        <div className="button-group">
-          <button type="button" className="cancel-btn" onClick={() => navigate("/forum")}>
-            Cancel
-          </button>
-          <button type="submit" className="post-btn">Post</button>
-        </div>
-      </form>
+      <div className="create-post-container">
+        <h2>Create a New Post</h2>
+        <form onSubmit={handleSubmit}>
+          <label>Title</label>
+          <input
+            type="text"
+            placeholder="Enter a descriptive title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+
+          <label>Content</label>
+          <textarea
+            placeholder="Write your post here..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+          />
+
+          <label>Tags (comma separated)</label>
+          <input
+            type="text"
+            placeholder="e.g. health, wellness, herbs"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+          />
+
+          <button type="submit" className="submit-btn">Post</button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -1,82 +1,49 @@
-.forum-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
+/* Tags styling */
+.thread-tags {
+  font-size: 14px;
+  color: #555;
 }
 
-.thread-list {
-  width: 100%;
-  max-width: 600px;
-}
-
-.thread-card {
-  background: white;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
+.thread-tags span {
+  color: #007bff;  /* Make tags blue for visibility */
   cursor: pointer;
-  transition: background 0.3s;
+  text-decoration: none;
+  margin-right: 5px;
+}
+
+.thread-tags span:hover {
+  text-decoration: underline;  /* Underline when hovered */
+}
+/* Forum Post Styling */
+.thread-card {
+  background: white;  /* Ensure white background */
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds slight shadow */
+  margin-bottom: 10px; /* Spacing between posts */
+  transition: transform 0.2s ease-in-out;
 }
 
 .thread-card:hover {
-  background: #f7f7f7;
-}
-
-.thread-actions {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: gray;
-}
-
-.thread-view {
-  width: 100%;
-  max-width: 600px;
-  background: white;
-  padding: 20px;
-}
-
-.back-button {
-  background: none;
-  border: none;
+  transform: scale(1.02); /* Slight hover effect */
   cursor: pointer;
-  font-size: 16px;
-  margin-bottom: 10px;
 }
 
-.comment-section input {
+/* Ensure content inside post is readable */
+.thread-card h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.thread-card p {
+  margin: 5px 0;
+  color: #555;
+}
+
+/* Ensure white background applies */
+.thread-list {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.reply {
-  margin-left: 20px;
-  border-left: 2px solid #ccc;
-  padding-left: 10px;
-  margin-top: 10px;
-}
-
-.sub-reply {
-  margin-left: 40px;
-  border-left: 2px solid #ccc;
-  padding-left: 10px;
-}
-
-.bottom-bar {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  padding: 10px 0;
-  background: #6979F8;
-  position: fixed;
-  bottom: 0;
-}
-
-.bottom-icon {
-  font-size: 24px;
-  color: white;
-  cursor: pointer;
+  max-width: 600px; /* Adjust as needed */
+  margin: auto;
 }

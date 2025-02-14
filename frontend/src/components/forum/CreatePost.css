@@ -1,75 +1,64 @@
+.create-post-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding-top: 20px;
+}
+
 .create-post-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .create-post-container h2 {
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .create-post-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .create-post-form label {
-    text-align: left;
-    font-weight: bold;
-    margin: 10px 0 5px;
-  }
-  
-  .create-post-form input,
-  .create-post-form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  .create-post-form textarea {
-    height: 120px;
-    resize: none;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  .cancel-btn,
-  .post-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .cancel-btn {
-    background: #ccc;
-    color: black;
-    margin-right: 10px;
-  }
-  
-  .post-btn {
-    background: #6979F8;
-    color: white;
-  }
-  
-  .cancel-btn:hover {
-    background: #b0b0b0;
-  }
-  
-  .post-btn:hover {
-    background: #5764d8;
-  }
-  
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-post-container h2 {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.create-post-container label {
+  font-weight: bold;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.create-post-container input,
+.create-post-container textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.create-post-container textarea {
+  height: 120px;
+  resize: none;
+}
+
+.create-post-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+  transition: background 0.3s ease-in-out;
+}
+
+.create-post-container button:hover {
+  background-color: #0056b3;
+}

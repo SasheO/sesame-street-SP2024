@@ -1,80 +1,58 @@
-import React, { useState } from "react";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BiArrowBack } from "react-icons/bi";
 import "./ForumThread.css";
 
-const ForumThread = ({ thread, goBack }) => {
-  const [comment, setComment] = useState("");
+const ForumThread = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const thread = location.state?.thread; // Get the thread data from state
 
-  const handleCommentSubmit = () => {
-    alert("Posting comment: " + comment);
-    setComment("");
-  };
+  if (!thread) {
+    return <p>Thread not found.</p>;
+  }
 
   return (
     <div className="thread-page">
-      <button className="back-button" onClick={goBack}>← Back</button>
-
-      <div className="thread-header">
-        <h2>{thread.title}</h2>
-        <p className="thread-meta">r/threadname • {thread.date}</p>
-        <p className="thread-user">{thread.user}</p>
-        <p className="thread-content">{thread.content}</p>
-        <div className="thread-actions">
-          <span>❤️ {thread.likes}</span>
-          <span>💬 {thread.comments}</span>
-        </div>
+      <button className="back-button" onClick={() => navigate("/forum")}>
+        <BiArrowBack /> Back to Forum
+      </button>
+      <h2>{thread.title}</h2>
+      <p>{thread.user} • {thread.date}</p>
+      <p>{thread.content}</p>
+      <div className="thread-actions">
+        <span>❤️ {thread.likes}</span>
+        <span>💬 {thread.comments}</span>
       </div>
 
-      {/* Join the conversation */}
-      <div className="join-conversation">
-        <input 
-          type="text" 
-          placeholder="Join the conversation..." 
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <button onClick={handleCommentSubmit}>Post</button>
-      </div>
-
-      {/* Sorting and search bar */}
-      <div className="comment-options">
-        <select>
-          <option>Sort by: Best</option>
-          <option>Sort by: New</option>
-          <option>Sort by: Old</option>
-        </select>
-        <input type="text" placeholder="Search comments" />
-      </div>
-
-      {/* Comments Section */}
-      <div className="comments-section">
-        {thread.replies.map((reply, index) => (
-          <div key={index} className="comment">
-            <div className="comment-header">
-              <p className="comment-user">{reply.user} • {reply.time}</p>
-              <p>{reply.content}</p>
-              <div className="comment-actions">
-                <span>❤️ {reply.likes}</span>
-                <button>Reply</button>
-              </div>
+      {/* Replies Section */}
+      <div className="replies-container">
+        {thread.replies?.map((reply, index) => (
+          <div key={index} className="reply">
+            <p><strong>{reply.user}</strong> • {reply.time}</p>
+            <p>{reply.content}</p>
+            <div className="reply-actions">
+              <span>❤️ {reply.likes}</span>
+              <button>Reply</button>
             </div>
-
-            {/* Nested Replies */}
-            {reply.replies && (
-              <div className="nested-comments">
-                {reply.replies.map((subReply, subIndex) => (
-                  <div key={subIndex} className="nested-comment">
-                    <p className="comment-user">{subReply.user} • {subReply.time}</p>
-                    <p>{subReply.content}</p>
-                    <div className="comment-actions">
-                      <span>❤️ {subReply.likes}</span>
-                      <button>Reply</button>
-                    </div>
-                  </div>
-                ))}
+            {reply.replies?.map((subReply, subIndex) => (
+              <div key={subIndex} className="sub-reply">
+                <p><strong>{subReply.user}</strong> • {subReply.time}</p>
+                <p>{subReply.content}</p>
+                <div className="reply-actions">
+                  <span>❤️ {subReply.likes}</span>
+                  <button>Reply</button>
+                </div>
               </div>
-            )}
+            ))}
           </div>
         ))}
+      </div>
+
+      {/* Comment Box */}
+      <div className="comment-box">
+        <input type="text" placeholder="Write a reply..." />
+        <button>Post</button>
       </div>
     </div>
   );
