@@ -19,40 +19,6 @@ const firebaseApp = firebase.initializeApp(functions.config().firebase); // init
 const db = firebase.firestore();
 
 
-function verifyIdToken(idToken, successfulCallback){
-    // idToken comes from the client app
-    firebase.auth()
-    .verifyIdToken(idToken)
-    .then((decodedToken) => {
-        console.log(1)
-    const uid = decodedToken.uid;
-    console.log(2)
-    console.log(uid);
-    successfulCallback(uid);
-    })
-    .catch((error) => {
-        console.log(5); 
-        return null;
-    });
-}
-
-async function editProfile(uid){
-    console.log(4); 
-    const userRef = db.collection('user');
-    console.log(4); 
-    const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
-        if(!querySnapshot.empty) {
-          const user = querySnapshot.docs[0].data()
-          console.log(user);
-          // TODO HERE: set user data as request in edit profile, return request to client.
-        }
-      });
-    
-    console.log(4); 
-    console.log(uid);
-    // console.log(user);
-}
-
 app.post('/sign_up', (req, res) => { 
     
     const email = req.body.email;
@@ -213,7 +179,44 @@ app.post('/edit_profile', (req, res) => {
         console.log("idToken==null");
         return res.status(401).json({message: "User is not logged in"});
     }
-    verifyIdToken(idToken, editProfile); // TODO: this runs out of order, getting uid as null even when the idToken is valid since the verifyIdToken function runs and returns after. do this to fix out of order node js execution:
+
+    firebase.auth()
+    .verifyIdToken(idToken)
+    .then(async (decodedToken) => {
+        
+        const uid = decodedToken.uid;
+        console.log(2)
+        console.log(uid);
+        console.log(4); 
+        const userRef = db.collection('user');
+        console.log(4); 
+        const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
+            if(!querySnapshot.empty) {
+            const user = querySnapshot.docs[0].data()
+            console.log(user);
+            //             All patient users must have dob in format mm-dd-yyyy
+            // Optional fields for patient users: preferred_lang (language preference), gender
+            // All practitioners must have: specialty, certification
+            // Optional fields for practitioner users: hospital_id (the hospital where they work), gender
+            if(user['user_type'] === "patient"){
+                // update patient values from request
+                // req.body.dob
+                doc.ref.update({first_name: req.body.first_name});
+            }
+            else if (_user_type=="practitioner") { // user_type = practitioner
+                // update practitioner values from request
+
+            }
+            
+            }
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+        console.log(5); 
+        return null;
+    });
+    // verifyIdToken(idToken, editProfile); // TODO: this runs out of order, getting uid as null even when the idToken is valid since the verifyIdToken function runs and returns after. do this to fix out of order node js execution:
     // https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
     // https://www.youtube.com/watch?v=QvIC2z8ADtU&list=PLC3y8-rFHvwh8shCMHFA5kWxD9PaPwxaY&index=25
     

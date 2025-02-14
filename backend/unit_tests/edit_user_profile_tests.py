@@ -25,7 +25,7 @@ password = "12.3rdaskufq24eS"
 user_credentials = sign_in_with_email_and_password(email, password)
 
 
-test_data = {"idToken":user_credentials['idToken'], "user_type":"patient", "dob":"11-23-2002", "gender":"F", "first_name": "tester", "surname": "person", "preferred_lang": "English"}
+test_data = {"idToken":user_credentials['idToken'], "user_type":"patient", "dob":"11-23-2002", "gender":"F", "first_name": "new_name", "surname": "person", "preferred_lang": "English"}
 
 response = requests.post("http://localhost:5000/edit_profile", json=test_data)
 try:
