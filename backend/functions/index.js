@@ -192,19 +192,27 @@ app.post('/edit_profile', (req, res) => {
         console.log(4); 
         const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
             if(!querySnapshot.empty) {
-            const user = querySnapshot.docs[0].data()
-            console.log(user);
+            const user = querySnapshot.docs[0];
+            console.log(user.data());
             //             All patient users must have dob in format mm-dd-yyyy
             // Optional fields for patient users: preferred_lang (language preference), gender
             // All practitioners must have: specialty, certification
             // Optional fields for practitioner users: hospital_id (the hospital where they work), gender
-            if(user['user_type'] === "patient"){
+            const user_type  = user.data()['user_type'];
+            if(user_type === "patient"){
                 // update patient values from request
-                // req.body.dob
-                doc.ref.update({first_name: req.body.first_name});
+                // TODO: ensure all fields that can be updated are updated.
+                // TODO: for fields that are used in authentication e.g. email, first_name, surname, update in firebase auth appropriately
+                // TODO: return response
+                console.log("patient")
+                user.ref.update({first_name: req.body.first_name});
+                console.log("updated");
             }
-            else if (_user_type=="practitioner") { // user_type = practitioner
+            else if (user_type=="practitioner") { // user_type = practitioner
                 // update practitioner values from request
+                // TODO: ensure all fields that can be updated are updated.
+                // TODO: for fields that are used in authentication e.g. email, first_name, surname, update in firebase auth appropriately
+                // TODO: return response
 
             }
             
@@ -216,25 +224,6 @@ app.post('/edit_profile', (req, res) => {
         console.log(5); 
         return null;
     });
-    // verifyIdToken(idToken, editProfile); // TODO: this runs out of order, getting uid as null even when the idToken is valid since the verifyIdToken function runs and returns after. do this to fix out of order node js execution:
-    // https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
-    // https://www.youtube.com/watch?v=QvIC2z8ADtU&list=PLC3y8-rFHvwh8shCMHFA5kWxD9PaPwxaY&index=25
-    
-    
-    // console.log(5);
-    // console.log(uid);
-    // if (uid == null){
-    //     console.log("uid==null");
-    //     // user is not authenticated
-    //     return res.status(401).json({message: "User is not logged in"});
-    // }
-    // else{
-    //     // TODO:update each profile field
-    //     // use update instead of set function
-    //     const userRef = db.collection('user');
-    //     const user = query(userRef, where("uid", "==", uid));
-    //     console.log(user);
-    // }
 
 
 });
