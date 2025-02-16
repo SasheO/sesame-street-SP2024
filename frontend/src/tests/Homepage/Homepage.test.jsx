@@ -3,6 +3,9 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import HomePage from '../../components/HomePage/HomePage';
 
+// Mock SlideOutMenu to prevent it from rendering
+jest.mock('../../components/shared/SlideOutMenu', () => () => <div data-testid="slideout-menu-mock"></div>);
+
 test('renders header, search bar, and feature cards', () => {
   render(
     <MemoryRouter>
