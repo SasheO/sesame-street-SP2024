@@ -13,7 +13,8 @@ const SignUp = () => {
 
   // Validation Schema
   const validationSchema = Yup.object({
-    name: Yup.string().min(2, "Too short!").required("Name is required"),
+    firstname: Yup.string().min(2, "Too short!").required("First name is required"),
+    lastname: Yup.string().min(2, "Too short!").required("Last name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
     confirmPassword: Yup.string()
@@ -51,9 +52,9 @@ const SignUp = () => {
   const handleSignUp = async (values) => {
     setErrorMessage(""); // Reset previous error
 
-    // Split the full name into first name and surname
-    const [first_name, ...surnameArr] = values.name.trim().split(" ");
-    const surname = surnameArr.join(" ") || "Unknown"; // Default if no surname provided
+    // // Split the full name into first name and surname
+    // const [first_name, ...surnameArr] = values.name.trim().split(" ");
+    // const surname = surnameArr.join(" ") || "Unknown"; // Default if no surname provided
 
     try {
       const response = await fetch("https://app-jpiptb5loq-uc.a.run.app/sign_up", {
@@ -62,12 +63,12 @@ const SignUp = () => {
         body: JSON.stringify({
           email: values.email,
           password: values.password,
-          first_name,
-          surname,
+          first_name: values.firstname,
+          surname: values.lastname,
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(data.message || "Sign-up failed");
@@ -75,6 +76,7 @@ const SignUp = () => {
 
       console.log("✅ User Signed Up:", data);
       navigate("/login"); // Redirect to login page after successful sign-up
+      console.log("Navigating to login page...");
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -85,16 +87,22 @@ const SignUp = () => {
       <h2>Sign Up</h2>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <Formik
-        initialValues={{ name: "", email: "", password: "", confirmPassword: "" }}
+        initialValues={{ firstname: "", lastname: "", email: "", password: "", confirmPassword: "" }}
         validationSchema={validationSchema}
         onSubmit={handleSignUp}
       >
         {({ isSubmitting }) => (
           <Form className="signup-form">
             <div className="form-group">
-              <label>Name:</label>
-              <Field type="text" name="name" />
-              <ErrorMessage name="name" component="div" className="error" />
+              <label>First Name:</label>
+              <Field type="text" name="firstname" />
+              <ErrorMessage name="firstname" component="div" className="error" />
+            </div>
+
+            <div className="form-group">
+              <label>Last Name:</label>
+              <Field type="text" name="lastname" />
+              <ErrorMessage name="lastname" component="div" className="error" />
             </div>
 
             <div className="form-group">

@@ -3,6 +3,9 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import "./login.css"; // ✅ Ensure CSS file exists
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../firebase";  // Import Firebase config - Angelica
+
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -14,18 +17,29 @@ const Login = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  // Handle login
-  const handleLogin = (values) => {
-    let users = JSON.parse(localStorage.getItem("users")) || []; // Get all registered users
-    console.log("🔍 Users in storage:", users); // Debugging log
+  // // Handle login
+  // const handleLogin = (values) => {
+  //   let users = JSON.parse(localStorage.getItem("users")) || []; // Get all registered users
+  //   console.log("🔍 Users in storage:", users); // Debugging log
   
-    const user = users.find(user => user.email === values.email && user.password === values.password);
-    if (user) {
-      console.log("✅ User authenticated:", user);
-      localStorage.setItem("loggedInUser", JSON.stringify(user)); // ✅ Save user in storage
-      navigate("/"); // ✅ Redirect to Home Page
-    } else {
-      console.log("❌ Invalid email or password.");
+  //   const user = users.find(user => user.email === values.email && user.password === values.password);
+  //   if (user) {
+  //     console.log("✅ User authenticated:", user);
+  //     localStorage.setItem("loggedInUser", JSON.stringify(user)); // ✅ Save user in storage
+  //     navigate("/"); // ✅ Redirect to Home Page
+  //   } else {
+  //     console.log("❌ Invalid email or password.");
+  //     setErrorMessage("Invalid email or password.");
+  //   }
+  // };
+
+  const handleLogin = async (values) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      console.log("✅ User logged in:", userCredential.user);
+      navigate("/"); // Redirect to home page
+    } catch (error) {
+      console.error("❌ Login error:", error.message);
       setErrorMessage("Invalid email or password.");
     }
   };
