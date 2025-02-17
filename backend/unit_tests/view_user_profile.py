@@ -27,7 +27,7 @@ user_credentials = sign_in_with_email_and_password(email, password)
 
 test_data = {"idToken":user_credentials['idToken'], "user_type":"patient", "dob":"10-25-1967", "gender":"M", "first_name": "new_name", "surname": "new_surname", "preferred_lang": "Yoruba"}
 
-response = requests.get("http://localhost:5000/user_profile", json=test_data)
+response = requests.post("http://localhost:5000/user_profile", json=test_data)
 try:
     print(response)
     print(response.json())

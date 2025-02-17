@@ -315,7 +315,7 @@ app.post('/edit_profile', (req, res) => {
 
 });
 
-app.get('/user_profile', (req, res) => { 
+app.post('/user_profile', (req, res) => { 
     const idToken = req.body.idToken;
     if (idToken==null    ){
         console.log("idToken==null");
@@ -328,26 +328,29 @@ app.get('/user_profile', (req, res) => {
         
         const uid = decodedToken.uid;
         console.log("uid: "+uid);
-        console.log("\n\n\n\n\n\n\n");
 
         const userRef = db.collection('user');
+
         const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
+
             if(!querySnapshot.empty) {
-            
-            // return user data here
-            console.log(user.data());
-            // TODO: remove UID from response
-            return res.status(200).json({user_info: user.data()});
+
+                const user = querySnapshot.docs[0]; 
+                
+                // return user data here
+                console.log(user.data());
+                // TODO: remove UID from response
+                var user_data = user.data();
+                delete user_data['uid'];
+                return res.status(200).json({user_info: user_data});
             
             }
             else{
-                console.log(1)
                 return res.status(401).json({message: "Invalid user credentials"});
             }
         });
     })
     .catch((error) => {
-        console.log(2)
 
         console.log(error);
         return res.status(401).json({message: "Invalid user credentials"});
