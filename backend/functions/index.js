@@ -265,7 +265,7 @@ app.post('/edit_profile', (req, res) => {
                         
                     }
                 }
-                res.status(200).json({message: "Edited user profile"});
+                return res.status(200).json({message: "Edited user profile"});
                 
             }
             else if (user_type=="practitioner") { // user_type = practitioner
@@ -312,24 +312,56 @@ app.post('/edit_profile', (req, res) => {
                     }
                     
                 }
-                res.status(200).json({message: "Edited user profile"});
+                return res.status(200).json({message: "Edited user profile"});
 
             }
             
+            }
+            else{
+                return res.status(401).json({message: "Invalid user credentials"});
             }
         });
     })
     .catch((error) => {
         console.log(error);
-        console.log(5); 
-        return null;
+        return res.status(401).json({message: "Invalid user credentials"});
     });
 
 
 });
 
-app.get('/user_profile', (req, res) => { 
-    
+app.post('/user_profile', (req, res) => { 
+    const idToken = req.body.idToken;
+    if (idToken==null    ){
+        console.log("idToken==null");
+        return res.status(401).json({message: "User is not logged in"});
+    }
+
+    firebase.auth()
+    .verifyIdToken(idToken)
+    .then(async (decodedToken) => {
+        
+        const uid = decodedToken.uid;
+        const userRef = db.collection('user');
+        const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
+            if(!querySnapshot.empty) {
+            
+            // return user data here
+            console.log(user.data());
+            
+            
+            }
+            else{
+                return res.status(401).json({message: "Invalid user credentials"});
+            }
+        });
+    })
+    .catch((error) => {
+        console.log(error);
+        return res.status(401).json({message: "Invalid user credentials"});
+    });
+
+
 });
 
 // TODO: don't think i can sign in or out with 
