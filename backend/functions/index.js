@@ -334,16 +334,14 @@ app.post('/user_profile', (req, res) => {
         const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
 
             if(!querySnapshot.empty) {
-
+                // return user data to client without revealing UID info
                 const user = querySnapshot.docs[0]; 
-                
-                // return user data here
-                console.log(user.data());
-                // TODO: remove UID from response
                 var user_data = user.data();
+                if ("dob" in user_data){ // convert dob to right format from timestamp
+                    user_data['dob'] = new Date(1000*user_data["dob"]['_seconds']);
+                }
                 delete user_data['uid'];
                 return res.status(200).json({user_info: user_data});
-            
             }
             else{
                 return res.status(401).json({message: "Invalid user credentials"});
