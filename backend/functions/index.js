@@ -205,14 +205,114 @@ app.post('/edit_profile', (req, res) => {
                 // TODO: for fields that are used in authentication e.g. email, first_name, surname, update in firebase auth appropriately
                 // TODO: return response
                 console.log("patient")
-                user.ref.update({first_name: req.body.first_name});
-                console.log("updated");
+                if ("first_name" in req.body){
+                    if (req.body.first_name===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                    }
+                    else{
+                        user.ref.update({first_name: req.body.first_name});
+                    }
+                    
+                }
+                if ("surname" in req.body){
+                    if (req.body.surname===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                        console.log("no surname entered");
+
+                    }
+                    else{
+                        user.ref.update({surname: req.body.surname});
+                    }
+                    
+                }
+                if ("preferred_lang" in req.body){
+                    if (req.body.preferred_lang===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                        console.log("no preferred_lang entered");
+                    }
+                    else{
+                        user.ref.update({preferred_lang: req.body.preferred_lang});
+                    }
+                }
+                
+                if ("gender" in req.body){
+                    if (req.body.gender===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                        console.log("no gender entered");
+
+                    }
+                    else{
+                        user.ref.update({gender: req.body.gender});
+                    }
+                }
+                if ("dob" in req.body){
+                    if (req.body.dob===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                        console.log("no dob entered");
+                        
+                    }
+                    else{
+                        var date_st = req.body.dob;
+                        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+                        const _dob = new Date(date_st.replace(pattern,'$3-$2-$1'));
+                        if (_dob === "Invalid Date" || isNaN(_dob)){
+                            // return res.status(422).json({message: "invalid dob format"});
+                            console.log("invalid dob format");
+                        }
+                        else{
+                            user.ref.update({dob: _dob});
+                        }
+                        
+                    }
+                }
+                res.status(200).json({message: "Edited user profile"});
+                
             }
             else if (user_type=="practitioner") { // user_type = practitioner
                 // update practitioner values from request
-                // TODO: ensure all fields that can be updated are updated.
-                // TODO: for fields that are used in authentication e.g. email, first_name, surname, update in firebase auth appropriately
-                // TODO: return response
+                if ("first_name" in req.body){
+                    if (req.body.first_name===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                    }
+                    else{
+                        user.ref.update({first_name: req.body.first_name});
+                    }
+                    
+                }
+                if ("surname" in req.body){
+                    if (req.body.surname===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                        console.log("no surname entered");
+
+                    }
+                    else{
+                        user.ref.update({surname: req.body.surname});
+                    }
+                    
+                }
+                if ("certification" in req.body){
+                    if (req.body.certification===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                        console.log("no certification entered");
+
+                    }
+                    else{
+                        user.ref.update({certification: req.body.certification});
+                    }
+                    
+                }
+                if ("specialty" in req.body){
+                    if (req.body.specialty===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                        console.log("no specialty entered");
+
+                    }
+                    else{
+                        user.ref.update({specialty: req.body.specialty});
+                    }
+                    
+                }
+                res.status(200).json({message: "Edited user profile"});
 
             }
             
