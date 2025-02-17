@@ -2,6 +2,7 @@ import requests
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import time
 import json
 
 dotenv_path = Path('../.env')
@@ -18,23 +19,22 @@ def sign_in_with_email_and_password(email, password, return_secure_token=True):
 
     return r.json()
 
-email = "tester.person@gmail.com"
-password = "12.3rdaskufq24eS"
+users = {"tester.person@gmail.com":"12.3rdaskufq24eS", 
+         "practitioner2.tester@gmail.com":"12.3rdaskufq24eS",
+         "testuseremail12@gmail.com":"12.3rdaskufq24eS",
+         "testuseremail9@gmail.com":"12.3rdaskufq24eS",
+         "practitioner4.tester@gmail.com":"12.3rdaskufq24eS"
+         }
 
+for email, password in users.items():
+    user_credentials = sign_in_with_email_and_password(email, password)
+    test_data = {"idToken":user_credentials['idToken']}
 
-user_credentials = sign_in_with_email_and_password(email, password)
-
-
-test_data = {"idToken":user_credentials['idToken'], "user_type":"patient", "dob":"10-25-1967", "gender":"M", "first_name": "new_name", "surname": "new_surname", "preferred_lang": "Yoruba"}
-
-response = requests.post("http://localhost:5000/user_profile", json=test_data)
-try:
-    print(response)
-    print(response.json())
-    print(1)
-except Exception as e:
-    # response = requests.post("http://localhost:5000/edit_profile", json=test_data)
-    # print(response)
-    # print(response.json())
-    # print(2)
-    print(e)
+    response = requests.post("http://localhost:5000/user_profile", json=test_data)
+    try:
+        print(response)
+        print(response.json())
+        print(1)
+    except Exception as e:
+        print(e)
+    time.sleep(1)
