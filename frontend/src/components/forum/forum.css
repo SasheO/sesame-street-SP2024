@@ -1,0 +1,75 @@
+/* Ensure forum page takes full screen */
+.forum-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    width: 100vw;
+    background-color: #f5f5f5;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Forum content should take up remaining space */
+  .forum-content {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  /* Bottom Navigation Bar */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #6979F8; /* Match header color */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 15px 20px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Navigation Buttons */
+  .nav-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .nav-button:hover {
+    transform: scale(1.1);
+  }
+  .menu-btn {
+    font-size: 24px; /* Set a reasonable size */
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px; /* Reduce padding */
+    margin-left: 10px;
+    width: auto; /* Ensures button doesn't stretch */
+    height: auto;
+  }
+  
+  .menu-btn svg {
+    width: 30px; /* Icon size */
+    height: 30px;
+  }
+  
+  .menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%; /* Make it circular */
+    padding: 5px; /* Keep padding minimal */
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+    

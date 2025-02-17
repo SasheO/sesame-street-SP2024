@@ -1,14 +1,19 @@
 {
   "hosting": {
-   
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [ {
-      "source": "/bigben",
-      "function": {
-        "functionId": "bigben",
-        "region": "us-central1",  
-        "pinTag": true         
-      }
-    },
+      "source": "/sign_up",
+      "function": "app"
+      },
+      {
+        "source": "/sign_in",
+        "function": "app"
+        },
     {
       "source": "/embedded_google_maps",
       "function": "app"
