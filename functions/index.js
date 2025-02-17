@@ -7,21 +7,17 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
+const express = require("express");
 const functions = require('firebase-functions/v1');
 
-exports.bigben = functions.https.onRequest((req, res) => {
-  const hours = (new Date().getHours() % 12) + 1  // London is UTC + 1hr;
-  res.status(200).send(`<!doctype html>
-    <head>
-      <title>Time</title>
-    </head>
-    <body>
-      ${'BONG '.repeat(hours)}
-    </body>
-  </html>`);
-});
+const app = express();
 
 app.get('/embedded_google_search', (req, res) => {
+    try {
+        res.status(200).json({ message: "Google Search API Endpoint" });
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
     const API_KEY = 'AIzaSyC6KoJ7n8zPos4Md5EJoddoKRGDaUsvSMk';
     const CX = 'e2d3ac9f4a49e4eba';
 
@@ -66,6 +62,11 @@ app.get('/embedded_google_search', (req, res) => {
 });
 
 app.get('/embedded_google_maps', (req, res) => { // each endpoint of app should be expressed here as well as in ..\firebase.json hosting
+    try {
+        res.status(200).json({ message: "Google Maps API Endpoint" });
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
     src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAWwwRByaGji1A_HnKGHRBabtcFyDP0Xus&callback=initMap"
     function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -138,9 +139,45 @@ app.get('/embedded_google_maps', (req, res) => { // each endpoint of app should 
             document.getElementById('currently_open').innerHTML = place.opening_hours.open_now;
             document.getElementById('lat').innerHTML = place.geometry.location.lat();
             document.getElementById('lon').innerHTML = place.geometry.location.lng();
+            showCallPrompt(place.formatted_phone_number);
+
+
+            
         });
     }
+
+    function showCallPrompt(phoneNumber) {
+        if (!phoneNumber) {
+            console.error("Invalid phone number");
+            return;
+        }
+    
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+        if (!isIOS) {
+            alert("This feature is only available on iOS devices.");
+            return;
+        }
+    
+        const confirmation = confirm(`Would you like to call ${phoneNumber}?`);
+    
+        if (confirmation) {
+            window.location.href = `tel:${phoneNumber}`;
+        }
+    }
 });
+
+// Start server only if not in test mode
+if (require.main === module) {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+// Export for testing
+module.exports = app;
+exports.api = functions.https.onRequest
 
 
 // Create and deploy your first functions
