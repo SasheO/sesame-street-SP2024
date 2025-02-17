@@ -28,8 +28,6 @@ app.post('/sign_up', (req, res) => {
     const _surname = req.body.surname;
     var _gender = req.body.gender;
 
-    console.log("\n\n\nuser_type: "+_user_type);
-
     // check that values are not empty and return accurate error message
     if (email === "" || !email) {
         // strValue was empty string
@@ -99,7 +97,6 @@ app.post('/sign_up', (req, res) => {
             else{
                 userData['gender'] = null;
             }
-            // console.log(userData);
         }
         else if (_user_type=="practitioner") { // user_type = practitioner
             var userData = { 
@@ -146,7 +143,6 @@ app.post('/sign_up', (req, res) => {
             else{
                 userData['gender'] = null;
             }
-            // console.log(userData);
 
         }
 
@@ -185,26 +181,14 @@ app.post('/edit_profile', (req, res) => {
     .then(async (decodedToken) => {
         
         const uid = decodedToken.uid;
-        console.log(2)
         console.log(uid);
-        console.log(4); 
         const userRef = db.collection('user');
-        console.log(4); 
         const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
             if(!querySnapshot.empty) {
             const user = querySnapshot.docs[0];
-            console.log(user.data());
-            //             All patient users must have dob in format mm-dd-yyyy
-            // Optional fields for patient users: preferred_lang (language preference), gender
-            // All practitioners must have: specialty, certification
-            // Optional fields for practitioner users: hospital_id (the hospital where they work), gender
             const user_type  = user.data()['user_type'];
             if(user_type === "patient"){
-                // update patient values from request
-                // TODO: ensure all fields that can be updated are updated.
-                // TODO: for fields that are used in authentication e.g. email, first_name, surname, update in firebase auth appropriately
-                // TODO: return response
-                console.log("patient")
+                // update patient values from request: first_name, surname, dob, preferred_lang, gender
                 if ("first_name" in req.body){
                     if (req.body.first_name===""){
                         // return res.status(422).json({message: "no first_name entered"});
@@ -269,7 +253,8 @@ app.post('/edit_profile', (req, res) => {
                 
             }
             else if (user_type=="practitioner") { // user_type = practitioner
-                // update practitioner values from request
+                // update practitioner values from request: first_name, surname, specialty, certification
+
                 if ("first_name" in req.body){
                     if (req.body.first_name===""){
                         // return res.status(422).json({message: "no first_name entered"});
@@ -330,7 +315,7 @@ app.post('/edit_profile', (req, res) => {
 
 });
 
-app.post('/user_profile', (req, res) => { 
+app.get('/user_profile', (req, res) => { 
     const idToken = req.body.idToken;
     if (idToken==null    ){
         console.log("idToken==null");
@@ -342,21 +327,28 @@ app.post('/user_profile', (req, res) => {
     .then(async (decodedToken) => {
         
         const uid = decodedToken.uid;
+        console.log("uid: "+uid);
+        console.log("\n\n\n\n\n\n\n");
+
         const userRef = db.collection('user');
         const q = await userRef.where('uid', '==', uid).get().then(querySnapshot => {
             if(!querySnapshot.empty) {
             
             // return user data here
             console.log(user.data());
-            
+            // TODO: remove UID from response
+            return res.status(200).json({user_info: user.data()});
             
             }
             else{
+                console.log(1)
                 return res.status(401).json({message: "Invalid user credentials"});
             }
         });
     })
     .catch((error) => {
+        console.log(2)
+
         console.log(error);
         return res.status(401).json({message: "Invalid user credentials"});
     });
