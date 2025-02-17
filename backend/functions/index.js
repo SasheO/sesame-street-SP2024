@@ -170,6 +170,7 @@ app.post('/sign_up', (req, res) => {
 });
 
 app.post('/edit_profile', (req, res) => { 
+    // TODO: do stuff in sign_up like if no gender given, set user gender to none
     const idToken = req.body.idToken;
     if (idToken==null    ){
         console.log("idToken==null");
@@ -296,6 +297,16 @@ app.post('/edit_profile', (req, res) => {
                         user.ref.update({specialty: req.body.specialty});
                     }
                     
+                }
+                if ("gender" in req.body){
+                    if (req.body.gender===""){
+                        // return res.status(422).json({message: "no first_name entered"});
+                        console.log("no gender entered");
+
+                    }
+                    else{
+                        user.ref.update({gender: req.body.gender});
+                    }
                 }
                 return res.status(200).json({message: "Edited user profile"});
 

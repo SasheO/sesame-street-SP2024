@@ -2,6 +2,7 @@ import requests
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import time
 import json
 
 dotenv_path = Path('../.env')
@@ -18,23 +19,43 @@ def sign_in_with_email_and_password(email, password, return_secure_token=True):
 
     return r.json()
 
-email = "tester.person@gmail.com"
-password = "12.3rdaskufq24eS"
+users = {
+    "tester.person@gmail.com":"12.3rdaskufq24eS", 
+    "practitioner2.tester@gmail.com":"12.3rdaskufq24eS",
+    "testuseremail12@gmail.com":"12.3rdaskufq24eS",
+    "testuseremail9@gmail.com":"12.3rdaskufq24eS",
+    "practitioner4.tester@gmail.com":"12.3rdaskufq24eS"
+         }
 
+users_data = {
+    "tester.person@gmail.com":{"dob":"11-23-2002", "gender":"F", "first_name": "tester", "surname": "person", "preferred_lang": "English"}, 
+    "practitioner2.tester@gmail.com":{"gender":"F", "first_name": "new_name", "surname": "new_surname", "specialty": "obstetrics and gynaecology", "certification":"NOBGYN"},
+    "testuseremail12@gmail.com":{"dob":"11-23-1992", "gender":"F", "first_name": "tester", "surname": "changed", "preferred_lang": "Igbo"},
+    "testuseremail9@gmail.com":{"dob":"01-03-2000", "first_name": "tester", "surname": "changed", "preferred_lang": "Igbo"}, # no gender
+    "practitioner4.tester@gmail.com":{"gender":"M"}
+}
 
-user_credentials = sign_in_with_email_and_password(email, password)
-
-
-test_data = {"idToken":user_credentials['idToken'], "user_type":"patient", "dob":"10-25-1967", "gender":"M", "first_name": "new_name", "surname": "new_surname", "preferred_lang": "Yoruba"}
-
-response = requests.post("http://localhost:5000/edit_profile", json=test_data)
-try:
-    print(response)
-    print(response.json())
-    print(1)
-except Exception as e:
-    # response = requests.post("http://localhost:5000/edit_profile", json=test_data)
-    # print(response)
-    # print(response.json())
-    # print(2)
-    print(e)
+indx=0
+for email, password in users.items():
+    indx+=1
+    user_credentials = sign_in_with_email_and_password(email, password)
+    test_data = users_data[email]
+    test_data['idToken'] = user_credentials['idToken']
+    print("\n\n\n\n\n\nuser", indx, ":", email)
+    response = requests.post("http://localhost:5000/user_profile", json=test_data)
+    time.sleep(1)
+    try:
+        print(response)
+        print(response.json())
+    except Exception as e:
+        print(1, e)
+        continue
+    response = requests.post("http://localhost:5000/edit_profile", json=test_data)
+    time.sleep(1)
+    response = requests.post("http://localhost:5000/user_profile", json=test_data)
+    time.sleep(1)
+    try:
+        print(response)
+        print(response.json())
+    except Exception as e:
+        print(2, e)
