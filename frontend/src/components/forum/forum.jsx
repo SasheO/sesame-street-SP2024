@@ -132,7 +132,11 @@ const Forum = () => {
       {/* Bottom Navigation Bar */}
       <div className="bottom-bar">
         <BiHome onClick={() => navigate("/home")} className="bottom-icon" />
-        <BiPlus onClick={() => navigate("/forum/create")} className="bottom-icon" />
+        <BiPlus 
+          onClick={() => navigate("/forum/create")} 
+          className="bottom-icon" 
+          data-testid="create-post-btn" 
+        />
         <BiMessageRounded className="bottom-icon" />
       </div>
 
