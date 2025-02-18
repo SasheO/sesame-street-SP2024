@@ -193,6 +193,7 @@ app.post('/edit_profile', (req, res) => {
                 if ("first_name" in req.body){
                     if (req.body.first_name===""){
                         // return res.status(422).json({message: "no first_name entered"});
+                        // TODO: User must have first name
                     }
                     else{
                         user.ref.update({first_name: req.body.first_name});
@@ -203,7 +204,7 @@ app.post('/edit_profile', (req, res) => {
                     if (req.body.surname===""){
                         // return res.status(422).json({message: "no first_name entered"});
                         console.log("no surname entered");
-
+                        // TODO: User must have surname
                     }
                     else{
                         user.ref.update({surname: req.body.surname});
@@ -214,6 +215,8 @@ app.post('/edit_profile', (req, res) => {
                     if (req.body.preferred_lang===""){
                         // return res.status(422).json({message: "no first_name entered"});
                         console.log("no preferred_lang entered");
+                        user.ref.update({preferred_lang: null});
+
                     }
                     else{
                         user.ref.update({preferred_lang: req.body.preferred_lang});
@@ -224,6 +227,7 @@ app.post('/edit_profile', (req, res) => {
                     if (req.body.gender===""){
                         // return res.status(422).json({message: "no first_name entered"});
                         console.log("no gender entered");
+                        user.ref.update({gender: null});
 
                     }
                     else{
@@ -234,7 +238,7 @@ app.post('/edit_profile', (req, res) => {
                     if (req.body.dob===""){
                         // return res.status(422).json({message: "no first_name entered"});
                         console.log("no dob entered");
-                        
+                        // TODO: user must have dob
                     }
                     else{
                         var date_st = req.body.dob;
@@ -280,7 +284,7 @@ app.post('/edit_profile', (req, res) => {
                     if (req.body.certification===""){
                         // return res.status(422).json({message: "no first_name entered"});
                         console.log("no certification entered");
-
+                        // TODO: user must have certification. also should be system to verify certification
                     }
                     else{
                         user.ref.update({certification: req.body.certification});
@@ -291,7 +295,7 @@ app.post('/edit_profile', (req, res) => {
                     if (req.body.specialty===""){
                         // return res.status(422).json({message: "no first_name entered"});
                         console.log("no specialty entered");
-
+                        // TODO: user must have specialty
                     }
                     else{
                         user.ref.update({specialty: req.body.specialty});
@@ -302,7 +306,7 @@ app.post('/edit_profile', (req, res) => {
                     if (req.body.gender===""){
                         // return res.status(422).json({message: "no first_name entered"});
                         console.log("no gender entered");
-
+                        user.ref.update({gender: null});
                     }
                     else{
                         user.ref.update({gender: req.body.gender});

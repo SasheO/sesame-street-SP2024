@@ -35,11 +35,21 @@ users_data = {
     "practitioner4.tester@gmail.com":{"gender":"M"}
 }
 
+users_data_prev = {
+    "tester.person@gmail.com":{"dob":"10-01-1967", "gender":"M", "first_name": "Renamed", "surname": "Tester", "preferred_lang": "Yoruba"}, 
+    "practitioner2.tester@gmail.com":{"gender":"F", "Practitioner2": "new_name", "Tester": "new_surname", "specialty": "cardiology", "certification":"NCS"},
+    "testuseremail12@gmail.com":{"dob":"07-23-2002", "gender":"F", "first_name": "tester", "surname": "changed", "preferred_lang": "Igbo"},
+    "testuseremail9@gmail.com":{"dob":"11-16-2004", "first_name": "tester", "surname": "user", "preferred_lang": "English"}, # no gender
+    "practitioner4.tester@gmail.com":{"gender":""}
+}
+
+
 indx=0
 for email, password in users.items():
     indx+=1
     user_credentials = sign_in_with_email_and_password(email, password)
-    test_data = users_data[email]
+    # test_data = users_data[email]
+    test_data = users_data_prev[email]
     test_data['idToken'] = user_credentials['idToken']
     print("\n\n\n\n\n\nuser", indx, ":", email)
     response = requests.post("http://localhost:5000/user_profile", json=test_data)
