@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import "./login.css"; // ✅ Ensure CSS file exists
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../firebase";  // Import Firebase config - Angelica
+import { auth, db } from "../../firebase";  // Import Firebase config
 
 
 const Login = () => {
