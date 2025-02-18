@@ -7,7 +7,11 @@ import SignUp from "./components/login/signup";
 import ForgotPassword from "./components/login/forgot_pass";
 import Profile from "./components/profile/Profile";
 import Forum from "./components/forum/forum"
+import ForumThread from "./components/Forum/ForumThread";
+import CreatePost from "./components/Forum/CreatePost";
 import './App.css';
+import SearchResults from "./components/HomePage/HomePage_Components/SearchBar_Components/SearchResults"; // ✅ Import new page
+
 
 function App() {
   return (
@@ -20,6 +24,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<Profile />} /> 
         <Route path="/forum" element={<Forum />} />
+        <Route path="/forum/:id" element={<ForumThread />} />
+        <Route path="/forum/create" element={<CreatePost />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/search-results" element={<SearchResults />} /> {/* ✅ New Route */}
       </Routes>
     </Router>
   );
