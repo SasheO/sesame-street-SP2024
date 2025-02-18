@@ -17,6 +17,11 @@ const SearchResults = () => {
 
   return (
     <div className="search-results-container">
+      {/* 🔹 Back Button */}
+      <button className="back-button" onClick={() => navigate(-1)}>
+        ← Back
+      </button>
+
       <h2>Search Results for "{query}"</h2>
 
       {filteredArticles.length > 0 ? (
