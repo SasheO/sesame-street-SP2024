@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Header from "../shared/Header";
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ const CreatePost = () => {
 
   return (
     <div className="create-post-page">
+      <Header label="Carelink Forum"/>
+
       <button className="back-button" onClick={() => navigate("/forum")}>
         ← Back to Forum
       </button>

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BiHome, BiPlus, BiMessageRounded, BiSearch, BiX } from "react-icons/bi";
-import Header from "../HomePage/HomePage_Components/Header";
+import Header from "../shared/Header";
+import SearchBar from "../shared/SearchBar";
 import "./Forum.css";
 
 const mockThreads = [
@@ -65,22 +66,13 @@ const Forum = () => {
 
   return (
     <div className="forum-page">
-      <Header />
-
-      {/* Search Bar */}
-      <div className="forum-search-bar">
-        <input
-          type="text"
-          placeholder="Search forum posts..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        {searchQuery ? (
-          <BiX className="clear-icon" onClick={() => setSearchQuery("")} />
-        ) : (
-          <BiSearch className="search-icon" />
-        )}
-      </div>
+      <Header label="Carelink Forum"/>
+      <SearchBar 
+        placeholder="Search forum posts" 
+        onSearch={(term) => setSearchQuery(term)} 
+        initialValue={searchQuery} 
+        autoSearch={true}
+      />
 
       {/* Main Forum Layout */}
       <div className="forum-container">

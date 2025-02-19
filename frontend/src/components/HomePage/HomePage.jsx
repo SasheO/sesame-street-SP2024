@@ -3,13 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { BiMap, BiMessageRoundedDetail, BiSolidUserPlus} from 'react-icons/bi';
 import { TbStethoscope } from "react-icons/tb";
 import Header from '../shared/Header';
-import SearchBar from "./HomePage_Components/SearchBar_Components/SearchBar";
+import SearchBar from "../shared/SearchBar";
 import FeatureCard from './HomePage_components/FeatureCard';
 import './HomePage.css';
 
 function HomePage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+
+  const query = new URLSearchParams(location.search).get("q") || "";
+
+  const handleSearch = (term) => {
+    if (term.trim()) {
+      navigate(`/search-results?q=${encodeURIComponent(term)}`);
+    }
+  };
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
@@ -20,12 +28,10 @@ function HomePage() {
     }
   }, [navigate]);
 
-  if (!user) return <p>Loading...</p>;
-
   return (
     <div>
       <Header label="Carelink Home"/>
-      <SearchBar placeholder="Find a simple remedy"/>
+      <SearchBar placeholder="Find a simple remedy" onSearch={handleSearch} initialValue={query}/>
       <div className="features-container">
         <FeatureCard Icon={BiMap} label="Healthcare near you" onClick={() => navigate('/locations')}/>
         <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" />

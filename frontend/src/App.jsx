@@ -9,9 +9,8 @@ import Profile from "./components/profile/Profile";
 import Forum from "./components/forum/forum"
 import ForumThread from "./components/Forum/ForumThread";
 import CreatePost from "./components/Forum/CreatePost";
+import SearchResults from "./components/HomePage/HomePage_components/SearchResults";
 import './App.css';
-import SearchResults from "./components/HomePage/HomePage_Components/SearchBar_Components/SearchResults"; // ✅ Import new page
-
 
 function App() {
   return (
@@ -27,7 +26,7 @@ function App() {
         <Route path="/forum/:id" element={<ForumThread />} />
         <Route path="/forum/create" element={<CreatePost />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/search-results" element={<SearchResults />} /> {/* ✅ New Route */}
+        <Route path="/search-results" element={<SearchResults />} />
       </Routes>
     </Router>
   );
