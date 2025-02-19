@@ -25,7 +25,6 @@
 /* Icon Container */
 .icon-buttons {
     display: flex;
-    gap: 10px;
 }
 
 /* Icons */
@@ -33,4 +32,11 @@
     font-size: 24px;
     color: #6979F8;
     cursor: pointer;
+    padding: 4px;
 }
+
+.icon-btn:hover {
+    background-color: rgba(105, 121, 248, 0.2);
+    border-radius: 50%;
+    transform: scale(1.1);
+  }

@@ -1,24 +1,36 @@
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #6979F8;
-    border-radius: 20px;
-    margin:10px;
-    padding: 15px;
-    color: white;
-  }
-  
-  .header-title {
-    font-size: 24px;
-    margin: 0;
-    cursor: pointer;
-  }
-  
-  .menu-btn, .profile-btn {
-    font-size: 32px;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #6979F8;
+  border-radius: 20px;
+  margin:10px;
+  padding: 15px;
+  color: white;
+}
+
+.header-title {
+  font-size: 24px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.menu-btn, .profile-btn {
+  font-size: 32px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.profile-btn:hover {
+  transform: scale(1.1);
+}
+
+.header-title:hover {
+  transform: scale(1.1);
+}
+
+.menu-btn:hover {
+  transform: scale(1.1);
+}
