@@ -9,7 +9,7 @@ const SearchBar = ({   placeholder,
   showMicrophoneIcon = true,
   initialValue = "",
   autoSearch = false }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(initialValue || "");
 
   // Update state if the initial value changes (e.g. when navigating back to results)
   useEffect(() => {
@@ -58,7 +58,7 @@ const SearchBar = ({   placeholder,
             <BiSearch
               aria-label="Search icon"
               className="icon-btn"
-              onClick={handleInputChange}
+              onClick={handleSearch}
             />
           </>
         )}
