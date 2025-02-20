@@ -1,9 +1,9 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import Forum from "../components/forum/forum";
-import ForumThread from "../components/Forum/ForumThread"; // Correct component
-import CreatePost from "../components/Forum/CreatePost";
+import Forum from "../../components/forum/forum";
+import ForumThread from "../../components/Forum/ForumThread"; // Correct component
+import CreatePost from "../../components/Forum/CreatePost";
 
 
 describe("Forum Page", () => {
