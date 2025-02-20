@@ -34,7 +34,7 @@ function HomePage() {
       <SearchBar placeholder="Find a simple remedy" onSearch={handleSearch} initialValue={query}/>
       <div className="features-container">
         <FeatureCard Icon={BiMap} label="Healthcare near you" onClick={() => navigate('/locations')}/>
-        <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" />
+        <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" onClick={() => navigate('/doctor')}/>
         <FeatureCard Icon={BiMessageRoundedDetail} label="Community forum" onClick={() => navigate('/forum')}/>
         <FeatureCard Icon={BiSolidUserPlus} label="Patient requests" />
       </div>
