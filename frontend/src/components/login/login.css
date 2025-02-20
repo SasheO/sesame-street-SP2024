@@ -1,12 +1,24 @@
 /* Center the login container */
+/* Slightly reduce input field width while keeping form centered */
+.login-container input {
+  width: 95%; /* ✅ Only slightly reduced from 100% */
+  padding: 10px;
+  margin: 8px 0;
+  border: 2px solid #6979F8;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* Ensures login container does not affect global page layout */
 .login-container {
-  max-width: 400px; /* Ensures a consistent width */
+  max-width: 400px;
   margin: 50px auto;
   padding: 30px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+  position: relative; /* ✅ Ensures it does not overlap other elements */
 }
 
 /* Title */
@@ -27,17 +39,7 @@
     color: #333;
     font-size: 24px;
   }
-  
-  /* Form input fields */
-  .login-container input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 2px solid #6979F8;
-    border-radius: 6px;
-    font-size: 16px;
-  }
-  
+    
   /* Style the error messages */
   .error-message {
     color: red;
