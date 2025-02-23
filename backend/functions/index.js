@@ -215,111 +215,129 @@ app.post('/sign_up', async (req, res) => {
     }
 
         
-// ORIGINAL SIGN_UP: (COMMENTED OUT)
-//         if (_user_type=="patient"){
-//             if (!("dob" in req.body)){
-//                 return res.status(422).json({message: "no dob entered"});
-//             }
-//             var date_st = req.body.dob;
-//             var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-//             const _dob = new Date(date_st.replace(pattern,'$3-$2-$1'));
-//             if (_dob === "Invalid Date" || isNaN(_dob)){
-//                 return res.status(422).json({message: "invalid dob format"});
-//             }
-//             var userData = {
-//                 // all these are required fields for patients
-//                 uid: _uid,
-//                 dob: _dob,
-//                 user_type: _user_type,
-//                 gender: _gender,
-//                 first_name: _first_name,
-//                 surname: _surname
-//             };
+// // ORIGINAL SIGN_UP: (COMMENTED OUT)
+    // const _user_type = req.body.user_type;
+    // if (!(_user_type==="practitioner" || _user_type==="patient")){
+    //     return res.status(422).json({message: "invalid user type"});
+    // }
+
+    
+    // firebase.auth().createUser({
+    //     email: email,
+    //     emailVerified: false,
+    //     password: password,
+    //     displayName: _first_name+" "+_surname
+    //    })
+    //   .then(userCred => {
+    //     // const user = userCred.user;
+    //     const _uid = userCred.uid;
+        
+    //     if (_user_type=="patient"){
+    //         if (!("dob" in req.body)){
+    //             return res.status(422).json({message: "no dob entered"});
+    //         }
+    //         var date_st = req.body.dob;
+    //         var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+    //         const _dob = new Date(date_st.replace(pattern,'$3-$2-$1'));
+    //         if (_dob === "Invalid Date" || isNaN(_dob)){
+    //             return res.status(422).json({message: "invalid dob format"});
+    //         }
+    //         var userData = {
+    //             // all these are required fields for patients
+    //             uid: _uid,
+    //             dob: _dob,
+    //             user_type: _user_type,
+    //             gender: _gender,
+    //             first_name: _first_name,
+    //             surname: _surname
+    //         };
             
-//             // optional fields below. if not filled by user, fill them in as null
-//             if ("preferred_lang" in req.body){
-//                 userData['preferred_lang'] = req.body.preferred_lang; 
-//             }
-//             else{
-//                 userData['preferred_lang'] = null;
-//             }
-//             if ("gender" in req.body && !(req.body.gender==="")){
-//                 userData['gender'] = req.body.gender;
-//             }
-//             else{
-//                 userData['gender'] = null;
-//             }
-//         }
-//         else if (_user_type=="practitioner") { // user_type = practitioner
-//             var userData = { 
-//                 // all these are required fields for healthcare practictioners
-//                 uid: _uid,
-//                 user_type: _user_type,
-//                 first_name: _first_name,
-//                 surname: _surname,
+    //         // optional fields below. if not filled by user, fill them in as null
+    //         if ("preferred_lang" in req.body){
+    //             userData['preferred_lang'] = req.body.preferred_lang; 
+    //         }
+    //         else{
+    //             userData['preferred_lang'] = null;
+    //         }
+    //         if ("gender" in req.body && !(req.body.gender==="")){
+    //             userData['gender'] = req.body.gender;
+    //         }
+    //         else{
+    //             userData['gender'] = null;
+    //         }
+    //     }
+    //     else if (_user_type=="practitioner") { // user_type = practitioner
+    //         var userData = { 
+    //             // all these are required fields for healthcare practictioners
+    //             uid: _uid,
+    //             user_type: _user_type,
+    //             first_name: _first_name,
+    //             surname: _surname,
                 
-//             };
+    //         };
 
-//             if ("specialty" in req.body){
-//                 if (req.body.specialty===""){
-//                     return res.status(422).json({message: "no specialty entered"});
-//                 }
-//                 userData['specialty'] = req.body.specialty;
-//             }
-//             else{
-//                 return res.status(422).json({message: "no specialty entered"});
-//             }
+    //         if ("specialty" in req.body){
+    //             if (req.body.specialty===""){
+    //                 return res.status(422).json({message: "no specialty entered"});
+    //             }
+    //             userData['specialty'] = req.body.specialty;
+    //         }
+    //         else{
+    //             return res.status(422).json({message: "no specialty entered"});
+    //         }
 
-//             if ("certification" in req.body){
-//                 if (req.body.certification===""){
-//                     return res.status(422).json({message: "no certification provided"});
-//                 }
+    //         if ("certification" in req.body){
+    //             if (req.body.certification===""){
+    //                 return res.status(422).json({message: "no certification provided"});
+    //             }
 
-//                 userData['certification'] = req.body.certification;
-//             }
-//             else{
-//                 return res.status(422).json({message: "no certification entered"});
-//             }
+    //             userData['certification'] = req.body.certification;
+    //         }
+    //         else{
+    //             return res.status(422).json({message: "no certification entered"});
+    //         }
             
             
-//             // optional fields below. if not filled by user, fill them in as null
-//             if ("hospital_id" in req.body){
-//                 userData['hospital_id'] = req.body.hospital_id;
-//             }
-//             else{
-//                 userData['hospital_id'] = null;
-//             }
-//             if ("gender" in req.body && !(req.body.gender==="")){
-//                 userData['gender'] = req.body.gender;
-//             }
-//             else{
-//                 userData['gender'] = null;
-//             }
+    //         // optional fields below. if not filled by user, fill them in as null
+    //         if ("hospital_id" in req.body){
+    //             userData['hospital_id'] = req.body.hospital_id;
+    //         }
+    //         else{
+    //             userData['hospital_id'] = null;
+    //         }
+    //         if ("gender" in req.body && !(req.body.gender==="")){
+    //             userData['gender'] = req.body.gender;
+    //         }
+    //         else{
+    //             userData['gender'] = null;
+    //         }
 
-            // ensure empty values are converted to null
-            // for (const [key, value] of Object.entries(userData)) {
-            //     if (value==""){
-            //         userData[key]=null;
-            //     }
-            // }
+    //     }
 
-            // // upload user record to user collections in firestore
-            // const userRef = db.collection('user');
-            // userRef.doc().set(userData).then(() =>{
-            //     // TODO: set up all other user info being saved, log it to the 
-            //     console.log('Successfully created new user:'+userCred.uid);
-            //     res.status(200).json({message: "Successfully created new user:"});
-            // });
+    //     // ensure empty values are converted to null
+    //     for (const [key, value] of Object.entries(userData)) {
+    //         if (value==""){
+    //             userData[key]=null;
+    //         }
+    //     }
 
-            // })
-            // .catch(error => {
-            // console.log("Error: "+error.code+" "+error.message);
-            // res.status(500).json({error: "Some error has occured..."});
-            // // res.send("Error: "+error.code);
-            // });
-// END OF ORIGINAL SIGN_UP: (COMMENTED OUT)
+    //     // upload user record to user collections in firestore
+    //     const userRef = db.collection('user');
+    //     userRef.doc().set(userData).then(() =>{
+    //         // TODO: set up all other user info being saved, log it to the 
+    //         console.log('Successfully created new user:'+userCred.uid);
+    //         res.status(200).json({message: "Successfully created new user:"});
+    //     });
+        
+    //   })
+    //   .catch(error => {
+    //     console.log("Error: "+error.code+" "+error.message);
+    //     res.status(500).json({error: "Some error has occured..."});
+    //     // res.send("Error: "+error.code);
+    //   });
+// // END OF ORIGINAL SIGN_UP: (COMMENTED OUT)
 
-// FULLSTACK SIGN_UP
+// // FULLSTACK SIGN_UP
 const _user_type = "patient"; // Automatically assign "patient" or another default
 
 try{
@@ -346,7 +364,7 @@ console.log("🛠 Creating user...");
         console.error("Firebase Sign-Up Error:", error);
         res.status(500).json({ error: error.message }); 
       };
-// END OF FULLSTACK SIGN_UP
+// // END OF FULLSTACK SIGN_UP
 });
 
 app.post('/edit_profile', (req, res) => { 
