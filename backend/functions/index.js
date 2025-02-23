@@ -8,9 +8,19 @@
  */
 
 
+const {onRequest} = require("firebase-functions/v2/https");
+// const logger = require("firebase-functions/logger");
+// const firebase = require("firebase-admin");
+const functions = require("firebase-functions");
 const express = require("express");
-const functions = require('firebase-functions/v1');
 const app = express();
+const firebase = require("firebase-admin");
+
+firebase.initializeApp(functions.config().firebase); // initializa according to the project logged into lcoally i.e. carelink
+const db = firebase.firestore();
+const cors = require("cors"); //-angelica
+app.use(express.json()); // Middleware to parse JSON body
+app.use(cors({ origin: true })); // Enable CORS for frontend access
 
 app.get('/embedded_google_search', (req, res) => {
     try {
@@ -175,37 +185,6 @@ if (require.main === module) {
     });
 }
 
-// Export for testing
-module.exports = app;
-exports.api = functions.https.onRequest
-
-
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-const { onRequest } = require("firebase-functions/v2/https");
-// const logger = require("firebase-functions/logger");
-// const firebase = require("firebase-admin");
-//const functions = require("firebase-functions");
-const express = require("express");
-const cors = require("cors"); //-angelica
-const admin = require("firebase-admin"); //-angelica
-
-admin.initializeApp(); // No need for `functions.config()`
-const db = admin.firestore();
-const auth = admin.auth();
-const app = express();
-
-// const firebaseApp = firebase.initializeApp(functions.config().firebase); // initializa according to the project logged into lcoally i.e. carelink // unsure if this should be commented out or not
-// const db = firebase.firestore();
-
-app.use(express.json()); // Middleware to parse JSON body
-app.use(cors({ origin: true })); // Enable CORS for frontend access
-
 
 app.post('/sign_up', async (req, res) => { 
 
@@ -340,7 +319,7 @@ app.post('/sign_up', async (req, res) => {
             // });
 // END OF ORIGINAL SIGN_UP: (COMMENTED OUT)
 
-
+// FULLSTACK SIGN_UP
 const _user_type = "patient"; // Automatically assign "patient" or another default
 
 try{
@@ -367,6 +346,7 @@ console.log("🛠 Creating user...");
         console.error("Firebase Sign-Up Error:", error);
         res.status(500).json({ error: error.message }); 
       };
+// END OF FULLSTACK SIGN_UP
 });
 
 app.post('/edit_profile', (req, res) => { 
@@ -575,3 +555,6 @@ app.post('/user_profile', (req, res) => {
 // TODO: don't think i can sign in or out with 
 
 exports.app = onRequest(app); // exports.'app' is the app in firebase.json
+// Export for testing
+// module.exports = app;
+// exports.api = functions.https.onRequest
