@@ -188,8 +188,8 @@ exports.api = functions.https.onRequest
 //   response.send("Hello from Firebase!");
 // });
 const { onRequest } = require("firebase-functions/v2/https");
-//const logger = require("firebase-functions/logger");
-const firebase = require("firebase-admin");
+// const logger = require("firebase-functions/logger");
+// const firebase = require("firebase-admin");
 //const functions = require("firebase-functions");
 const express = require("express");
 const cors = require("cors"); //-angelica
@@ -200,8 +200,8 @@ const db = admin.firestore();
 const auth = admin.auth();
 const app = express();
 
-const firebaseApp = firebase.initializeApp(functions.config().firebase); // initializa according to the project logged into lcoally i.e. carelink // unsure if this should be commented out or not
-const db = firebase.firestore();
+// const firebaseApp = firebase.initializeApp(functions.config().firebase); // initializa according to the project logged into lcoally i.e. carelink // unsure if this should be commented out or not
+// const db = firebase.firestore();
 
 app.use(express.json()); // Middleware to parse JSON body
 app.use(cors({ origin: true })); // Enable CORS for frontend access
@@ -328,7 +328,29 @@ app.post('/sign_up', async (req, res) => {
 //             else{
 //                 userData['gender'] = null;
 //             }
-// END OF ORIGINAL SIGN_UP (COMMENTED OUT)
+
+            // ensure empty values are converted to null
+            // for (const [key, value] of Object.entries(userData)) {
+            //     if (value==""){
+            //         userData[key]=null;
+            //     }
+            // }
+
+            // // upload user record to user collections in firestore
+            // const userRef = db.collection('user');
+            // userRef.doc().set(userData).then(() =>{
+            //     // TODO: set up all other user info being saved, log it to the 
+            //     console.log('Successfully created new user:'+userCred.uid);
+            //     res.status(200).json({message: "Successfully created new user:"});
+            // });
+
+            // })
+            // .catch(error => {
+            // console.log("Error: "+error.code+" "+error.message);
+            // res.status(500).json({error: "Some error has occured..."});
+            // // res.send("Error: "+error.code);
+            // });
+// END OF ORIGINAL SIGN_UP: (COMMENTED OUT)
 
         const userData = {
             uid: _uid,
