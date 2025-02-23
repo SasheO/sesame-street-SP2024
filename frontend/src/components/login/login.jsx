@@ -5,11 +5,14 @@ import { useNavigate } from "react-router-dom";
 import "./login.css"; // ✅ Ensure CSS file exists
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../firebase";  // Import Firebase config
+import { BiShow, BiHide } from "react-icons/bi"; // Import eye icons
 
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [passwordVisible, setPasswordVisible] = useState(false); // Password visibility state
+
 
   // Validation schema
   const validationSchema = Yup.object({
@@ -70,9 +73,25 @@ const Login = () => {
             <Field type="email" name="email" placeholder="Email" />
             <ErrorMessage name="email" component="div" className="error-message" />
 
-            <Field type="password" name="password" placeholder="Password" />
+            {/* Password Input with Eye Icon */}
+            {/* Password Input with Eye Icon */}
+            <div className="password-container">
+              <Field 
+                type={passwordVisible ? "text" : "password"} 
+                name="password" 
+                placeholder="Password" 
+                className="password-input"
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setPasswordVisible(!passwordVisible)}
+                aria-label="Toggle password visibility"
+              >
+                {passwordVisible ? <BiHide /> : <BiShow />}
+              </button>
+            </div>          
             <ErrorMessage name="password" component="div" className="error-message" />
-
             <button type="submit" disabled={isSubmitting}>Login</button>
           </Form>
         )}

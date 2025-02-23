@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import Profile from "../components/profile/Profile";
+import Profile from "../../../components/profile/Profile";
 
 describe("Profile Component", () => {
   beforeEach(() => {
