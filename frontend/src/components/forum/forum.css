@@ -47,3 +47,45 @@
   max-width: 600px; /* Adjust as needed */
   margin: auto;
 }
+
+
+.selected-tag span {
+  margin-right: 8px;
+}
+
+.clear-tag {
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.clear-tag:hover {
+  color: #ff4444;
+}
+.selected-tags-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.selected-tag {
+  background-color: #6979F8;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.remove-tag {
+  cursor: pointer;
+}
+
+.clear-all-tags {
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+}

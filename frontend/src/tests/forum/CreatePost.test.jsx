@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import CreatePost from "../components/Forum/CreatePost";
+import CreatePost from "../../components/Forum/CreatePost";
 
 describe("Create Post Page", () => {
   test("renders create post page correctly", () => {

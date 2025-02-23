@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BiHome, BiPlus, BiMessageRounded, BiSearch, BiX } from "react-icons/bi";
+import { BiHome, BiPlus, BiMessageRounded, BiX } from "react-icons/bi";
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
 import "./Forum.css";
@@ -15,7 +15,6 @@ const mockThreads = [
     likes: 3456,
     comments: 254,
     tags: ["health", "migraine", "herbs"],
-    replies: [],
   },
   {
     id: 2,
@@ -26,7 +25,6 @@ const mockThreads = [
     likes: 2540,
     comments: 156,
     tags: ["plants", "herbs", "identification"],
-    replies: [],
   },
   {
     id: 3,
@@ -37,7 +35,6 @@ const mockThreads = [
     likes: 1820,
     comments: 89,
     tags: ["health", "turmeric", "anti-inflammatory"],
-    replies: [],
   },
   {
     id: 4,
@@ -48,21 +45,33 @@ const mockThreads = [
     likes: 1324,
     comments: 97,
     tags: ["tea", "digestion", "herbs"],
-    replies: [],
   }
 ];
 
 const Forum = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]); // Allows multiple selected tags
 
-  // 🔹 Updated filter function to include BOTH search bar & tag filtering
-  const filteredThreads = mockThreads.filter((thread) =>
-    (thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))) &&
-    (selectedTag ? thread.tags.includes(selectedTag) : true)
-  );
+  // Function to handle tag selection
+  const toggleTag = (tag) => {
+    setSelectedTags((prevTags) =>
+      prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
+    );
+  };
+
+  // Function to clear all selected tags
+  const clearAllTags = () => setSelectedTags([]);
+
+  // Filter threads based on search and selected tags
+  const filteredThreads = mockThreads.filter((thread) => {
+    const matchesSearch = thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const matchesTags = selectedTags.length === 0 || thread.tags.some((tag) => selectedTags.includes(tag));
+
+    return matchesSearch && matchesTags;
+  });
 
   return (
     <div className="forum-page">
@@ -74,7 +83,19 @@ const Forum = () => {
         autoSearch={true}
       />
 
-      {/* Main Forum Layout */}
+      {/* Selected Tags Display */}
+      {selectedTags.length > 0 && (
+        <div className="selected-tags-container">
+          <p>Filtering by: </p>
+          {selectedTags.map((tag) => (
+            <span key={tag} className="selected-tag" data-testid={`selected-tag-${tag}`}>
+              {tag} <BiX className="remove-tag" data-testid={`clear-tag-${tag}`} onClick={() => toggleTag(tag)} />
+            </span>
+          ))}
+          <button className="clear-all-tags" onClick={clearAllTags}>Clear All</button>
+        </div>
+      )}
+
       <div className="forum-container">
         <div className="forum-sidebar">
           <h3>Forum Posts</h3>
@@ -95,16 +116,17 @@ const Forum = () => {
                   {/* Tag List */}
                   <p className="thread-tags">
                     <strong>Tags: </strong>
-                    {thread.tags.map((tag, index) => (
+                    {thread.tags.map((tag) => (
                       <span 
-                        key={index} 
-                        className="tag"
+                        key={tag} 
+                        className={`tag ${selectedTags.includes(tag) ? "active" : ""}`}
+                        data-testid={`tag-${tag}`}
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering thread click
-                          setSelectedTag(tag);
+                          e.stopPropagation(); // Prevent thread click event
+                          toggleTag(tag);
                         }}
                       >
-                        {tag}{index < thread.tags.length - 1 ? ", " : ""}
+                        {tag}
                       </span>
                     ))}
                   </p>
@@ -121,7 +143,6 @@ const Forum = () => {
       </div>
 
       {/* Bottom Navigation Bar */}
-      {/* Bottom Navigation Bar */}
       <div className="bottom-bar">
         <BiHome onClick={() => navigate("/home")} className="bottom-icon" />
         <BiPlus 
@@ -131,7 +152,6 @@ const Forum = () => {
         />
         <BiMessageRounded className="bottom-icon" />
       </div>
-
     </div>
   );
 };
