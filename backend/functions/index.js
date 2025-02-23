@@ -235,18 +235,6 @@ app.post('/sign_up', async (req, res) => {
         return res.status(422).json({message: "no surname  name entered"});
     }
 
-    const _user_type = "patient"; // Automatically assign "patient" or another default
-
-    try{
-    console.log("🛠 Creating user...");
-        const userRecord = await auth.createUser({
-        email: email,
-        emailVerified: false,
-        password: password,
-        displayName: _first_name+" "+_surname
-       });
-        const _uid = userRecord.uid;
-        console.log("✅ User Created:", _uid);
         
 // ORIGINAL SIGN_UP: (COMMENTED OUT)
 //         if (_user_type=="patient"){
@@ -352,6 +340,19 @@ app.post('/sign_up', async (req, res) => {
             // });
 // END OF ORIGINAL SIGN_UP: (COMMENTED OUT)
 
+
+const _user_type = "patient"; // Automatically assign "patient" or another default
+
+try{
+console.log("🛠 Creating user...");
+    const userRecord = await auth.createUser({
+    email: email,
+    emailVerified: false,
+    password: password,
+    displayName: _first_name+" "+_surname
+   });
+    const _uid = userRecord.uid;
+    console.log("✅ User Created:", _uid);
         const userData = {
             uid: _uid,
             _first_name,
