@@ -10,6 +10,8 @@ import Forum from "./components/forum/forum"
 import ForumThread from "./components/Forum/ForumThread";
 import CreatePost from "./components/Forum/CreatePost";
 import SearchResults from "./components/HomePage/HomePage_components/SearchResults";
+import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage"; 
+
 import './App.css';
 
 function App() {
@@ -27,6 +29,7 @@ function App() {
         <Route path="/forum/create" element={<CreatePost />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/search-results" element={<SearchResults />} />
+        <Route path="/doctor-patients" element={<DoctorPatientsPage />} /> 
       </Routes>
     </Router>
   );
