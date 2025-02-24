@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./signup.css";
+import { BiShow, BiHide } from "react-icons/bi"; // ✅ Import eye icons
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   // Validation Schema
   const validationSchema = Yup.object({
@@ -86,15 +89,43 @@ const SignUp = () => {
               <ErrorMessage name="email" component="div" className="error" />
             </div>
 
-            <div className="form-group">
+            {/* Password Input with Eye Icon */}
+            <div className="form-group password-container">
               <label>Password:</label>
-              <Field type="password" name="password" />
+              <Field 
+                type={passwordVisible ? "text" : "password"} 
+                name="password" 
+                className="password-input"
+                placeholder="Password"
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setPasswordVisible(!passwordVisible)}
+                aria-label="Toggle password visibility"
+              >
+                {passwordVisible ? <BiHide /> : <BiShow />}
+              </button>
               <ErrorMessage name="password" component="div" className="error" />
             </div>
 
-            <div className="form-group">
+            {/* Confirm Password Input with Eye Icon */}
+            <div className="form-group password-container">
               <label>Confirm Password:</label>
-              <Field type="password" name="confirmPassword" />
+              <Field 
+                type={confirmPasswordVisible ? "text" : "password"} 
+                name="confirmPassword" 
+                className="password-input"
+                placeholder="Confirm Password"
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+                aria-label="Toggle confirm password visibility"
+              >
+                {confirmPasswordVisible ? <BiHide /> : <BiShow />}
+              </button>
               <ErrorMessage name="confirmPassword" component="div" className="error" />
             </div>
 
