@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BiSolidUser } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { useNavigate } from 'react-router-dom';
@@ -10,12 +10,12 @@ const Header = ({ label }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
 
-  // useEffect(() => {
-  //   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  //   if (loggedInUser) {
-  //     setUser(loggedInUser);
-  //   }
-  // }, []);
+   useEffect(() => {
+     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+     if (loggedInUser) {
+       setUser(loggedInUser);
+     }
+   }, []);
 
   return (
     <header className="header">

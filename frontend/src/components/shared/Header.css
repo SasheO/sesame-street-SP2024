@@ -23,14 +23,34 @@
   cursor: pointer;
 }
 
-.profile-btn:hover {
-  transform: scale(1.1);
-}
 
 .header-title:hover {
   transform: scale(1.1);
 }
 
 .menu-btn:hover {
+  transform: scale(1.1);
+}
+
+* Profile Icon (Default if no profile picture) */
+.profile-btn {
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Profile Picture */
+.profile-picture {
+  width: 20px;   /* Adjusted smaller */
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Hover Effects */
+.profile-picture:hover,
+.profile-btn:hover {
   transform: scale(1.1);
 }
