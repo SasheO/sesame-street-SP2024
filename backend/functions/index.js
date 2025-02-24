@@ -614,21 +614,21 @@ app.post('post_forum', (req,res) => {
         };
 
         if (_replied_to_id===""|| !_replied_to_id){
-            // original post
-            // create post with appropriate title
+            // this is an original post
             if (_title===""|| !_title){
                 return res.status(422).json({message: "no title entered"});
             }
-            
+            forumData['title'] = _title;
+            // TODO: create new post in firestore
         }
         else{
-            // reply post
+            // this is a reply post
             if (_root_forum_id===""|| !_root_forum_id){
                 // a reply must have the root parent post id which should be the same as the reply id
                 return res.status(422).json({message: "Reply post format inaccurately formatted"});
             }
             else{
-                // navigate to the root forum. if it doesn;t exist, return error message.
+                // search and retrieve the root forum by its id. if it doesn;t exist, return error message.
                 // if it exists, check for the replied to id. if replied to id does not exist in forums, return error message.
                 // if replied to id exists in root forum replies, then create the forum wiht the appropriate fields as a child of root forum id in firestore: root forum id and replied to id
             }
