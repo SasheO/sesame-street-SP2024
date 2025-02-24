@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./signup.css";
-import { auth, db } from "../../firebase";  // Import Firebase config - Angelica
+/* import { auth, db } from "../../firebase";  // Import Firebase config - Angelica
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-
+ */
 const SignUp = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
@@ -22,34 +22,34 @@ const SignUp = () => {
       .required("Confirm password is required"),
   });
 
-  // // Handle sign-up
-  // const handleSignUp = (values) => {
-  //   let users = JSON.parse(localStorage.getItem("users")) || [];
+   // Handle sign-up
+   const handleSignUp = (values) => {
+     let users = JSON.parse(localStorage.getItem("users")) || [];
 
-  //   // Check if user already exists
-  //   const userExists = users.some(user => user.email === values.email);
-  //   if (userExists) {
-  //     setErrorMessage("User already exists. Please log in.");
-  //     return;
-  //   }
+     // Check if user already exists
+     const userExists = users.some(user => user.email === values.email);
+     if (userExists) {
+       setErrorMessage("User already exists. Please log in.");
+       return;
+     }
 
-  //   // Create new user object
-  //   const newUser = {
-  //     name: values.name,
-  //     email: values.email,
-  //     password: values.password,
-  //     profilePic: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" // Default profile picture
-  //   };
+     // Create new user object
+     const newUser = {
+       name: values.name,
+       email: values.email,
+       password: values.password,
+       profilePic: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" // Default profile picture
+     };
 
-  //   users.push(newUser);
-  //   localStorage.setItem("users", JSON.stringify(users));
-  //   localStorage.setItem("loggedInUser", JSON.stringify(newUser));
+     users.push(newUser);
+     localStorage.setItem("users", JSON.stringify(users));
+     localStorage.setItem("loggedInUser", JSON.stringify(newUser));
 
-  //   console.log("✅ User Signed Up:", newUser);
-  //   navigate("/");
-  // };
+     console.log("✅ User Signed Up:", newUser);
+     navigate("/");
+   };
   // ✅ Handle sign-up by calling Firebase backend
-  const handleSignUp = async (values) => {
+  /* const handleSignUp = async (values) => {
     setErrorMessage(""); // Reset previous error
 
     // // Split the full name into first name and surname
@@ -80,7 +80,7 @@ const SignUp = () => {
     } catch (error) {
       setErrorMessage(error.message);
     }
-  };
+  }; */
 
   return (
     <div className="signup-container">
