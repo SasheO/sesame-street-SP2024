@@ -1,8 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import Profile from "../../../components/profile/Profile";
-
+import Profile from "../../components/profile/Profile.jsx";
 describe("Profile Component", () => {
   beforeEach(() => {
     jest.spyOn(window, "confirm").mockImplementation(() => true); // ✅ Mock window.confirm()
