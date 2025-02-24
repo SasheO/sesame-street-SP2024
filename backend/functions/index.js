@@ -586,39 +586,52 @@ app.post('post_forum', (req,res) => {
     firebase.auth()
     .verifyIdToken(idToken)
     .then(async (decodedToken) => {   
-        const created_by = decodedToken.uid;
+        const _created_by = decodedToken.uid;
         const query = req.body.query;
         const created_at_date_st = req.body.created_at;
-        var tags = req.body.tags;
-        const title = req.body.title;
-        const post_description = req.body.post_description; // content of the post 
-        const replied_to_id = req.body.replied_to_id; // check if null. if it's null, create a fresh new post. else, it's a reply and should be a document on the original post.
-        const root_forum_id = req.body.replied_to_id; // check which forum is the root parent. if there is no replied to, then this should be empty too. if there is a replied to, then the root should be the replied_to's root.
+        var _tags = req.body.tags;
+        const _title = req.body.title;
+        const _post_description = req.body.post_description; // content of the post 
+        const _replied_to_id = req.body.replied_to_id; // check if null. if it's null, create a fresh new post. else, it's a reply and should be a document on the original post.
+        const _root_forum_id = req.body.root_forum_id; // check which forum is the root parent. if there is no replied to, then this should be empty too. if there is a replied to, then the root should be the replied_to's root.
 
         // ensure the format is good format
         if (created_at_date_st===""|| !created_at_date_st){
             return res.status(422).json({message: "no dob entered"});
         }
         var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-        const created_at = new Date(created_at_date_st.replace(pattern,'$3-$2-$1'));
-        if (created_at === "Invalid Date" || isNaN(created_at)){
+        const _created_at = new Date(created_at_date_st.replace(pattern,'$3-$2-$1'));
+        if (_created_at === "Invalid Date" || isNaN(_created_at)){
             return res.status(422).json({message: "invalid created_at format: should be mm-dd-yyyy"});
         }
         // TODO: check if creating a new forum or replying to one that already exists. add fields as necessary
         var forumData = {
             // all these are required fields for patients
-            created_by: created_by,
-            tags: tags;
-            created_at: created_at;
-            post_description:post_description; // TODO: check if this is empty if this is original post. if so, set to empty
+            created_by: _created_by,
+            tags: _tags,
+            created_at: _created_at,
+            post_description: _post_description // TODO: check if this is empty if this is original post. if so, set to empty
         };
 
-        if (replied_to_id===""|| !replied_to_id){
+        if (_replied_to_id===""|| !_replied_to_id){
             // original post
+            // create post with appropriate title
+            if (_title===""|| !_title){
+                return res.status(422).json({message: "no title entered"});
+            }
             
         }
         else{
             // reply post
+            if (_root_forum_id===""|| !_root_forum_id){
+                // a reply must have the root parent post id which should be the same as the reply id
+                return res.status(422).json({message: "Reply post format inaccurately formatted"});
+            }
+            else{
+                // navigate to the root forum. if it doesn;t exist, return error message.
+                // if it exists, check for the replied to id. if replied to id does not exist in forums, return error message.
+                // if replied to id exists in root forum replies, then create the forum wiht the appropriate fields as a child of root forum id in firestore: root forum id and replied to id
+            }
         }
      })
     .catch((error) => {
