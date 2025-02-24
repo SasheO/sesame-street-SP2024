@@ -577,18 +577,46 @@ app.get('/forums', (req, res) => {
 
 app.post('post_forum', (req,res) => {
 
-    const query = req.body.query;
-    var tags = req.query.tags;
-    const title = req.query.title;
+    
     const idToken = req.query.idToken; // verify that user is logged in
-    const created_at = req.query.created_at; // ensure the format is good format
-    const post_content = req.query.post_content; 
-    const replied_to_id = req.body.replied_to_id; // check if null. if it's null, create a fresh new post. else, it's a reply and should be a document on the original post.
-    const root_forum_id = req.body.replied_to_id; // check which forum is the root parent. if there is no replied to, then this should be empty too. if there is a replied to, then the root should be the replied_to's root.
+    
     if (idToken==null){
         console.log("idToken==null");
         return res.status(401).json({message: "User is not logged in"});
     }
+
+    firebase.auth()
+    .verifyIdToken(idToken)
+    .then(async (decodedToken) => {   
+        const created_by = decodedToken.uid;
+        const query = req.body.query;
+        var tags = req.query.tags;
+        const title = req.query.title;
+        const _created_at = req.query.created_at; // ensure the format is good format
+        const post_description = req.query.post_description; // content of the post 
+        const replied_to_id = req.body.replied_to_id; // check if null. if it's null, create a fresh new post. else, it's a reply and should be a document on the original post.
+        const root_forum_id = req.body.replied_to_id; // check which forum is the root parent. if there is no replied to, then this should be empty too. if there is a replied to, then the root should be the replied_to's root.
+
+        if (_created_at===""){
+            return res.status(422).json({message: "no dob entered"});
+        }
+        var created_at_date_st = req.body.dob;
+        var pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+        const created_at = new Date(created_at_date_st.replace(pattern,'$3-$2-$1'));
+        if (created_at === "Invalid Date" || isNaN(created_at)){
+            return res.status(422).json({message: "invalid created_at format: should be mm-dd-yyyy"});
+        }
+        // TODO: check if creating a new forum or replying to one that already exists
+        var forumData = {
+            // all these are required fields for patients
+            created_by: created_by,
+            
+        };
+     })
+    .catch((error) => {
+        console.log(error);
+        return res.status(401).json({message: "Invalid user credentials"});
+    });
 });
 
 // TODO: don't think i can sign in or out with 
