@@ -589,7 +589,6 @@ app.post('/post_forum', (req,res) => {
         
         const _created_by = decodedToken.uid;
         console.log("created by uid: "+_created_by);
-        const query = req.body.query;
         const created_at_date_st = req.body.created_at;
         var _tags = req.body.tags;
         const _title = req.body.title;

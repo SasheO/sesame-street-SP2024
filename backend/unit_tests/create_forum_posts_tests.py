@@ -18,14 +18,14 @@ def sign_in_with_email_and_password(email, password, return_secure_token=True):
 
     return r.json()
 
-test_user_email = "practitioner2.tester@gmail.com"
+test_user_email = "tester.person@gmail.com"
 test_user_password = "12.3rdaskufq24eS"
 
 user_credentials = sign_in_with_email_and_password(test_user_email, test_user_password)
 test_data = {"title":"Local Herbs for Migraine",
              "created_at":"02-24-2025", 
              "tags":"herbal,migraine",
-             "description": """I saw this here: https://drjeffsteinberg.com/herbal-allies-exploring-the-efficacy-of-botanical-remedies-for-migraine-relief/\n\nMigraines, characterized by intense, throbbing headaches often accompanied by nausea, vomiting, and sensitivity to light and sound, can be debilitating for those who suffer from them. While modern medicine offers various pharmaceutical options for migraine relief, many individuals seek alternative remedies due to concerns about side effects or a desire for more natural approaches. One such avenue of exploration is herbal remedies, which have been used for centuries in traditional medicine systems worldwide. In this article, we delve into the realm of herbal allies and explore their efficacy in providing relief from migraines.
+             "post_description": """I saw this here: https://drjeffsteinberg.com/herbal-allies-exploring-the-efficacy-of-botanical-remedies-for-migraine-relief/\n\nMigraines, characterized by intense, throbbing headaches often accompanied by nausea, vomiting, and sensitivity to light and sound, can be debilitating for those who suffer from them. While modern medicine offers various pharmaceutical options for migraine relief, many individuals seek alternative remedies due to concerns about side effects or a desire for more natural approaches. One such avenue of exploration is herbal remedies, which have been used for centuries in traditional medicine systems worldwide. In this article, we delve into the realm of herbal allies and explore their efficacy in providing relief from migraines.
 
 Exploring Herbal Remedies for Migraine Relief
 Understanding Migraines
