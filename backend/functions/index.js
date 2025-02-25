@@ -572,12 +572,12 @@ app.post('/user_profile', (req, res) => {
 
 app.get('/forums', (req, res) => { 
     // returns either most recent queries if no request or relevant queries with tags/keywords
-    const query = req.body.query;
+    const query = req.query.query;
 });
 
-app.post('post_forum', (req,res) => {
+app.post('/post_forum', (req,res) => {
 
-    const idToken = req.query.idToken; // verify that user is logged in
+    const idToken = req.body.idToken; // verify that user is logged in
     if (idToken==null){
         console.log("idToken==null");
         return res.status(401).json({message: "User is not logged in"});
@@ -586,7 +586,9 @@ app.post('post_forum', (req,res) => {
     firebase.auth()
     .verifyIdToken(idToken)
     .then(async (decodedToken) => {   
+        
         const _created_by = decodedToken.uid;
+        console.log("created by uid: "+_created_by);
         const query = req.body.query;
         const created_at_date_st = req.body.created_at;
         var _tags = req.body.tags;
@@ -620,6 +622,12 @@ app.post('post_forum', (req,res) => {
             }
             forumData['title'] = _title;
             // TODO: create new post in firestore
+            const forumRef = db.collection('forum');
+            forumRef.doc().set(forumData).then(() =>{
+                // TODO: set up all other user info being saved, log it to the 
+                console.log('Successfully created forum post');
+                res.status(200).json({message: "Successfully created forum post"});
+            });
         }
         else{
             // this is a reply post
@@ -631,6 +639,7 @@ app.post('post_forum', (req,res) => {
                 // search and retrieve the root forum by its id. if it doesn;t exist, return error message.
                 // if it exists, check for the replied to id. if replied to id does not exist in forums, return error message.
                 // if replied to id exists in root forum replies, then create the forum wiht the appropriate fields as a child of root forum id in firestore: root forum id and replied to id
+                
             }
         }
      })
