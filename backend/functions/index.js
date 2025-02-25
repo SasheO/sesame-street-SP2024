@@ -620,13 +620,16 @@ app.post('/post_forum', (req,res) => {
                 return res.status(422).json({message: "no title entered"});
             }
             forumData['title'] = _title;
-            // TODO: create new post in firestore
             const forumRef = db.collection('forum');
-            forumRef.doc().set(forumData).then(() =>{
+            const newForumPost = forumRef.doc()
+            forumData["root_forum_id"] = newForumPost.id;
+            forumData["replied_to_id"] = null;
+            newForumPost.set(forumData).then(() =>{
                 // TODO: set up all other user info being saved, log it to the 
-                console.log('Successfully created forum post');
-                res.status(200).json({message: "Successfully created forum post"});
+                console.log('Successfully created forum post: '+ newForumPost.id);
+                return res.status(200).json({message: "Successfully created forum post"});
             });
+
         }
         else{
             // this is a reply post
@@ -644,7 +647,7 @@ app.post('/post_forum', (req,res) => {
      })
     .catch((error) => {
         console.log(error);
-        return res.status(401).json({message: "Invalid user credentials"});
+        return res.status(500).json({error: "Some error has occured..."});
     });
 });
 

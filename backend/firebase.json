@@ -6,9 +6,21 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [
-    {
+    "rewrites": [ {
       "source": "**",
+      "function": "app"
+
+      },
+      {
+        "source": "/sign_in",
+        "function": "app"
+        },
+    {
+      "source": "/embedded_google_maps",
+      "function": "app"
+    },
+    {
+      "source": "/embedded_google_search",
       "function": "app"
     }
    ]
