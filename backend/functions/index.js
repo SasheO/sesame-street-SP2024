@@ -614,13 +614,14 @@ app.post('/post_forum', (req,res) => {
             post_description: _post_description // TODO: check if this is empty if this is original post. if so, set to empty
         };
 
+        const forumRef = db.collection('forum');
         if (_replied_to_id===""|| !_replied_to_id){
             // this is an original post
             if (_title===""|| !_title){
                 return res.status(422).json({message: "no title entered"});
             }
             forumData['title'] = _title;
-            const forumRef = db.collection('forum');
+            
             const newForumPost = forumRef.doc()
             forumData["root_forum_id"] = newForumPost.id;
             forumData["replied_to_id"] = null;
@@ -635,12 +636,16 @@ app.post('/post_forum', (req,res) => {
             // this is a reply post
             if (_root_forum_id===""|| !_root_forum_id){
                 // a reply must have the root parent post id which should be the same as the reply id
+                console.log("Error: This reply post does not have a root forum id")
                 return res.status(422).json({message: "Reply post format inaccurately formatted"});
             }
             else{
                 // search and retrieve the root forum by its id. if it doesn;t exist, return error message.
                 // if it exists, check for the replied to id. if replied to id does not exist in forums, return error message.
                 // if replied to id exists in root forum replies, then create the forum wiht the appropriate fields as a child of root forum id in firestore: root forum id and replied to id
+                const replied_to_post = await forumRef.doc(_replied_to_id).get()
+                console.log(replied_to_post.data());
+                return res.status(500).json({message: "Just debugging. Change this message and https code later"});
                 
             }
         }
