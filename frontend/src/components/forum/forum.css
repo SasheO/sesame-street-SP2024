@@ -10,6 +10,9 @@
   text-decoration: none;
   margin-right: 5px;
 }
+.forum-container {
+  padding-bottom: 80px; /* ✅ Ensures last post is not covered by the footer */
+}
 
 .thread-tags span:hover {
   text-decoration: underline;  /* Underline when hovered */
@@ -88,4 +91,64 @@
   border: none;
   color: red;
   cursor: pointer;
+}
+/* Bottom Navigation Bar */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 12px 20px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Bottom Bar Icons */
+.bottom-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 22px;
+  color: #6366F1;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.bottom-icon span {
+  font-size: 12px;
+  margin-top: 2px;
+  color: #6366F1;
+}
+
+.bottom-icon.active {
+  color: #4F46E5;
+  font-weight: bold;
+}
+
+/* Floating Create Post Button */
+.plus-btn {
+  background: #6366F1;
+  color: white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: none;
+  cursor: pointer;
+}
+
+.plus-btn:hover {
+  background: #4F46E5;
 }

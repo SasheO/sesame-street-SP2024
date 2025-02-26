@@ -1,61 +1,89 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../shared/Header";
+import "./CreatePost.css";
 
 const CreatePost = () => {
   const navigate = useNavigate();
-  const [post, setPost] = useState({ title: "", content: "", tags: "" });
-  const [success, setSuccess] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [tags, setTags] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!post.title || !post.content) return;
-    
-    // Simulate post creation
-    setSuccess(true);
-    
-    // Simulate navigation after 1s to give UI time to update
-    setTimeout(() => navigate("/forum"), 1000);
+  const handleCreatePost = () => {
+    if (!title.trim() || !content.trim()) {
+      console.error("⚠️ Cannot save post: Missing title or content!");
+      return;
+    }
+  
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
+    const allPosts = JSON.parse(localStorage.getItem("forumPosts")) || [];
+  
+    // ✅ Generate a unique ID by finding the highest ID and adding 1
+    const newId = allPosts.length > 0 ? Math.max(...allPosts.map(post => post.id)) + 1 : 1;
+  
+    const newPost = {
+      id: Date.now(), // ✅ Ensuring unique ID
+      title: title.trim(),
+      content: content.trim(),
+      tags: tags ? tags.split(",").map(tag => tag.trim()) : [],
+      author: loggedInUser.email || "Anonymous",
+      date: new Date().toLocaleDateString(),
+      comments: [],
+      likes: 0,
+    };
+  
+    console.log("✅ Saving new post:", newPost);
+  
+    const updatedPosts = [newPost, ...allPosts];
+    localStorage.setItem("forumPosts", JSON.stringify(updatedPosts));
+  
+    // ✅ Trigger localStorage update event to refresh MyChats
+    window.dispatchEvent(new Event("storage"));
+  
+    console.log("📌 Updated posts in localStorage:", updatedPosts);
+  
+    navigate("/forum");
   };
+  
 
   return (
     <div className="create-post-page">
-      <Header label="Carelink Forum"/>
+      <Header label="Carelink Forum" />
+      <button className="back-button" onClick={() => navigate("/forum")}>← Back to Forum</button>
 
-      <button className="back-button" onClick={() => navigate("/forum")}>
-        ← Back to Forum
-      </button>
-      
       <div className="create-post-container">
         <h2>Create a New Post</h2>
-        {success ? (
-          <p className="success-message">Post created successfully!</p>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <label>Title</label>
-            <input
-              placeholder="Enter a descriptive title..."
-              value={post.title}
-              onChange={(e) => setPost({ ...post, title: e.target.value })}
-            />
-            
-            <label>Content</label>
-            <textarea
-              placeholder="Write your post here..."
-              value={post.content}
-              onChange={(e) => setPost({ ...post, content: e.target.value })}
-            />
-            
-            <label>Tags (comma separated)</label>
-            <input
-              placeholder="e.g. health, wellness, herbs"
-              value={post.tags}
-              onChange={(e) => setPost({ ...post, tags: e.target.value })}
-            />
 
-            <button className="submit-btn" type="submit">Post</button>
-          </form>
-        )}
+        <div className="input-group">
+          <label>Title</label>
+          <input
+            type="text"
+            placeholder="Enter a descriptive title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div className="input-group">
+          <label>Content</label>
+          <textarea
+            placeholder="Write your post here..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </div>
+
+        <div className="input-group">
+          <label>Tags (comma separated)</label>
+          <input
+            type="text"
+            placeholder="e.g. health, wellness, herbal"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+          />
+        </div>
+
+        <button onClick={handleCreatePost} className="submit-post">Post</button>
       </div>
     </div>
   );

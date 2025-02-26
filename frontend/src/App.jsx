@@ -11,7 +11,7 @@ import ForumThread from "./components/Forum/ForumThread";
 import CreatePost from "./components/Forum/CreatePost";
 import SearchResults from "./components/HomePage/HomePage_components/SearchResults";
 import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage"; 
-
+import MyChats from "./components/Forum/MyChats";
 import './App.css';
 
 function App() {
@@ -30,6 +30,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/search-results" element={<SearchResults />} />
         <Route path="/doctor-patients" element={<DoctorPatientsPage />} /> 
+        <Route path="/my-chats" element={<MyChats />} />
       </Routes>
     </Router>
   );
