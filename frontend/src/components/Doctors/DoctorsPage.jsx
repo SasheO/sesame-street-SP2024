@@ -7,36 +7,68 @@ import DoctorDetails from "./Doctors_components/DoctorDetails";
 import DummyDoctors from "./DummyDoctors.json";
 import "./DoctorsPage.css";
 
-const DoctorsPage  = ({ onClick }) => {
-
+const DoctorsPage = ({ onClick }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [showRequested, setShowRequested] = useState(false);
+  const navigate = useNavigate();
 
-  const filteredDoctors = DummyDoctors.filter((doctor) =>
-    doctor.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleSearchChange = (term) => {
+    setSearch(term);
+  };
+
+  // First filter doctors by category, then by search term
+  const doctorsToShow = DummyDoctors.filter((doctor) =>
+    showRequested ? doctor.requested : !doctor.requested
+  ).filter((doctor) => doctor.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="doctors-page" onClick={onClick}>
       <Header label="Carelink" />
-      <SearchBar placeholder="Search for a doctor..." value={search} onChange={(e) => setSearch(e.target.value)} />
+      <SearchBar 
+        placeholder="Have a doctor in mind?" 
+        initialValue={search} 
+        onSearch={handleSearchChange}
+        autoSearch={true}
+      />
 
       {selectedDoctor ? (
         <DoctorDetails doctor={selectedDoctor} onBack={() => setSelectedDoctor(null)} />
       ) : (
-        <div className="doctor-list">
-          {filteredDoctors.map((doctor) => (
-            <DoctorCard
-              key={doctor.id}
-              doctor={doctor}
-              onClick={() => setSelectedDoctor(doctor)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="doctor-list">
+            {doctorsToShow.length > 0 ? (
+              doctorsToShow.map((doctor) => (
+                <DoctorCard
+                  key={doctor.id}
+                  doctor={doctor}
+                  onClick={() => setSelectedDoctor(doctor)}
+                />
+              ))
+            ) : (
+              <p className="no-results">No doctors found</p>
+            )}
+          </div>
+
+          {/* Toggle Buttons */}
+          <div className="toggle-buttons">
+            <button
+              className={`toggle-button ${!showRequested ? "active" : ""}`}
+              onClick={() => setShowRequested(false)}
+            >
+              Available Doctors
+            </button>
+            <button
+              className={`toggle-button ${showRequested ? "active" : ""}`}
+              onClick={() => setShowRequested(true)}
+            >
+              Requested Doctors
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
-}
+};
 
 export default DoctorsPage;

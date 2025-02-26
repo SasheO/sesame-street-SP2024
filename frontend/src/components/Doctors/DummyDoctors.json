@@ -16,7 +16,7 @@
       "specialty": "General Practitioner",
       "patients": 150,
       "rating": 2,
-      "image":"https://www.shutterstock.com/image-vector/male-doctor-smiling-happy-face-600w-2481032615.jpg",
+      "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4ZHvWk7V1KjUKY2dukivJtjxilzc7ttkjwaAXgLgpjfCF-fgvYykuXfDwSd6NVp16mAU&usqp=CAU",
       "bio": "Dr. Example is a 50 year old doctor with many years of experience. He solved world hunger with his innovative approach to the medical industry.",
       "requested": true,
       "accepted":false
@@ -27,7 +27,7 @@
       "specialty": "Pediatrician",
       "patients": 75,
       "rating": 4,
-      "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyzk_fVjKQxn9zDMU15y7qq7IyFKUfb6zp46gMlTBl7wW2LcSmtcfEgmyCcjOWfQlgK4E&usqp=CAU",
+      "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4ZHvWk7V1KjUKY2dukivJtjxilzc7ttkjwaAXgLgpjfCF-fgvYykuXfDwSd6NVp16mAU&usqp=CAU",
       "bio": "Dr. Example is a 50 year old doctor with many years of experience. He solved world hunger with his innovative approach to the medical industry.",
       "requested": true,
       "accepted":true
