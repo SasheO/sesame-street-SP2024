@@ -39,7 +39,7 @@ const Login = () => {
       console.log("✅ User logged in:", userCredential.user);
       navigate("/"); // Redirect to home page
     } catch (error) {
-      console.error("❌ Login error:", error.message);
+      console.error("❌ Login error:a", error.message);
       setErrorMessage("Invalid email or password.");
     }
   };
