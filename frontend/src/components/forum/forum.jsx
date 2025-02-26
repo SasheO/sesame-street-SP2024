@@ -73,8 +73,8 @@ const Forum = () => {
       thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesTags =
-      selectedTags.length === 0 || thread.tags.some((tag) => selectedTags.includes(tag));
+      const matchesTags =
+      selectedTags.length === 0 || selectedTags.every((tag) => thread.tags.includes(tag));    
 
     return matchesSearch && matchesTags;
   });
