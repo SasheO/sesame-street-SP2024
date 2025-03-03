@@ -1,0 +1,110 @@
+.doctor-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    margin: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 16px;
+    width: 60%;
+    cursor: pointer;
+}
+
+.icons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 15px;
+}
+
+.back-icon {
+    display: flex;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #6979F8;
+    cursor: pointer;
+}
+
+.back-icon:hover {
+    transform: scale(1.1);
+}
+
+.trash-icon {
+    display: flex;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #6979F8;
+    cursor: pointer;
+}
+
+.doctor-info-container {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.doctor-info-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.doctor-info-image img {
+    border-radius: 8px;
+}
+
+.doctor-info-text {
+    flex: 1;
+    text-align: left;
+    padding-left: 12px;
+}
+
+.contact-button {
+    width: 70%;
+    padding: 15px;
+}
+
+.bio {
+    padding: 12px;
+}
+
+.doctor-details h2 {
+    font-size: 24px;
+    color: #333;
+    margin: 10px 0px;
+}
+
+.doctor-details p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.doctor-details .contact-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 15px;
+}
+
+.doctor-details .contact-info span {
+    font-size: 14px;
+    color: #888;
+}
+
+.doctor-details .contact-info a {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.doctor-details .contact-info a:hover {
+    text-decoration: underline;
+}

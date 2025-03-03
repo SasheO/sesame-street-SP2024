@@ -25,17 +25,17 @@ const DoctorsPage = ({ onClick }) => {
   return (
     <div className="doctors-page" onClick={onClick}>
       <Header label="Carelink" />
-      <SearchBar 
-        placeholder="Have a doctor in mind?" 
-        initialValue={search} 
-        onSearch={handleSearchChange}
-        autoSearch={true}
-      />
 
       {selectedDoctor ? (
         <DoctorDetails doctor={selectedDoctor} onBack={() => setSelectedDoctor(null)} />
       ) : (
         <>
+          <SearchBar 
+            placeholder="Have a doctor in mind?" 
+            initialValue={search} 
+            onSearch={handleSearchChange}
+            autoSearch={true}
+          />
           <div className="doctor-list">
             {doctorsToShow.length > 0 ? (
               doctorsToShow.map((doctor) => (

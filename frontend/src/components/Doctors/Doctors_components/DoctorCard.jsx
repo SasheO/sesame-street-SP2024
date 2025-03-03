@@ -12,6 +12,7 @@ const DoctorCard = ({ doctor, onClick }) => {
         className="doctor-image" />
       <div className="doctor-info">
         <h3>{doctor.name}</h3>
+        <h5>{doctor.hospital}</h5>
         <p>{doctor.specialty}</p>
         <p>Hours: {doctor.patients}</p>
         <div className="rating">
