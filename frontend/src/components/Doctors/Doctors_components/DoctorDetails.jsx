@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoMdStar, IoMdStarOutline, IoIosArrowBack } from "react-icons/io";
-import { IoTrashOutline } from "react-icons/io5";
-// import { Button } from "@/components/ui/button";
-import "./DoctorDetails.css"
+import { IoTrashOutline, IoClose } from "react-icons/io5";
+import "./DoctorDetails.css";
 
 const DoctorDetails = ({ doctor, onBack }) => {
+  const [showContactPopup, setShowContactPopup] = useState(false);
+  const [showRequestForm, setShowRequestForm] = useState(false);
+
+  // Determine button text and class
+  let buttonText = "Request Doctor";
+  let buttonClass = "contact-button request";
+  let handleClick = () => setShowRequestForm(true);
+
+  if (doctor.requested) {
+    buttonText = doctor.accepted ? "Contact Doctor" : "Doctor Requested";
+    buttonClass = doctor.accepted ? "contact-button request" : "contact-button requested";
+    handleClick = doctor.accepted ? () => setShowContactPopup(true) : () => {};
+  }
+
   return (
     <div className="doctor-details">
       {/* Header */}
@@ -16,11 +29,11 @@ const DoctorDetails = ({ doctor, onBack }) => {
       {/* Doctor Info */}
       <div className="doctor-info-container">
         <div className="doctor-info-image">
-          <img src={doctor.image} alt={doctor.name}/>
+          <img src={doctor.image} alt={doctor.name} />
         </div>
         <div className="doctor-info-text">
           <h2>{doctor.name}</h2>
-          <p >{doctor.hospital}</p>
+          <p>{doctor.hospital}</p>
           <p>{doctor.specialty}</p>
           <p>{doctor.patients} patients</p>
           <div className="rating">
@@ -40,32 +53,44 @@ const DoctorDetails = ({ doctor, onBack }) => {
         <p className="bio-text">{doctor.bio}</p>
       </div>
 
-      {/* Reviews */}
-      {/* <div className="mt-6">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Reviews</h3>
-          <button className="text-blue-600 text-sm">Show all</button>
-        </div>
-        <div className="mt-3 space-y-4">
-          {doctor.reviews?.map((review, index) => (
-            <div key={index} className="flex items-start gap-3">
-              <img
-                src={review.avatar}
-                alt={review.name}
-                className="w-10 h-10 rounded-full"
-              />
-              <div>
-                <p className="font-medium">{review.name}</p>
-                <p className="text-gray-500 text-sm">{review.comment}</p>
-                <p className="text-gray-400 text-xs">{review.date}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
-
       {/* Contact Button */}
-      <button className="contact-button">Request Contact</button>
+      <button className={buttonClass} onClick={handleClick}>{buttonText}</button>
+
+      {/* Contact Doctor Popup */}
+      {showContactPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <IoClose className="close-btn" aria-label="Close icon" onClick={() => setShowContactPopup(false)}/>
+            <h3>Contact {doctor.name}</h3>
+            <p>Phone: (123) 456-7890</p>
+          </div>
+        </div>
+      )}
+
+      {/* Request Doctor Form Popup */}
+      {showRequestForm && (
+        <div className="popup">
+          <div className="popup-content">
+          <IoClose className="close-btn" aria-label="Close icon" onClick={() => setShowRequestForm(false)}/>
+            <h3>Request to Speak with {doctor.name}</h3>
+            <form>
+              <label>Name:</label>
+              <input type="text" placeholder="Enter your name" required />
+
+              <label>Email:</label>
+              <input type="email" placeholder="Enter your email" required />
+
+              <label>Phone Number:</label>
+              <input type="email" placeholder="Enter your phone number" required />
+
+              <label>Reason for Appointment:</label>
+              <textarea placeholder="Enter your reason" required></textarea>
+
+              <button type="submit">Submit Request</button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
