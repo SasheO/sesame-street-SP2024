@@ -37,7 +37,7 @@ function HomePage() {
         
         {/* ✅ Hide 'Chat with a doctor' if user is a doctor */}
         {user?.role !== "doctor" && (
-          <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" />
+          <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" onClick={() => navigate("/doctor")}/>
         )}
 
         <FeatureCard Icon={BiMessageRoundedDetail} label="Community forum" onClick={() => navigate("/forum")} />

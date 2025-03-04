@@ -27,7 +27,7 @@ const Header = ({ label }) => {
         <img
           src={user.profilePic}
           alt="Profile"
-          className="profile-picture"
+          className="profile-picture-header"
           onClick={() => navigate('/profile')}
         />
       ) : (

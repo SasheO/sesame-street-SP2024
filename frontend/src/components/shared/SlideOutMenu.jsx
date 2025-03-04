@@ -7,7 +7,9 @@ import SearchBar from "./SearchBar";
 const pages = [
   { name: "Home", path: "/" },
   { name: "Healthcare near you", path: "/locations" },
+  { name: "Chat with a doctor", path: "/doctor" },
   { name: "Community forum", path: "/forum" },
+  { name: "Patient requests", path: "/doctor-patients" },
 ];
 
 const SlideOutMenu = ({ isOpen, onClose }) => {

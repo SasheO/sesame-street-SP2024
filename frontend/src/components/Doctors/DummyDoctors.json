@@ -1,0 +1,38 @@
+[
+    {
+      "id": 1,
+      "name": "Dr. Example One",
+      "specialty": "Oncologist",
+      "patients": 200,
+      "rating": 3,
+      "hospital": "Example Hospital",
+      "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4ZHvWk7V1KjUKY2dukivJtjxilzc7ttkjwaAXgLgpjfCF-fgvYykuXfDwSd6NVp16mAU&usqp=CAU",
+      "bio": "Dr. Example is a 50 year old doctor with many years of experience. He solved world hunger with his innovative approach to the medical industry.",
+      "requested": false,
+      "accepted":false
+    },
+    {
+      "id": 2,
+      "name": "Dr. Example Two",
+      "specialty": "General Practitioner",
+      "patients": 150,
+      "rating": 2,
+      "hospital": "Example Hospital",
+      "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4ZHvWk7V1KjUKY2dukivJtjxilzc7ttkjwaAXgLgpjfCF-fgvYykuXfDwSd6NVp16mAU&usqp=CAU",
+      "bio": "Dr. Example is a 50 year old doctor with many years of experience. He solved world hunger with his innovative approach to the medical industry.",
+      "requested": true,
+      "accepted":false
+    },
+    {
+      "id": 3,
+      "name": "Dr. Example Three",
+      "specialty": "Pediatrician",
+      "patients": 75,
+      "rating": 4,
+      "hospital": "Example Hospital",
+      "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4ZHvWk7V1KjUKY2dukivJtjxilzc7ttkjwaAXgLgpjfCF-fgvYykuXfDwSd6NVp16mAU&usqp=CAU",
+      "bio": "Dr. Example is a 50 year old doctor with many years of experience. He solved world hunger with his innovative approach to the medical industry.",
+      "requested": true,
+      "accepted":true
+    }
+  ]
