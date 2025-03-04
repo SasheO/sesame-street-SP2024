@@ -3,13 +3,16 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import "./login.css"; // ✅ Ensure CSS file exists
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../firebase";  // Import Firebase config
+// import { signInWithEmailAndPassword } from "firebase/auth";
+// import { auth, db } from "../../firebase";  // Import Firebase config
+import { BiShow, BiHide } from "react-icons/bi"; // Import eye icons
 
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [passwordVisible, setPasswordVisible] = useState(false); // Password visibility state
+
 
   // Validation schema
   const validationSchema = Yup.object({
@@ -17,23 +20,23 @@ const Login = () => {
     password: Yup.string().required("Password is required"),
   });
 
-  // // Handle login
-  // const handleLogin = (values) => {
-  //   let users = JSON.parse(localStorage.getItem("users")) || []; // Get all registered users
-  //   console.log("🔍 Users in storage:", users); // Debugging log
+   // Handle login
+   const handleLogin = (values) => {
+     let users = JSON.parse(localStorage.getItem("users")) || []; // Get all registered users
+     console.log("🔍 Users in storage:", users); // Debugging log
   
-  //   const user = users.find(user => user.email === values.email && user.password === values.password);
-  //   if (user) {
-  //     console.log("✅ User authenticated:", user);
-  //     localStorage.setItem("loggedInUser", JSON.stringify(user)); // ✅ Save user in storage
-  //     navigate("/"); // ✅ Redirect to Home Page
-  //   } else {
-  //     console.log("❌ Invalid email or password.");
-  //     setErrorMessage("Invalid email or password.");
-  //   }
-  // };
+     const user = users.find(user => user.email === values.email && user.password === values.password);
+     if (user) {
+       console.log("✅ User authenticated:", user);
+       localStorage.setItem("loggedInUser", JSON.stringify(user)); // ✅ Save user in storage
+       navigate("/"); // ✅ Redirect to Home Page
+     } else {
+       console.log("❌ Invalid email or password.");
+       setErrorMessage("Invalid email or password.");
+     }
+   };
 
-  const handleLogin = async (values) => {
+  /* const handleLogin = async (values) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
       console.log("✅ User logged in:", userCredential.user);
@@ -42,7 +45,7 @@ const Login = () => {
       console.error("❌ Login error:a", error.message);
       setErrorMessage("Invalid email or password.");
     }
-  };
+  }; */
 
   const handleSignUp = (values) => {
     let users = JSON.parse(localStorage.getItem("users")) || []; // Get existing users
@@ -70,9 +73,25 @@ const Login = () => {
             <Field type="email" name="email" placeholder="Email" />
             <ErrorMessage name="email" component="div" className="error-message" />
 
-            <Field type="password" name="password" placeholder="Password" />
+            {/* Password Input with Eye Icon */}
+            {/* Password Input with Eye Icon */}
+            <div className="password-container">
+              <Field 
+                type={passwordVisible ? "text" : "password"} 
+                name="password" 
+                placeholder="Password" 
+                className="password-input"
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setPasswordVisible(!passwordVisible)}
+                aria-label="Toggle password visibility"
+              >
+                {passwordVisible ? <BiHide /> : <BiShow />}
+              </button>
+            </div>          
             <ErrorMessage name="password" component="div" className="error-message" />
-
             <button type="submit" disabled={isSubmitting}>Login</button>
           </Form>
         )}

@@ -7,6 +7,7 @@
   margin:10px;
   padding: 15px;
   color: white;
+  max-width: 100%;
 }
 
 .header-title {
@@ -23,14 +24,27 @@
   cursor: pointer;
 }
 
-.profile-btn:hover {
-  transform: scale(1.1);
-}
 
 .header-title:hover {
   transform: scale(1.1);
 }
 
 .menu-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Profile Picture */
+.profile-picture-header {
+  width: 32px;   
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Hover Effects */
+.profile-picture-header:hover,
+.profile-btn:hover {
   transform: scale(1.1);
 }

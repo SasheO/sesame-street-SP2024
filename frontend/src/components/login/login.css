@@ -1,12 +1,24 @@
 /* Center the login container */
+/* Slightly reduce input field width while keeping form centered */
+.login-container input {
+  width: 100%;
+  padding: 12px; /* Ensure all inputs have consistent padding */
+  margin: 8px 0;
+  border: 2px solid #6979F8;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+/* Ensures login container does not affect global page layout */
 .login-container {
-  max-width: 400px; /* Ensures a consistent width */
+  max-width: 400px;
   margin: 50px auto;
   padding: 30px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+  position: relative; /* ✅ Ensures it does not overlap other elements */
 }
 
 /* Title */
@@ -27,17 +39,7 @@
     color: #333;
     font-size: 24px;
   }
-  
-  /* Form input fields */
-  .login-container input {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 2px solid #6979F8;
-    border-radius: 6px;
-    font-size: 16px;
-  }
-  
+    
   /* Style the error messages */
   .error-message {
     color: red;
@@ -78,10 +80,56 @@
     text-decoration: underline;
   }
   
-  /* Responsive Design */
-  @media (max-width: 400px) {
-    .login-container {
-      width: 90%;
-    }
+  /* Responsive fix for smaller screens */
+@media (max-width: 400px) {
+  .login-container {
+    width: 90%;
   }
-  
+}
+/* Ensure password container aligns everything properly */
+.password-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+/* Style for password input */
+.password-input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 40px; /* Space for eye icon */
+  border: 2px solid #6366f1; /* Adjust color as needed */
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Eye icon inside password input */
+.toggle-password {
+  position: absolute;
+  right: 12px; /* ✅ Keeps the icon inside input */
+  top: 50%;
+  transform: translateY(-50%); /* ✅ Ensures vertical center */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* ✅ Makes sure it matches input field height */
+  width: 40px; /* ✅ Prevents shifting */
+  outline: none; /* ✅ Removes blue outline */
+}
+
+/* ✅ Prevents blue box from appearing on hover */
+.toggle-password:hover,
+.toggle-password:focus,
+.toggle-password:active {
+  outline: none;
+  box-shadow: none;
+  border: none;
+  background: none;
+}

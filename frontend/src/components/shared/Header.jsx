@@ -10,12 +10,12 @@ const Header = ({ label }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
 
-  // useEffect(() => {
-  //   const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-  //   if (loggedInUser) {
-  //     setUser(loggedInUser);
-  //   }
-  // }, []);
+   useEffect(() => {
+     const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+     if (loggedInUser) {
+       setUser(loggedInUser);
+     }
+   }, []);
 
   return (
     <header className="header">
@@ -27,7 +27,7 @@ const Header = ({ label }) => {
         <img
           src={user.profilePic}
           alt="Profile"
-          className="profile-picture"
+          className="profile-picture-header"
           onClick={() => navigate('/profile')}
         />
       ) : (
