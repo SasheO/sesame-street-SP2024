@@ -609,7 +609,7 @@ app.post('/post_forum', (req,res) => {
         var forumData = {
             // all these are required fields for patients
             created_by: _created_by,
-            tags: _tags,
+            // tags: _tags,
             created_at: _created_at,
             post_description: _post_description // TODO: check if this is empty if this is original post. if so, set to empty
         };
@@ -667,8 +667,6 @@ app.post('/post_forum', (req,res) => {
                 repliesRef.doc().set(forumData).then(() =>{
                     return res.status(200).json({message: "Reply created"});
                 });
-                
-                
                 
             }
         }
