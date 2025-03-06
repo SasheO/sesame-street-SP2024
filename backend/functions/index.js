@@ -644,8 +644,20 @@ app.post('/post_forum', (req,res) => {
                 // if it exists, check for the replied to id. if replied to id does not exist in forums, return error message.
                 // if replied to id exists in root forum replies, then create the forum wiht the appropriate fields as a child of root forum id in firestore: root forum id and replied to id
                 const replied_to_post = await forumRef.doc(_replied_to_id).get()
-                console.log(replied_to_post.data());
+                console.log(replied_to_post);
+                replied_post_data = replied_to_post.data()
+                if (replied_post_data==null){
+                    return res.status(422).json({message: "The post you are replying to does not exist"});
+                }
+                if (replied_post_data['root_forum_id']!==_root_forum_id){
+                    console.log("Root forum id of post replying to is not the same as root forum id")
+                    return res.status(422).json({message: "Badly formatted forum reply"});
+                }
+                
                 return res.status(500).json({message: "Just debugging. Change this message and https code later"});
+                
+                // const bookmarkRef = collection(db, 'users', userAuth.id, 'bookmarks');
+                
                 
             }
         }
