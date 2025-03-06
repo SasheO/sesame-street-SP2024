@@ -653,10 +653,21 @@ app.post('/post_forum', (req,res) => {
                     console.log("Root forum id of post replying to is not the same as root forum id")
                     return res.status(422).json({message: "Badly formatted forum reply"});
                 }
+                if (_post_description===""|| !_post_description){
+                    console.log("Error: no body text/post description")
+                    return res.status(422).json({message: "Incorrect format: no body text/post description"});
+                }
                 
-                return res.status(500).json({message: "Just debugging. Change this message and https code later"});
+
+                forumData['replied_to_id']= _replied_to_id;
+                forumData["root_forum_id"] = replied_post_data['root_forum_id'];
+
+                const repliesRef = await forumRef.doc(_replied_to_id).collection('replies');
+                console.log("repliesRef: "+repliesRef);
+                repliesRef.doc().set(forumData).then(() =>{
+                    return res.status(200).json({message: "Reply created"});
+                });
                 
-                // const bookmarkRef = collection(db, 'users', userAuth.id, 'bookmarks');
                 
                 
             }
