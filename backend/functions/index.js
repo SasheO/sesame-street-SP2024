@@ -572,7 +572,9 @@ app.post('/user_profile', (req, res) => {
 
 app.get('/forums', (req, res) => { 
     // returns either most recent queries if no request or relevant queries with tags/keywords
+    // searches for query with keywords. returns most recent 100, can return more with pagination numbers
     const query = req.query.query;
+
 });
 
 app.post('/post_forum', (req,res) => {
@@ -609,7 +611,6 @@ app.post('/post_forum', (req,res) => {
         var forumData = {
             // all these are required fields for patients
             created_by: _created_by,
-            // tags: _tags,
             created_at: _created_at,
             post_description: _post_description // TODO: check if this is empty if this is original post. if so, set to empty
         };
@@ -621,6 +622,10 @@ app.post('/post_forum', (req,res) => {
                 return res.status(422).json({message: "no title entered"});
             }
             forumData['title'] = _title;
+
+            if (_title!==""||!(!_title)){
+                forumData["tags"] = _tags;
+            }
             
             const newForumPost = forumRef.doc()
             forumData["root_forum_id"] = newForumPost.id;
