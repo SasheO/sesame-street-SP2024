@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "algoliasearch": "^5.20.4",
     "firebase": "^11.3.1",
     "firebase-functions": "^6.3.1"
   }
