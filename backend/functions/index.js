@@ -560,7 +560,7 @@ app.get("/forums", async (req, res) => {
   // this only returns a forum with a given id and its replies
   const forumId = req.query.forum_id;
   const forumRef = db.collection("forum");
-  const userRef = db.collection("forum");
+  const userRef = db.collection("user");
   if (!(!forumId)||forumId!=="") {
     // if user is searching for particular forum post.
     // for example, user clicks on a forum from search results.
@@ -569,11 +569,26 @@ app.get("/forums", async (req, res) => {
 
     // TODO: get forumRef by id and its replies
     forumRef.doc(forumId).get()
-      .then((querySnapshot) => {
+      .then(async (querySnapshot) => {
             if (!querySnapshot.empty) {
                   let forumPost = querySnapshot.data();
                   const createdBy = forumPost["created_by"];
                   console.log(createdBy);
+                  await userRef.where('uid', '==', createdBy).get().then(_querySnapshot => {
+                        if(!_querySnapshot.empty) {
+                            // return user data to client without revealing UID info
+                            const user = _querySnapshot.docs[0]; 
+                            var userData = user.data();
+                            forumPost['created_by']=userData["first_name"]+" "+userData["surname"];
+                            return res.status(200).json({forum_post:forumPost});
+                        }
+                        else{
+                              // if user is deleted, indicate so
+                              forumPost['created_by']="this user has been deleted";
+                              return res.status(200).json({forum_post:forumPost});
+
+                        }
+                    });s     
             }
     });
     
