@@ -570,10 +570,61 @@ app.post('/user_profile', (req, res) => {
 
 });
 
-app.get('/forums', (req, res) => { 
-    // returns either most recent queries if no request or relevant queries with tags/keywords
+app.get('/forums', async (req, res) => { 
+    // paginate by 100
+    // returns either most recent queries if empty query or relevant post with tags/keywords found in query
     // searches for query with keywords. returns most recent 100, can return more with pagination numbers
     const query = req.query.query;
+    const userRef = db.collection("user");
+    if (!query||query===""){
+        
+        const q = await db.collection("forum").orderBy("created_at", "desc").limit(100).get().then(querySnapshot =>{
+            if (!querySnapshot.empty){
+
+                var queryResults = [];
+                // remove sensitive information, convert uid in "created_by" field to user: First name last name, etc.
+                const cleanUpQueryResults = async (array) => {
+                  
+                    for (const item of querySnapshot) {
+                        var post = item.data();
+                        const r = await userRef.where('uid', '==', post['created_by']).get().then(_querySnapshot => {
+                            console.log(2);
+                            if(!_querySnapshot.empty) {
+                                // return user data to client without revealing UID info
+                                console.log(3);
+                                const user = _querySnapshot.docs[0]; 
+                                var user_data = user.data();
+                                console.log(4);
+                                console.log(user_data);
+                                post['created_by']=user_data["first_name"]+" "+user_data["surname"];
+                                console.log(5);
+                                console.log(post);
+                            }
+                            else{
+                                post['created_by']="this user has been deleted";
+                                console.log(6);
+                            }
+                        });
+                        queryResults.push(post);
+                    }
+                  
+                    console.log(queryResults);
+                    return res.status(200).json({results: queryResults});
+                  }
+                
+            }
+            else{
+                console.log("empty");
+            }
+
+        });
+        
+        // return res.status(500).json({message: "Test message. change later"});
+    }
+
+    // for full text search or search of tags:
+    // https://firebase.google.com/docs/firestore/solutions/search
+    // use elastic https://stackoverflow.com/questions/76233439/doing-full-text-search-with-elasticsearch-firestore-and-react-native
 
 });
 
