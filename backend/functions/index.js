@@ -557,83 +557,37 @@ app.post("/user_profile", (req, res) => {
 });
 
 app.get("/forums", async (req, res) => {
-  // paginate by 100
-  // returns either most recent queries
-  // if empty query or relevant post with
-  // tags/keywords found in query
-  // searches for query with keywords. r
-  // eturns most recent 100,
-  // can return more with pagination numbers
-  const query = req.query.query;
+  // this only returns a forum with a given id and its replies
   const forumId = req.query.forum_id;
-  const userRef = db.collection("user");
   const forumRef = db.collection("forum");
+  const userRef = db.collection("forum");
   if (!(!forumId)||forumId!=="") {
     // if user is searching for particular forum post.
-    // for example, user clicks on a forum for search results.
+    // for example, user clicks on a forum from search results.
     // this will give the expanded info on the forum
-    // this should also show first level replies of that forum post
+    // this should also give first level replies of that forum post
 
     // TODO: get forumRef by id and its replies
-
-  } else if (!query||query==="") {
-    // user entered nothing for search bar, so just return most recent posts
-
-    await forumRef.orderBy("created_at", "desc")
-        .limit(100).get().then(async (querySnapshot) =>{
-          if (!querySnapshot.empty) {
-            // remove sensitive information,
-            // convert uid in "created_by" field to user:
-            // First name last name, etc.
-            const queryResults = [];
-
-            for await (const item of querySnapshot.docs) {
-              const post = item.data();
-              console.log(1);
-              console.log(post["created_by"]);
-
-              await userRef.where("uid", "==", post["created_by"]).get()
-                  .then((_querySnapshot) => {
-                    console.log(2);
-                    if (!_querySnapshot.empty) {
-                      // return user data to client without revealing UID info
-                      console.log(3);
-                      const user = _querySnapshot.docs[0];
-                      const userData = user.data();
-                      console.log(4);
-                      console.log(userData);
-                      post["created_by"] = userData["first_name"]+" "+
-                        userData["surname"];
-                      console.log(5);
-                      console.log(post);
-                      queryResults.push(post);
-                    } else {
-                      post["created_by"]="this user has been deleted";
-                      console.log(6);
-                      queryResults.push(post);
-                    }
-                  });
+    forumRef.doc(forumId).get()
+      .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                  let forumPost = querySnapshot.data();
+                  const createdBy = forumPost["created_by"];
+                  console.log(createdBy);
             }
+    });
+    
 
-            console.log(queryResults);
-            return res.status(200).json({results: queryResults});
-          } else {
-            console.log("empty");
-          }
-        });
-
-    // return res.status(500).json({message: "Test message. change later"});
-  } else {
-    // user entered keyword or tags for search
-    // for full text search or search of tags:
-    // https://firebase.google.com/docs/firestore/solutions/search
-    // use algolia https://www.algolia.com/developers/lp-firebase-search-extension
-    // https://blog.openreplay.com/full-text-search-in-react-with-algolia-and-firestore/
-    // https://www.youtube.com/watch?v=dTXzxSlhTDM
-    // const searchResults = await index.search({query});
-    // console.log(searchResults);
+  } 
+  else{
+      return res.status(422).json({message: "no forum id entered"});
   }
 });
+
+app.get("/myforums", async (req, res) => {
+      // get and verify user token 
+      // return all original posts with their uid as created_by
+    });
 
 app.post("/post_forum", (req, res) => {
   const idToken = req.body.idToken; // verify that user is logged in
