@@ -581,12 +581,15 @@ app.get('/forums', async (req, res) => {
         const q = await db.collection("forum").orderBy("created_at", "desc").limit(100).get().then(querySnapshot =>{
             if (!querySnapshot.empty){
 
-                var queryResults = [];
+                
                 // remove sensitive information, convert uid in "created_by" field to user: First name last name, etc.
-                const cleanUpQueryResults = async (array) => {
-                  
-                    for (const item of querySnapshot) {
+                var queryResults = [];
+                var cleanUpQueryResultsPromise = new Promise((resolve, reject) => {
+                    querySnapshot.docs.forEach(async function(item) {
                         var post = item.data();
+                        console.log(1);
+                        console.log(post['created_by']);
+
                         const r = await userRef.where('uid', '==', post['created_by']).get().then(_querySnapshot => {
                             console.log(2);
                             if(!_querySnapshot.empty) {
@@ -606,11 +609,14 @@ app.get('/forums', async (req, res) => {
                             }
                         });
                         queryResults.push(post);
-                    }
-                  
+                    })
+                });
+
+                // after all iterations are done
+                cleanUpQueryResultsPromise.then(() =>{ 
                     console.log(queryResults);
                     return res.status(200).json({results: queryResults});
-                  }
+                });
                 
             }
             else{
