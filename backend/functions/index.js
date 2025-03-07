@@ -12,6 +12,7 @@ const {onRequest} = require("firebase-functions/v2/https");
 // const logger = require("firebase-functions/logger");
 // const firebase = require("firebase-admin");
 const functions = require("firebase-functions");
+const algoliasearch = require('algoliasearch');
 const express = require("express");
 const app = express();
 const firebase = require("firebase-admin");
@@ -21,6 +22,12 @@ const db = firebase.firestore();
 const cors = require("cors"); //-angelica
 app.use(express.json()); // Middleware to parse JSON body
 app.use(cors({ origin: true })); // Enable CORS for frontend access
+
+// for full text search of forums
+const APP_ID = functions.config().algolia.app;
+const ADMIN_KEY = functions.config().algolia.key;
+const client = algoliasearch(APP_ID, ADMIN_KEY); 
+const index = client.initIndex('carelink_forums');
 
 app.get('/embedded_google_search', (req, res) => {
     try {
@@ -643,6 +650,7 @@ app.get('/forums', async (req, res) => {
         // https://firebase.google.com/docs/firestore/solutions/search
         // use algolia https://www.algolia.com/developers/lp-firebase-search-extension
         // https://blog.openreplay.com/full-text-search-in-react-with-algolia-and-firestore/
+        // https://www.youtube.com/watch?v=dTXzxSlhTDM
 
     }
 
