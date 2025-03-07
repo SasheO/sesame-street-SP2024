@@ -574,21 +574,46 @@ app.get("/forums", async (req, res) => {
                   let forumPost = querySnapshot.data();
                   const createdBy = forumPost["created_by"];
                   console.log(createdBy);
-                  await userRef.where('uid', '==', createdBy).get().then(_querySnapshot => {
+                  await userRef.where('uid', '==', createdBy).get().then(async _querySnapshot => {
                         if(!_querySnapshot.empty) {
                             // return user data to client without revealing UID info
                             const user = _querySnapshot.docs[0]; 
                             var userData = user.data();
                             forumPost['created_by']=userData["first_name"]+" "+userData["surname"];
-                            return res.status(200).json({forum_post:forumPost});
+                            await forumRef
+                              .doc(forumId).collection("replies").get().then(repliesSnapshot => {
+                                    if(!repliesSnapshot.empty){
+                                          var replies = []
+                                          for (const item of repliesSnapshot.docs) {
+                                          replies.push(item.id)
+                                          }
+                                          return res.status(200).json({forum_post:forumPost, replies:replies});
+                                    }
+                                    else{
+                                          return res.status(200).json({forum_post:forumPost, replies:null});
+                                    }
+                              });
+                            
                         }
                         else{
                               // if user is deleted, indicate so
                               forumPost['created_by']="this user has been deleted";
-                              return res.status(200).json({forum_post:forumPost});
+                              await forumRef
+                              .doc(forumId).collection("replies").get().then(repliesSnapshot => {
+                                    if(!repliesSnapshot.empty){
+                                          var replies = []
+                                          for (const item of repliesSnapshot.docs) {
+                                          replies.push(item.id)
+                                          }
+                                          return res.status(200).json({forum_post:forumPost, replies:replies});
+                                    }
+                                    else{
+                                          return res.status(200).json({forum_post:forumPost, replies:null});
+                                    }
+                              });
 
                         }
-                    });s     
+                    });   
             }
     });
     

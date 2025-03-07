@@ -17,6 +17,8 @@ for label, forum_id in test_cases.items():
     response = requests.get("http://localhost:5000/forums", params=params)
     try:
         print(response)
-        print(response.json())
+        # print(response.json())
+        print(response.json()['replies'])
+
     except Exception as e:
         print(1, e)
