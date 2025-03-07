@@ -577,6 +577,7 @@ app.get('/forums', async (req, res) => {
     const query = req.query.query;
     const userRef = db.collection("user");
     if (!query||query===""){
+        // user entered nothing for search bar, so just return most recent posts
         
         const q = await db.collection("forum").orderBy("created_at", "desc").limit(100).get().then(async querySnapshot =>{
             
@@ -625,10 +626,15 @@ app.get('/forums', async (req, res) => {
         
         // return res.status(500).json({message: "Test message. change later"});
     }
+    else{
+        // user entered keyword or tags for search
+        // for full text search or search of tags:
+        // https://firebase.google.com/docs/firestore/solutions/search
+        // use algolia https://www.algolia.com/developers/lp-firebase-search-extension
 
-    // for full text search or search of tags:
-    // https://firebase.google.com/docs/firestore/solutions/search
-    // use elastic https://stackoverflow.com/questions/76233439/doing-full-text-search-with-elasticsearch-firestore-and-react-native
+    }
+
+    
 
 });
 
