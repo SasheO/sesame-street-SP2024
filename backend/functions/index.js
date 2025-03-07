@@ -651,7 +651,8 @@ app.get('/forums', async (req, res) => {
         // use algolia https://www.algolia.com/developers/lp-firebase-search-extension
         // https://blog.openreplay.com/full-text-search-in-react-with-algolia-and-firestore/
         // https://www.youtube.com/watch?v=dTXzxSlhTDM
-
+        var searchResults = await index.search({query});
+        console.log(searchResults);
     }
 
     
