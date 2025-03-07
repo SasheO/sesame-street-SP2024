@@ -575,8 +575,19 @@ app.get('/forums', async (req, res) => {
     // returns either most recent queries if empty query or relevant post with tags/keywords found in query
     // searches for query with keywords. returns most recent 100, can return more with pagination numbers
     const query = req.query.query;
+    const forum_id = req.query.forum_id;
     const userRef = db.collection("user");
-    if (!query||query===""){
+    const forumRef = db.collection('forum');
+    if (!(!forum_id)||query!==""){
+        // if user is searching for particular forum post. for example, user clicks on a forum for search results. this will give the expanded info on the forum
+        // this should also show first level replies of that forum post
+
+        // TODO: get forumRef by id and its replies
+        const r = await forumRef.where('uid', '==', post['created_by']).get().then(_querySnapshot => {
+
+        });
+    }
+    else if (!query||query===""){
         // user entered nothing for search bar, so just return most recent posts
         
         const q = await db.collection("forum").orderBy("created_at", "desc").limit(100).get().then(async querySnapshot =>{
@@ -631,6 +642,7 @@ app.get('/forums', async (req, res) => {
         // for full text search or search of tags:
         // https://firebase.google.com/docs/firestore/solutions/search
         // use algolia https://www.algolia.com/developers/lp-firebase-search-extension
+        // https://blog.openreplay.com/full-text-search-in-react-with-algolia-and-firestore/
 
     }
 
