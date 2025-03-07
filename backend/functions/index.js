@@ -578,45 +578,43 @@ app.get('/forums', async (req, res) => {
     const userRef = db.collection("user");
     if (!query||query===""){
         
-        const q = await db.collection("forum").orderBy("created_at", "desc").limit(100).get().then(querySnapshot =>{
+        const q = await db.collection("forum").orderBy("created_at", "desc").limit(100).get().then(async querySnapshot =>{
+            
             if (!querySnapshot.empty){
+                 // remove sensitive information, convert uid in "created_by" field to user: First name last name, etc.
+                 var queryResults = [];
 
-                
-                // remove sensitive information, convert uid in "created_by" field to user: First name last name, etc.
-                var queryResults = [];
-                var cleanUpQueryResultsPromise = new Promise((resolve, reject) => {
-                    querySnapshot.docs.forEach(async function(item) {
-                        var post = item.data();
-                        console.log(1);
-                        console.log(post['created_by']);
+                for await (const item of querySnapshot.docs) {
+                    var post = item.data();
+                    console.log(1);
+                    console.log(post['created_by']);
 
-                        const r = await userRef.where('uid', '==', post['created_by']).get().then(_querySnapshot => {
-                            console.log(2);
-                            if(!_querySnapshot.empty) {
-                                // return user data to client without revealing UID info
-                                console.log(3);
-                                const user = _querySnapshot.docs[0]; 
-                                var user_data = user.data();
-                                console.log(4);
-                                console.log(user_data);
-                                post['created_by']=user_data["first_name"]+" "+user_data["surname"];
-                                console.log(5);
-                                console.log(post);
-                            }
-                            else{
-                                post['created_by']="this user has been deleted";
-                                console.log(6);
-                            }
-                        });
-                        queryResults.push(post);
-                    })
-                });
+                    const r = await userRef.where('uid', '==', post['created_by']).get().then(_querySnapshot => {
+                        console.log(2);
+                        if(!_querySnapshot.empty) {
+                            // return user data to client without revealing UID info
+                            console.log(3);
+                            const user = _querySnapshot.docs[0]; 
+                            var user_data = user.data();
+                            console.log(4);
+                            console.log(user_data);
+                            post['created_by']=user_data["first_name"]+" "+user_data["surname"];
+                            console.log(5);
+                            console.log(post);
+                            queryResults.push(post);
+                        }
+                        else{
+                            post['created_by']="this user has been deleted";
+                            console.log(6);
+                            queryResults.push(post);
+                        }
+                    });
+                };
 
-                // after all iterations are done
-                cleanUpQueryResultsPromise.then(() =>{ 
-                    console.log(queryResults);
-                    return res.status(200).json({results: queryResults});
-                });
+                console.log(queryResults);
+                return res.status(200).json({results: queryResults});
+
+               
                 
             }
             else{
