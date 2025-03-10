@@ -627,7 +627,7 @@ app.get("/forums", async (req, res) => {
 app.get("/myforums", async (req, res) => {
       // get and verify user token 
       // return all original posts with their uid as created_by
-      const idToken = req.body.idToken; // verify that user is logged in
+      const idToken = req.query.idToken; // verify that user is logged in
       const forumRef = db.collection("forum");
   if (idToken==null) {
     console.log("idToken==null");
@@ -637,12 +637,17 @@ app.get("/myforums", async (req, res) => {
   firebase.auth()
       .verifyIdToken(idToken)
       .then(async (decodedToken) => {
-        await forumRef.where('createdBy', '==', decodedToken.uid).get().then(async querySnapshot => {
-          if (!querySnapshot==null){
-
+        console.log("decodedToken.uid "+decodedToken.uid)
+        await forumRef.where('created_by', '==', decodedToken.uid).get().then(async querySnapshot => {
+          if (!querySnapshot.empty){
+            var myForumPosts = []
+              for (const item of querySnapshot.docs) {
+                myForumPosts.push(item)
+              }
+              return res.status(200).json({forum_posts:myForumPosts});
           }
           else{
-            
+            return res.status(200).json({forum_posts:[]});
           }
         })
       })
