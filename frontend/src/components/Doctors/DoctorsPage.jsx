@@ -6,7 +6,7 @@ import DoctorDetails from "./Doctors_components/DoctorDetails";
 import DummyDoctors from "./DummyDoctors.json";
 import "./DoctorsPage.css";
 
-const DoctorsPage = ({ onClick }) => {
+const DoctorsPage = ({ onClick, onDoctorRequest }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [search, setSearch] = useState("");
   const [showRequested, setShowRequested] = useState(false);
@@ -15,7 +15,6 @@ const DoctorsPage = ({ onClick }) => {
     setSearch(term);
   };
 
-  // First filter doctors by category, then by search term
   const doctorsToShow = DummyDoctors.filter((doctor) =>
     showRequested ? doctor.requested : !doctor.requested
   ).filter((doctor) => doctor.name.toLowerCase().includes(search.toLowerCase()));
@@ -25,7 +24,11 @@ const DoctorsPage = ({ onClick }) => {
       <Header label="Carelink" />
 
       {selectedDoctor ? (
-        <DoctorDetails doctor={selectedDoctor} onBack={() => setSelectedDoctor(null)} />
+        <DoctorDetails
+          doctor={selectedDoctor}
+          onBack={() => setSelectedDoctor(null)}
+          onDoctorRequest={onDoctorRequest} // Pass request handler
+        />
       ) : (
         <>
           <SearchBar 
@@ -50,16 +53,10 @@ const DoctorsPage = ({ onClick }) => {
 
           {/* Toggle Buttons */}
           <div className="toggle-buttons">
-            <button
-              className={`toggle-button ${!showRequested ? "active" : ""}`}
-              onClick={() => setShowRequested(false)}
-            >
+            <button className={`toggle-button ${!showRequested ? "active" : ""}`} onClick={() => setShowRequested(false)}>
               Available Doctors
             </button>
-            <button
-              className={`toggle-button ${showRequested ? "active" : ""}`}
-              onClick={() => setShowRequested(true)}
-            >
+            <button className={`toggle-button ${showRequested ? "active" : ""}`} onClick={() => setShowRequested(true)}>
               Requested Doctors
             </button>
           </div>

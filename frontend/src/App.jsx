@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './components/HomePage/HomePage';
 import LocationsPage from './components/Locations/LocationsPage';
@@ -15,7 +15,14 @@ import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage";
 import MyChats from "./components/Forum/MyChats";
 import './App.css';
 
-function App() {
+function App(){
+
+  const [doctorRequests, setDoctorRequests] = useState([]);
+
+  const handleDoctorRequest = (newRequest) => {
+    setDoctorRequests((prevRequests) => [...prevRequests, newRequest]);
+  };
+
   return (
     <Router>
       <Routes>
@@ -30,8 +37,8 @@ function App() {
         <Route path="/forum/create" element={<CreatePost />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/search-results" element={<SearchResults />} />
-        <Route path="/doctor" element={<DoctorsPage />} />
-        <Route path="/doctor-patients" element={<DoctorPatientsPage />} /> 
+        <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest}/>} />
+        <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests}/>} /> 
         <Route path="/my-chats" element={<MyChats />} />
       </Routes>
     </Router>

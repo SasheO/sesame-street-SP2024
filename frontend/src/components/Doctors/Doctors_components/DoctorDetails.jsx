@@ -3,9 +3,36 @@ import { IoMdStar, IoMdStarOutline, IoIosArrowBack } from "react-icons/io";
 import { IoTrashOutline, IoClose } from "react-icons/io5";
 import "./DoctorDetails.css";
 
-const DoctorDetails = ({ doctor, onBack }) => {
+const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
+  const [patientName, setPatientName] = useState("");
+  const [patientEmail, setPatientEmail] = useState("");
+  const [patientPhone, setPatientPhone] = useState("");
+  const [patientCondition, setpatientCondition] = useState("");
+  const [patientExtraDetails, setPatientExtraDetails] = useState("");
+
+  // Handle doctor request submission
+  const handleRequestSubmit = (e) => {
+    e.preventDefault();
+    setShowRequestForm(false);
+
+    // Mark doctor as requested
+    doctor.requested = true;
+
+    // Create a corresponding patient request
+    const newPatientRequest = {
+      id: Date.now(), // Unique ID
+      name: patientName || `Request for ${doctor.name}`, // change to current user's name
+      condition: patientCondition || "Pending Review",
+      alertLevel: "Low",
+      type: "requests", // Ensures it appears under Patient Requests
+      image: doctor.image,
+    };
+
+    // Pass new patient request to DoctorPatientsPage
+    onDoctorRequest(newPatientRequest);
+  };
 
   // Determine button text and class
   let buttonText = "Request Doctor";
@@ -60,7 +87,7 @@ const DoctorDetails = ({ doctor, onBack }) => {
       {showContactPopup && (
         <div className="popup">
           <div className="popup-content">
-            <IoClose className="close-btn" aria-label="Close icon" onClick={() => setShowContactPopup(false)}/>
+            <IoClose className="close-btn" onClick={() => setShowContactPopup(false)} />
             <h3>Contact {doctor.name}</h3>
             <p>Phone: (123) 456-7890</p>
           </div>
@@ -71,20 +98,42 @@ const DoctorDetails = ({ doctor, onBack }) => {
       {showRequestForm && (
         <div className="popup">
           <div className="popup-content">
-          <IoClose className="close-btn" aria-label="Close icon" onClick={() => setShowRequestForm(false)}/>
+            <IoClose className="close-btn" onClick={() => setShowRequestForm(false)} />
             <h3>Request to Speak with {doctor.name}</h3>
-            <form>
+            <form onSubmit={handleRequestSubmit}>
               <label>Name:</label>
-              <input type="text" placeholder="Enter your name" required />
+              <input type="text" 
+              placeholder="Enter your name" 
+              value={patientName} 
+              onChange={(e) => setPatientName(e.target.value)}
+              required />
 
               <label>Email:</label>
-              <input type="email" placeholder="Enter your email" required />
+              <input type="email" 
+              placeholder="Enter your email" 
+              value={patientEmail} 
+              onChange={(e) => setPatientEmail(e.target.value)}
+              required />
 
               <label>Phone Number:</label>
-              <input type="email" placeholder="Enter your phone number" required />
+              <input type="tel" 
+              placeholder="Enter your phone number" 
+              value={patientPhone} 
+              onChange={(e) => setPatientPhone(e.target.value)}
+              required />
+
+              <label>Health Conditions:</label>
+              <input type="text" 
+              placeholder="Enter your health condition(s)" 
+              value={patientCondition} 
+              onChange={(e) => setpatientCondition(e.target.value)}
+              required />
 
               <label>Reason for Appointment:</label>
-              <textarea placeholder="Enter your reason" required></textarea>
+              <textarea placeholder="Describe your symptoms" 
+              value={patientExtraDetails} 
+              onChange={(e) => setPatientExtraDetails(e.target.value)}
+              required></textarea>
 
               <button type="submit">Submit Request</button>
             </form>

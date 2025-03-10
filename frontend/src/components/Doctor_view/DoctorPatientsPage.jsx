@@ -6,11 +6,11 @@ import PatientDetails from "./PatientDetails";
 import mockPatients from "./mockPatients.json";
 import "./DoctorPatientsPage.css";
 
-const DoctorPatientsPage = () => {
+const DoctorPatientsPage = ({ doctorRequests }) => {
   const [filter, setFilter] = useState("current");
   const [search, setSearch] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [patients, setPatients] = useState(mockPatients);
+  const [patients, setPatients] = useState([...mockPatients, ...doctorRequests]);
 
   // Function to handle accepting a patient request
   const acceptPatient = (id) => {
