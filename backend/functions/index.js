@@ -16,7 +16,7 @@ const express = require("express");
 const app = express();
 const firebase = require("firebase-admin");
 
-firebase.initializeApp(functions.config().firebase); // initializa according to the project logged into lcoally i.e. carelink
+firebase.initializeApp(functions.firebase); // initializa according to the project logged into lcoally i.e. carelink
 const db = firebase.firestore();
 const cors = require("cors"); //-angelica
 app.use(express.json()); // Middleware to parse JSON body
@@ -175,6 +175,136 @@ app.get('/embedded_google_maps', (req, res) => { // each endpoint of app should 
             window.location.href = `tel:${phoneNumber}`;
         }
     }
+
+    function requestLocationAccess() {
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                alert(`Location Access Granted!\nLatitude: ${userLocation.lat}, Longitude: ${userLocation.lng}`);
+                findClosestHospitals(userLocation);
+            },
+            (error) => {
+                alert("Location access denied. Please enable location services in your settings.");
+                console.error("Error getting location:", error);
+            }
+        );
+    }
+    document.getElementById('locationAccessButton').addEventListener('click', requestLocationAccess);
+
+    function findClosestHospitals(userLocation) {
+        if (!userLocation) {
+            alert("User location is required to find nearby hospitals.");
+            return;
+        }
+
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: userLocation,
+            zoom: 14
+        });
+
+        const service = new google.maps.places.PlacesService(map);
+        service.nearbySearch(
+            {
+                location: userLocation,
+                radius: 5000, // Search within 5 km
+                type: ['hospital']
+            },
+            (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    displayHospitals(results.slice(0, 10));
+                } else {
+                    alert("No hospitals found nearby.");
+                }
+            }
+        );
+    }
+
+    function displayHospitals(hospitals) {
+        const hospitalsList = document.getElementById('hospitalsList');
+        hospitalsList.innerHTML = '';
+
+        hospitals.forEach((hospital, index) => {
+            const hospitalItem = document.createElement('div');
+            hospitalItem.innerHTML = `
+                <p><strong>${index + 1}. ${hospital.name}</strong></p>
+                <p>${hospital.vicinity}</p>
+                <button onclick="getDirections(${hospital.geometry.location.lat()}, ${hospital.geometry.location.lng()})">Get Directions</button>
+                <hr>
+            `;
+            hospitalsList.appendChild(hospitalItem);
+        });
+    }
+
+    function getDirections(hospitalLat, hospitalLng) {
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                const directionsService = new google.maps.DirectionsService();
+                const directionsRenderer = new google.maps.DirectionsRenderer();
+
+                const map = new google.maps.Map(document.getElementById('map'), {
+                    center: userLocation,
+                    zoom: 14
+                });
+
+                directionsRenderer.setMap(map);
+
+                const request = {
+                    origin: userLocation,
+                    destination: { lat: hospitalLat, lng: hospitalLng },
+                    travelMode: 'DRIVING'
+                };
+
+                directionsService.route(request, (result, status) => {
+                    if (status === 'OK') {
+                        directionsRenderer.setDirections(result);
+                        displayStepByStepDirections(result);
+                    } else {
+                        alert("Unable to get directions.");
+                    }
+                });
+            },
+            (error) => {
+                alert("Location access denied. Cannot fetch directions.");
+                console.error("Error getting location:", error);
+            }
+        );
+    }
+
+    function displayStepByStepDirections(directionsResult) {
+        const stepsDiv = document.getElementById('directionsSteps');
+        stepsDiv.innerHTML = '';
+
+        if (!directionsResult.routes.length) {
+            stepsDiv.innerHTML = '<p>No directions available.</p>';
+            return;
+        }
+
+        const steps = directionsResult.routes[0].legs[0].steps;
+        steps.forEach((step, index) => {
+            const stepItem = document.createElement('p');
+            stepItem.innerHTML = `<strong>Step ${index + 1}:</strong> ${step.instructions}`;
+            stepsDiv.appendChild(stepItem);
+        });
+    }
+
 });
 
 // Start server only if not in test mode
