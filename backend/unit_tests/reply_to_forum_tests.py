@@ -107,7 +107,7 @@ test_datas = {"good": {"replied_to_id": "z1r1DJJ1RlJYYg9rNrQJ",
              "post_description": "This is poorly researched.",
              "idToken": user_credentials['idToken']
              },
-             "emptyn replied_to_id and root_forum_id":{"replied_to_id": "",
+             "empty replied_to_id and root_forum_id":{"replied_to_id": "",
              "root_forum_id": "",
             # "replied_to_id": "c",
             #  "root_forum_id": "c",

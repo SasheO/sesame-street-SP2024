@@ -679,7 +679,7 @@ app.post("/post_forum", (req, res) => {
 
         // ensure the format is good format
         if (createdAtDateSt===""|| !createdAtDateSt) {
-          return res.status(422).json({message: "no dob entered"});
+          return res.status(422).json({message: "no created_at entered"});
         }
         const pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
         const _createdAt = new Date(createdAtDateSt
@@ -688,8 +688,13 @@ app.post("/post_forum", (req, res) => {
           return res.status(422).json({message:
             "invalid created_at format: should be mm-dd-yyyy"});
         }
+
+        if (_postDescription===""|| !_postDescription) {
+          return res.status(422).json({message: "no post_description entered"});
+        }
         const forumData = {
-          // all these are required fields for patients
+          // all these are required fields.
+          // except post description which is empty
           created_by: _createdBy,
           created_at: _createdAt,
           post_description: _postDescription,
@@ -702,9 +707,13 @@ app.post("/post_forum", (req, res) => {
             return res.status(422).json({message: "no title entered"});
           }
           forumData["title"] = _title;
+          
 
-          if (_title!==""||!(!_title)) {
+          if (!(!_tags)||_tags!=="") {
             forumData["tags"] = _tags;
+          }
+          else{
+            forumData["tags"] = null;
           }
 
           const newForumPost = forumRef.doc();
