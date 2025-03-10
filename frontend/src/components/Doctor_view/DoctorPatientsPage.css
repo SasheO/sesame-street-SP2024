@@ -1,17 +1,20 @@
 .filter-buttons {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 15px 90px;
   }
   
   .filter-buttons button {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    border: none;
-    background-color: #ddd;
+    padding: 15px 30px;
+    border-radius: 8px;
+    border: 2px solid #6979F8; /* Blue border */
+    color: #6979F8; /* Blue text */
+    width: 35%;
+    background-color: transparent;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    transition: 0.3s;
   }
   
   .filter-buttons button.active {
@@ -19,8 +22,22 @@
     color: white;
     font-weight: bold;
   }
-  
-  .filter-buttons button:hover {
-    background-color: #8a99f9;
+
+  .patient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
   }
+  
+  /* .filter-buttons button:hover {
+    background-color: #8a99f9;
+  } */
+
+  .no-results {
+    text-align: center;
+    color: gray;
+    font-size: 14px;
+    margin-top: 20px;
+}
   

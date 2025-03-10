@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
 import PatientCard from "./PatientCard";
@@ -8,8 +7,8 @@ import mockPatients from "./mockPatients.json";
 import "./DoctorPatientsPage.css";
 
 const DoctorPatientsPage = () => {
-  const navigate = useNavigate();
   const [filter, setFilter] = useState("current");
+  const [search, setSearch] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [patients, setPatients] = useState(mockPatients);
 
@@ -29,10 +28,45 @@ const DoctorPatientsPage = () => {
     );
   };
 
+  // Search functionality
+  const handleSearchChange = (term) => {
+    setSearch(term);
+  };
+
+  // Apply search filter along with category filter
+  const filteredPatients = patients.filter(
+    (p) => p.type === filter && p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="doctor-patients-page">
       <Header label="Doctor's Patients" />
-      <SearchBar placeholder="Search patients" />
+      <SearchBar 
+        placeholder="Search patients" 
+        initialValue={search} 
+        onSearch={handleSearchChange}
+        autoSearch={true}
+      />
+
+      {selectedPatient ? (
+        <PatientDetails patient={selectedPatient} onBack={() => setSelectedPatient(null)} />
+      ) : (
+        <div className="patient-list">
+          {filteredPatients.length > 0 ? (
+            filteredPatients.map((patient) => (
+              <PatientCard
+                key={patient.id}
+                patient={patient}
+                onClick={() => setSelectedPatient(patient)}
+                onAccept={filter === "requests" ? () => acceptPatient(patient.id) : null}
+                onDeny={filter === "requests" ? () => denyPatient(patient.id) : null}
+              />
+            ))
+          ) : (
+            <p className="no-results">No patients found</p>
+          )}
+        </div>
+      )}
 
       <div className="filter-buttons">
         <button
@@ -49,23 +83,6 @@ const DoctorPatientsPage = () => {
         </button>
       </div>
 
-      {selectedPatient ? (
-        <PatientDetails patient={selectedPatient} onBack={() => setSelectedPatient(null)} />
-      ) : (
-        <div className="patient-list">
-          {patients
-            .filter((p) => p.type === filter)
-            .map((patient) => (
-              <PatientCard
-                key={patient.id}
-                patient={patient}
-                onClick={() => setSelectedPatient(patient)}
-                onAccept={filter === "requests" ? () => acceptPatient(patient.id) : null}
-                onDeny={filter === "requests" ? () => denyPatient(patient.id) : null}
-              />
-            ))}
-        </div>
-      )}
     </div>
   );
 };

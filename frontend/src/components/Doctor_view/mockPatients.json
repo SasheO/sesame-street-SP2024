@@ -4,7 +4,7 @@
       "name": "Patient One",
       "condition": "Diabetes",
       "alertLevel": "⚠️",
-      "image": "/images/patient1.jpg",
+      "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
       "type": "current",
       "notes": ["Needs more exercise", "Monitor sugar levels"]
     },
@@ -13,7 +13,7 @@
       "name": "Patient Two",
       "condition": "High Blood Pressure",
       "alertLevel": "✔️",
-      "image": "/images/patient2.jpg",
+      "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
       "type": "current",
       "notes": ["Encourage low-sodium diet", "Monitor BP daily"]
     },
@@ -22,7 +22,7 @@
       "name": "Patient Three",
       "condition": "Asthma",
       "alertLevel": "⚠️",
-      "image": "/images/patient3.jpg",
+      "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
       "type": "requests",
       "notes": ["Needs inhaler prescription", "Avoid allergens"]
     }

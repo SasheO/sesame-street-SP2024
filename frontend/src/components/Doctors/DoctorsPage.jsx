@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
 import SearchBar from "../shared/SearchBar";
 import Header from "../shared/Header";
 import DoctorCard from "./Doctors_components/DoctorCard";
@@ -11,7 +10,6 @@ const DoctorsPage = ({ onClick }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [search, setSearch] = useState("");
   const [showRequested, setShowRequested] = useState(false);
-  const navigate = useNavigate();
 
   const handleSearchChange = (term) => {
     setSearch(term);
