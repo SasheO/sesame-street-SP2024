@@ -195,7 +195,7 @@ app.post("/sign_up", async (req, res) => {
   const password = req.body.password;
   const _firstName = req.body.first_name;
   const _surname = req.body.surname;
-  const _gender = req.body.gender;
+  // const _gender = req.body.gender;
 
   console.log("Received request:", req.body);
 
@@ -221,143 +221,143 @@ app.post("/sign_up", async (req, res) => {
 
 
   // // ORIGINAL SIGN_UP: (COMMENTED OUT)
-//   const _userType = req.body.user_type;
-//   if (!(_userType==="practitioner" || _userType==="patient")) {
-//     return res.status(422).json({message: "invalid user type"});
-//   }
+  // const _userType = req.body.user_type;
+  // if (!(_userType==="practitioner" || _userType==="patient")) {
+  //   return res.status(422).json({message: "invalid user type"});
+  // }
 
 
-//   firebase.auth().createUser({
-//     email: email,
-//     emailVerified: false,
-//     password: password,
-//     displayName: _firstName+" "+_surname,
-//   })
-//       .then((userCred) => {
-//         let userData = {};
-//         // const user = userCred.user;
-//         const _uid = userCred.uid;
+  // firebase.auth().createUser({
+  //   email: email,
+  //   emailVerified: false,
+  //   password: password,
+  //   displayName: _firstName+" "+_surname,
+  // })
+  //     .then((userCred) => {
+  //       let userData = {};
+  //       // const user = userCred.user;
+  //       const _uid = userCred.uid;
 
-//         if (_userType=="patient") {
-//           if (!("dob" in req.body)) {
-//             return res.status(422).json({message: "no dob entered"});
-//           }
-//           const dateSt = req.body.dob;
-//           const pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
-//           const _dob = new Date(dateSt.replace(pattern, "$3-$2-$1"));
-//           if (_dob === "Invalid Date" || isNaN(_dob)) {
-//             return res.status(422).json({message: "invalid dob format"});
-//           }
-//           userData = {
-//             // all these are required fields for patients
-//             uid: _uid,
-//             dob: _dob,
-//             userType: _userType,
-//             gender: _gender,
-//             first_name: _firstName,
-//             surname: _surname,
-//           };
+  //       if (_userType=="patient") {
+  //         if (!("dob" in req.body)) {
+  //           return res.status(422).json({message: "no dob entered"});
+  //         }
+  //         const dateSt = req.body.dob;
+  //         const pattern = /(\d{2})\.(\d{2})\.(\d{4})/;
+  //         const _dob = new Date(dateSt.replace(pattern, "$3-$2-$1"));
+  //         if (_dob === "Invalid Date" || isNaN(_dob)) {
+  //           return res.status(422).json({message: "invalid dob format"});
+  //         }
+  //         userData = {
+  //           // all these are required fields for patients
+  //           uid: _uid,
+  //           dob: _dob,
+  //           userType: _userType,
+  //           gender: _gender,
+  //           first_name: _firstName,
+  //           surname: _surname,
+  //         };
 
-//           // optional fields below
-//           if ("preferred_lang" in req.body) {
-//             userData["preferred_lang"] = req.body.preferred_lang;
-//           } else {
-//             userData["preferred_lang"] = null;
-//           }
-//           if ("gender" in req.body && !(req.body.gender==="")) {
-//             userData["gender"] = req.body.gender;
-//           } else {
-//             userData["gender"] = null;
-//           }
-//         } else if (_userType=="practitioner") { // userType = practitioner
-//           userData = {
-//             // all these are required fields for healthcare practictioners
-//             uid: _uid,
-//             userType: _userType,
-//             first_name: _firstName,
-//             surname: _surname,
+  //         // optional fields below
+  //         if ("preferred_lang" in req.body) {
+  //           userData["preferred_lang"] = req.body.preferred_lang;
+  //         } else {
+  //           userData["preferred_lang"] = null;
+  //         }
+  //         if ("gender" in req.body && !(req.body.gender==="")) {
+  //           userData["gender"] = req.body.gender;
+  //         } else {
+  //           userData["gender"] = null;
+  //         }
+  //       } else if (_userType=="practitioner") { // userType = practitioner
+  //         userData = {
+  //           // all these are required fields for healthcare practictioners
+  //           uid: _uid,
+  //           userType: _userType,
+  //           first_name: _firstName,
+  //           surname: _surname,
 
-//           };
+  //         };
 
-//           if ("specialty" in req.body) {
-//             if (req.body.specialty==="") {
-//               return res.status(422).json({message:
-//                     "no specialty entered"});
-//             }
-//             userData["specialty"] = req.body.specialty;
-//           } else {
-//             return res.status(422).json({message: "no specialty entered"});
-//           }
+  //         if ("specialty" in req.body) {
+  //           if (req.body.specialty==="") {
+  //             return res.status(422).json({message:
+  //                   "no specialty entered"});
+  //           }
+  //           userData["specialty"] = req.body.specialty;
+  //         } else {
+  //           return res.status(422).json({message: "no specialty entered"});
+  //         }
 
-//           if ("certification" in req.body) {
-//             if (req.body.certification==="") {
-//               return res.status(422).json({message:
-//                     "no certification provided"});
-//             }
+  //         if ("certification" in req.body) {
+  //           if (req.body.certification==="") {
+  //             return res.status(422).json({message:
+  //                   "no certification provided"});
+  //           }
 
-//             userData["certification"] = req.body.certification;
-//           } else {
-//             return res.status(422).json({message:
-//               "no certification entered"});
-//           }
+  //           userData["certification"] = req.body.certification;
+  //         } else {
+  //           return res.status(422).json({message:
+  //             "no certification entered"});
+  //         }
 
 
-//           // optional fields below
-//           if ("hospital_id" in req.body) {
-//             userData["hospital_id"] = req.body.hospital_id;
-//           } else {
-//             userData["hospital_id"] = null;
-//           }
-//           if ("gender" in req.body && !(req.body.gender==="")) {
-//             userData["gender"] = req.body.gender;
-//           } else {
-//             userData["gender"] = null;
-//           }
-//         }
+  //         // optional fields below
+  //         if ("hospital_id" in req.body) {
+  //           userData["hospital_id"] = req.body.hospital_id;
+  //         } else {
+  //           userData["hospital_id"] = null;
+  //         }
+  //         if ("gender" in req.body && !(req.body.gender==="")) {
+  //           userData["gender"] = req.body.gender;
+  //         } else {
+  //           userData["gender"] = null;
+  //         }
+  //       }
 
-//         // ensure empty values are converted to null
-//         for (const [key, value] of Object.entries(userData)) {
-//           if (value=="") {
-//             userData[key]=null;
-//           }
-//         }
+  //       // ensure empty values are converted to null
+  //       for (const [key, value] of Object.entries(userData)) {
+  //         if (value=="") {
+  //           userData[key]=null;
+  //         }
+  //       }
 
-//         // upload user record to user collections in firestore
-//         const userRef = db.collection("user");
-//         userRef.doc().set(userData).then(() =>{
-//           // TODO: set up all other user info being saved, log it to the
-//           console.log("Successfully created new user:"+userCred.uid);
-//           res.status(200).json({message: "Successfully created new user:"});
-//         });
-//       })
-//       .catch((error) => {
-//         console.log("Error: "+error.code+" "+error.message);
-//         res.status(500).json({error: "Some error has occured..."});
-//       // res.send("Error: "+error.code);
-//       });
+  //       // upload user record to user collections in firestore
+  //       const userRef = db.collection("user");
+  //       userRef.doc().set(userData).then(() =>{
+  //         // TODO: set up all other user info being saved, log it to the
+  //         console.log("Successfully created new user:"+userCred.uid);
+  //         res.status(200).json({message: "Successfully created new user:"});
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error: "+error.code+" "+error.message);
+  //       res.status(500).json({error: "Some error has occured..."});
+  //     // res.send("Error: "+error.code);
+  //     });
   // // END OF ORIGINAL SIGN_UP: (COMMENTED OUT)
 
   // // FULLSTACK SIGN_UP
-    // Automatically assign "patient" or another default
-    const _userType = "patient";
+  // Automatically assign "patient" or another default
+  const _userType = "patient";
 
-    try {
-      console.log("🛠 Creating user...");
-      const userRecord = await firebase.auth().createUser({
-        email: email,
-        emailVerified: false,
-        password: password,
-        displayName: _firstName+" "+_surname,
-      });
-      const _uid = userRecord.uid;
-      console.log("✅ User Created:", _uid);
-      const userData = {
-        uid: _uid,
-        first_name: _firstName,
-        surname: _surname,
-        email,
-        user_type: _userType,
-      };
+  try {
+    console.log("🛠 Creating user...");
+    const userRecord = await firebase.auth().createUser({
+      email: email,
+      emailVerified: false,
+      password: password,
+      displayName: _firstName+" "+_surname,
+    });
+    const _uid = userRecord.uid;
+    console.log("✅ User Created:", _uid);
+    const userData = {
+      uid: _uid,
+      first_name: _firstName,
+      surname: _surname,
+      email,
+      user_type: _userType,
+    };
 
     await db.collection("users").doc(_uid).set(userData);
     console.log("✅ User Data Saved to Firestore:", _uid);
@@ -569,66 +569,68 @@ app.get("/forums", async (req, res) => {
 
     // TODO: get forumRef by id and its replies
     forumRef.doc(forumId).get()
-      .then(async (querySnapshot) => {
-            if (!querySnapshot.empty) {
-                  let forumPost = querySnapshot.data();
-                  const createdBy = forumPost["created_by"];
-                  console.log(createdBy);
-                  await userRef.where('uid', '==', createdBy).get().then(async _querySnapshot => {
-                        if(!_querySnapshot.empty) {
-                            // return user data to client without revealing UID info
-                            const user = _querySnapshot.docs[0]; 
-                            var userData = user.data();
-                            forumPost['created_by']=userData["first_name"]+" "+userData["surname"];
-                            await forumRef
-                              .doc(forumId).collection("replies").get().then(repliesSnapshot => {
-                                    if(!repliesSnapshot.empty){
-                                          var replies = []
-                                          for (const item of repliesSnapshot.docs) {
-                                          replies.push(item.id)
-                                          }
-                                          return res.status(200).json({forum_post:forumPost, replies:replies});
-                                    }
-                                    else{
-                                          return res.status(200).json({forum_post:forumPost, replies:null});
-                                    }
-                              });
-                            
-                        }
-                        else{
-                              // if user is deleted, indicate so
-                              forumPost['created_by']="this user has been deleted";
-                              await forumRef
-                              .doc(forumId).collection("replies").get().then(repliesSnapshot => {
-                                    if(!repliesSnapshot.empty){
-                                          var replies = []
-                                          for (const item of repliesSnapshot.docs) {
-                                          replies.push(item.id)
-                                          }
-                                          return res.status(200).json({forum_post:forumPost, replies:replies});
-                                    }
-                                    else{
-                                          return res.status(200).json({forum_post:forumPost, replies:null});
-                                    }
-                              });
-
-                        }
-                    });   
-            }
-    });
-    
-
-  } 
-  else{
-      return res.status(422).json({message: "no forum id entered"});
+        .then(async (querySnapshot) => {
+          if (!querySnapshot.empty) {
+            const forumPost = querySnapshot.data();
+            const createdBy = forumPost["created_by"];
+            console.log(createdBy);
+            await userRef.where("uid", "==", createdBy)
+                .get().then(async (_querySnapshot) => {
+                  if (!_querySnapshot.empty) {
+                    // return user data to client without revealing UID info
+                    const user = _querySnapshot.docs[0];
+                    const userData = user.data();
+                    forumPost["created_by"]=userData["first_name"]+
+                    " "+userData["surname"];
+                    await forumRef
+                        .doc(forumId).collection("replies").get()
+                        .then((repliesSnapshot) => {
+                          if (!repliesSnapshot.empty) {
+                            const replies = [];
+                            for (const item of repliesSnapshot.docs) {
+                              replies.push(item.id);
+                            }
+                            return res.status(200)
+                                .json(
+                                    {forum_post: forumPost, replies: replies});
+                          } else {
+                            return res.status(200)
+                                .json({forum_post: forumPost, replies: null});
+                          }
+                        });
+                  } else {
+                    // if user is deleted, indicate so
+                    forumPost["created_by"]="this user has been deleted";
+                    await forumRef
+                        .doc(forumId).collection("replies").get()
+                        .then((repliesSnapshot) => {
+                          if (!repliesSnapshot.empty) {
+                            const replies = [];
+                            for (const item of repliesSnapshot.docs) {
+                              replies.push(item.id);
+                            }
+                            return res.status(200)
+                                .json(
+                                    {forum_post: forumPost, replies: replies});
+                          } else {
+                            return res.status(200)
+                                .json({forum_post: forumPost, replies: null});
+                          }
+                        });
+                  }
+                });
+          }
+        });
+  } else {
+    return res.status(422).json({message: "no forum id entered"});
   }
 });
 
 app.get("/myforums", async (req, res) => {
-      // get and verify user token 
-      // return all original posts with their uid as created_by
-      const idToken = req.query.idToken; // verify that user is logged in
-      const forumRef = db.collection("forum");
+  // get and verify user token
+  // return all original posts by given user
+  const idToken = req.query.idToken; // verify that user is logged in
+  const forumRef = db.collection("forum");
   if (idToken==null) {
     console.log("idToken==null");
     return res.status(401).json({message: "User is not logged in"});
@@ -637,26 +639,25 @@ app.get("/myforums", async (req, res) => {
   firebase.auth()
       .verifyIdToken(idToken)
       .then(async (decodedToken) => {
-        console.log("decodedToken.uid "+decodedToken.uid)
-        await forumRef.where('created_by', '==', decodedToken.uid).get().then(async querySnapshot => {
-          if (!querySnapshot.empty){
-            var myForumPosts = []
-              for (const item of querySnapshot.docs) {
-                myForumPosts.push(item)
+        console.log("decodedToken.uid "+decodedToken.uid);
+        await forumRef.where("created_by", "==", decodedToken.uid).get()
+            .then(async (querySnapshot) => {
+              if (!querySnapshot.empty) {
+                const myForumPosts = [];
+                for (const item of querySnapshot.docs) {
+                  myForumPosts.push(item);
+                }
+                return res.status(200).json({forum_posts: myForumPosts});
+              } else {
+                return res.status(200).json({forum_posts: []});
               }
-              return res.status(200).json({forum_posts:myForumPosts});
-          }
-          else{
-            return res.status(200).json({forum_posts:[]});
-          }
-        })
+            });
       })
       .catch((error) => {
         console.log(error);
         return res.status(500).json({error: "Some error has occured..."});
       });
-
-    });
+});
 
 app.post("/post_forum", (req, res) => {
   const idToken = req.body.idToken; // verify that user is logged in
@@ -707,12 +708,11 @@ app.post("/post_forum", (req, res) => {
             return res.status(422).json({message: "no title entered"});
           }
           forumData["title"] = _title;
-          
+
 
           if (!(!_tags)||_tags!=="") {
             forumData["tags"] = _tags;
-          }
-          else{
+          } else {
             forumData["tags"] = null;
           }
 
