@@ -710,10 +710,10 @@ app.post("/post_forum", (req, res) => {
           forumData["title"] = _title;
 
 
-          if (!(!_tags)||_tags!=="") {
-            forumData["tags"] = _tags;
-          } else {
+          if (!_tags||_tags==="") {
             forumData["tags"] = null;
+          } else {
+            forumData["tags"] = _tags;
           }
 
           const newForumPost = forumRef.doc();
