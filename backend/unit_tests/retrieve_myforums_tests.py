@@ -22,16 +22,28 @@ def sign_in_with_email_and_password(email, password, return_secure_token=True):
 
     return r.json()
 
-test_user_email = "tester.person@gmail.com"
-test_user_password = "12.3rdaskufq24eS"
-user_credentials = sign_in_with_email_and_password(test_user_email, test_user_password)
-params = {"idToken": user_credentials['idToken']}
+test_users = {"good patient": ("tester.person@gmail.com", "12.3rdaskufq24eS"), 
+              "good practitioner": ("practitioner2.tester@gmail.com", "12.3rdaskufq24eS"), 
+              "user with no replies":("practitioner.tester@gmail.com", "12.3rdaskufq24eS")
+              }
 
-response = requests.get("http://localhost:5000/myforums", params=params)
-try:
-    print(response)
-    print(response.json())
-    print(response.json()['forum_posts'])
 
-except Exception as e:
-    print(1, e)
+for label, (email, password) in test_users.items():
+    print(label)
+    user_credentials = sign_in_with_email_and_password(email, password)
+    params = {"idToken": user_credentials['idToken']}
+    response = requests.get("http://localhost:5000/myforums", params=params)
+    try:
+        print(response)
+        print(response.json())
+        print(response.json()['forum_posts'])
+
+    except Exception as e:
+        print(1, e)
+    print()
+    print()
+    print()
+    print()
+    print()
+    print()
+
