@@ -735,7 +735,6 @@ app.post("/post_forum", (req, res) => {
             // as a child of root forum id in firestore:
             // root forum id and replied to id
             const repliedToPost = await forumRef.doc(_repliedToId).get();
-            console.log(repliedToPost);
             const repliedPostData = repliedToPost.data();
             if (repliedPostData==null) {
               return res.status(422).json({message:
@@ -758,7 +757,6 @@ app.post("/post_forum", (req, res) => {
 
             const repliesRef = await forumRef.doc(_repliedToId)
                 .collection("replies");
-            console.log("repliesRef: "+repliesRef);
             repliesRef.doc().set(forumData).then(() =>{
               return res.status(200).json({message: "Reply created"});
             });
