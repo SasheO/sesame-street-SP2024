@@ -22,6 +22,10 @@
     {
       "source": "/embedded_google_search",
       "function": "app"
+    },
+    {
+      "source": "/api/getNearbyHospitals",
+      "function": "getNearbyHospitals"
     }
    ]
   },
