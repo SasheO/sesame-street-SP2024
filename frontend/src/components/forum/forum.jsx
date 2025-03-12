@@ -1,42 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BiHome, BiPlus, BiMessageRounded, BiX } from "react-icons/bi";
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, increment } from "firebase/firestore"; // ✅ Firestore functions
+import { db } from "../../firebase"; // ✅ Import Firestore DB
+import { BiHome, BiPlus, BiMessageRounded, BiX, BiHeart } from "react-icons/bi"; // ✅ Import Icons
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
 import "./Forum.css";
-
-const mockThreads = [
-  {
-    id: "mock-1",
-    title: "Local herbs for migraine",
-    user: "@username1",
-    date: "Dec 1, 2023",
-    content: "Natural remedies may help prevent the onset of migraine attacks...",
-    likes: 3456,
-    comments: [],
-    tags: ["health", "migraine", "herbs"],
-  },
-  {
-    id: "mock-2",
-    title: "What type of herb is this?",
-    user: "@username2",
-    date: "Jan 23, 2024",
-    content: "I came across this plant, does anyone know what this is?",
-    likes: 2540,
-    comments: [],
-    tags: ["plants", "herbs", "identification"],
-  },
-  {
-    id: "mock-3",
-    title: "Benefits of turmeric",
-    user: "@username3",
-    date: "Feb 5, 2024",
-    content: "Turmeric has anti-inflammatory properties that benefit health.",
-    likes: 1200,
-    comments: [],
-    tags: ["health", "herbs"],
-  }
-];
 
 const Forum = () => {
   const navigate = useNavigate();
@@ -44,19 +13,28 @@ const Forum = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [threads, setThreads] = useState([]);
 
+  // ✅ Fetch posts in real-time from Firestore
   useEffect(() => {
-    let storedThreads = JSON.parse(localStorage.getItem("forumPosts"));
+    const fetchPosts = () => {
+      const forumCollection = collection(db, "forum");
+      const q = query(forumCollection, orderBy("date", "desc"));
 
-    if (!storedThreads || storedThreads.length === 0) {
-      console.log("📌 No stored threads found. Initializing with mock data.");
-      localStorage.setItem("forumPosts", JSON.stringify(mockThreads));
-      storedThreads = mockThreads;
-    } else {
-      console.log("📌 Using stored forum posts.");
-    }
+      // Subscribe to Firestore changes
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const posts = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-    setThreads(storedThreads);
-  }, []);
+        console.log("📌 Fetched posts from Firestore:", posts);
+        setThreads(posts);
+      });
+
+      return unsubscribe; // Cleanup listener when component unmounts
+    };
+
+    fetchPosts();
+  }, []); // ✅ Runs once when the component mounts
 
   const toggleTag = (tag) => {
     setSelectedTags((prevTags) =>
@@ -66,15 +44,31 @@ const Forum = () => {
 
   const clearAllTags = () => setSelectedTags([]);
 
+  // ✅ Handle likes
+  const handleLike = async (threadId) => {
+    try {
+      const threadRef = doc(db, "forum", threadId);
+
+      await updateDoc(threadRef, {
+        likes: increment(1), // ✅ Correctly increments the like count
+      });
+
+      console.log(`✅ Liked post ${threadId}`);
+    } catch (error) {
+      console.error("⚠️ Error liking post:", error);
+    }
+  };
+
+  // ✅ Filter forum threads based on search & selected tags
   const filteredThreads = threads.filter((thread) => {
     if (!thread || !thread.title) return false;
 
     const matchesSearch =
       thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      (Array.isArray(thread.tags) && thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())));
 
-      const matchesTags =
-      selectedTags.length === 0 || selectedTags.every((tag) => thread.tags.includes(tag));    
+    const matchesTags =
+      selectedTags.length === 0 || selectedTags.every((tag) => Array.isArray(thread.tags) && thread.tags.includes(tag));
 
     return matchesSearch && matchesTags;
   });
@@ -115,11 +109,11 @@ const Forum = () => {
                   onClick={() => navigate(`/forum/${thread.id}`, { state: { post: thread } })}
                 >
                   <h3>{thread.title}</h3>
-                  <p>{thread.user} • {thread.date}</p>
+                  <p>{thread.author || "Anonymous"} • {thread.date ? new Date(thread.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}</p>
                   <p>{thread.content}</p>
                   <p className="thread-tags">
                     <strong>Tags: </strong>
-                    {thread.tags.map((tag) => (
+                    {(Array.isArray(thread.tags) ? thread.tags : []).map((tag) => (
                       <span
                         key={tag}
                         className={`tag ${selectedTags.includes(tag) ? "active" : ""}`}
@@ -133,8 +127,14 @@ const Forum = () => {
                     ))}
                   </p>
                   <div className="thread-actions">
-                    <span>❤️ {thread.likes}</span>
-                    <span>💬 {thread.comments.length}</span> {/* ✅ Fixed issue */}
+                    {/* ✅ Like Button (Clickable) */}
+                    <span className="like-btn" onClick={(e) => {
+                      e.stopPropagation(); // Prevents navigating when clicking like
+                      handleLike(thread.id); // ✅ Remove thread.likes (only pass thread.id)
+                    }}>
+                      ❤️ {thread.likes || 0}
+                    </span>
+                    <span>💬 {Array.isArray(thread.comments) ? thread.comments.length : 0}</span>
                   </div>
                 </div>
               ))}

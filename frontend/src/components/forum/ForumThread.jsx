@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { doc, getDoc, collection, addDoc, onSnapshot, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
+import { useAuth } from "../../context/AuthContext"; // ✅ Use AuthContext instead of Firebase Auth directly
+import { db } from "../../firebase"; // ✅ Firestore Database Import
 import Header from "../shared/Header";
 import { BiHeart, BiMessageRounded, BiShare } from "react-icons/bi";
 import "./ForumThread.css";
@@ -8,6 +11,7 @@ const ForumThread = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth(); // ✅ Get user from AuthContext
   const [post, setPost] = useState(location.state?.post || null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -15,56 +19,107 @@ const ForumThread = () => {
   const [newReply, setNewReply] = useState("");
   const [sortOrder, setSortOrder] = useState("best");
 
+  // ✅ Fetch post details from Firestore if not available in state
   useEffect(() => {
     if (!post) {
-      const storedPosts = JSON.parse(localStorage.getItem("forumPosts")) || [];
-      const foundPost = storedPosts.find((p) => String(p.id) === id);
+      const fetchPost = async () => {
+        try {
+          const postRef = doc(db, "forum", id);
+          const postSnap = await getDoc(postRef);
 
-      if (foundPost) {
-        setPost(foundPost);
-        setComments(Array.isArray(foundPost.comments) ? foundPost.comments : []);
-      } else {
-        console.error("⚠️ Post not found in storage!");
-        navigate("/forum");
-      }
+          if (postSnap.exists()) {
+            setPost({ id: postSnap.id, ...postSnap.data() });
+          } else {
+            console.error("⚠️ Post not found in Firestore!");
+            navigate("/forum");
+          }
+        } catch (error) {
+          console.error("Error fetching post:", error);
+        }
+      };
+
+      fetchPost();
     }
   }, [id, navigate, post]);
 
+  // ✅ Fetch comments in real-time
+  useEffect(() => {
+    if (!post) return;
+
+    const commentsRef = collection(db, "forum", id, "comments");
+
+    const unsubscribe = onSnapshot(commentsRef, (snapshot) => {
+      const loadedComments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setComments(loadedComments);
+    });
+
+    return () => unsubscribe(); // Cleanup listener on unmount
+  }, [id, post]);
+
   if (!post) return <div className="error-message">⚠️ Post not found.</div>;
 
-  const handleReply = () => {
-    if (!newComment.trim()) return;
-    const updatedComments = [...comments, { user: "You", text: newComment, date: "Just now", likes: 0, replies: [] }];
-    setComments(updatedComments);
-    setNewComment("");
-    updateLocalStorage(updatedComments);
-  };
-
-  const handleCommentReply = (index) => {
-    if (!newReply.trim()) return;
-    const updatedComments = [...comments];
-
-    if (!Array.isArray(updatedComments[index].replies)) {
-      updatedComments[index].replies = [];
+  // ✅ Handle new comment submission (Only If Logged In)
+  const handleReply = async () => {
+    if (!user) {
+      alert("You must be logged in to reply!");
+      return;
     }
 
-    updatedComments[index].replies.push({ user: "You", text: newReply, date: "Just now", likes: 0 });
-    setComments(updatedComments);
-    setNewReply("");
-    setReplyingTo(null);
-    updateLocalStorage(updatedComments);
+    if (!newComment.trim()) return;
+
+    try {
+      const commentsRef = collection(db, "forum", id, "comments");
+
+      await addDoc(commentsRef, {
+        user: user.displayName || user.email || "Unknown User", // ✅ Use email if displayName is null
+        text: newComment,
+        date: serverTimestamp(),
+        likes: 0,
+        replies: [],
+      });
+
+      setNewComment("");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
   };
 
-  const updateLocalStorage = (updatedComments) => {
-    const storedPosts = JSON.parse(localStorage.getItem("forumPosts")) || [];
-    const updatedPosts = storedPosts.map((p) => (String(p.id) === String(post.id) ? { ...p, comments: updatedComments } : p));
-    localStorage.setItem("forumPosts", JSON.stringify(updatedPosts));
-    setPost((prevPost) => ({ ...prevPost, comments: updatedComments }));
+  // ✅ Handle comment reply (Only If Logged In)
+  const handleCommentReply = async (commentId) => {
+    if (!user) {
+      alert("You must be logged in to reply!");
+      return;
+    }
+
+    if (!newReply.trim()) return;
+
+    try {
+      const commentRef = doc(db, "forum", id, "comments", commentId);
+
+      await updateDoc(commentRef, {
+        replies: arrayUnion({
+          user: user.displayName || user.email || "Unknown User", // ✅ Use email if displayName is null
+          text: newReply,
+          date: new Date().toISOString(),
+          likes: 0,
+        }),
+      });
+
+      setNewReply("");
+      setReplyingTo(null);
+    } catch (error) {
+      console.error("Error adding reply:", error);
+    }
   };
 
+  // ✅ Sort comments based on likes or newest
   const sortedComments = [...comments].sort((a, b) => {
     if (sortOrder === "best") return b.likes - a.likes;
-    return new Date(b.date) - new Date(a.date);
+    return new Date(b.date?.seconds * 1000) - new Date(a.date?.seconds * 1000);
   });
 
   return (
@@ -74,46 +129,51 @@ const ForumThread = () => {
 
       <div className="post-container">
         <h2 className="post-title">{post.title}</h2>
-        <p className="post-meta">@{post.author} • {post.date}</p>
+        <p className="post-meta">
+          @{post.author} • {post.date?.seconds ? new Date(post.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}
+        </p>
         <p className="post-content">{post.content}</p>
         <div className="post-actions">
-          <span className="action"><BiHeart /> {post.likes}</span>
+          <span className="action"><BiHeart /> {post.likes || 0}</span>
           <span className="action"><BiMessageRounded /> {comments.length}</span>
           <span className="action"><BiShare /></span>
         </div>
-        <div className="comment-box">
-          <input type="text" placeholder="Join the conversation" value={newComment} onChange={(e) => setNewComment(e.target.value)} />
-          <button onClick={handleReply}>Reply</button>
-        </div>
+
+        {/* ✅ Show comment box only if logged in */}
+        {user ? (
+          <div className="comment-box">
+            <input type="text" placeholder="Join the conversation" value={newComment} onChange={(e) => setNewComment(e.target.value)} />
+            <button onClick={handleReply}>Reply</button>
+          </div>
+        ) : (
+          <p className="login-message">🔒 <a href="/login">Log in</a> to join the conversation.</p>
+        )}
+
+        {/* ✅ Comments Section */}
         <div className="comments-section">
           {sortedComments.length > 0 ? (
-            sortedComments.map((comment, index) => (
-              <div key={`comment-${post.id}-${index}`} className="comment">
-                <p><strong>@{comment.user}</strong> • {comment.date}</p>
-                <p>{typeof comment.text === "string" ? comment.text : "Invalid comment"}</p>  {/* ✅ Fix applied */}
+            sortedComments.map((comment) => (
+              <div key={comment.id} className="comment">
+                <p><strong>@{comment.user}</strong> • 
+                  {comment.date?.seconds ? new Date(comment.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}
+                </p>
+                <p>{typeof comment.text === "string" ? comment.text : "Invalid comment"}</p>
                 <div className="comment-actions">
                   <span><BiHeart /> {comment.likes}</span>
-                  <span className="reply-btn" onClick={() => setReplyingTo(replyingTo === index ? null : index)}>
-                    <BiMessageRounded /> Reply
-                  </span>
+
+                  {/* ✅ Only allow logged-in users to reply */}
+                  {user && (
+                    <span className="reply-btn" onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}>
+                      <BiMessageRounded /> Reply
+                    </span>
+                  )}
                 </div>
-                {replyingTo === index && (
+
+                {/* ✅ Reply Input (Only If Logged In) */}
+                {user && replyingTo === comment.id && (
                   <div className="reply-box">
                     <input type="text" placeholder="Write a reply..." value={newReply} onChange={(e) => setNewReply(e.target.value)} />
-                    <button onClick={() => handleCommentReply(index)}>Post Reply</button>
-                  </div>
-                )}
-                {Array.isArray(comment.replies) && comment.replies.length > 0 && (
-                  <div className="nested-replies">
-                    {comment.replies.map((reply, i) => (
-                      <div key={`reply-${post.id}-${index}-${i}`} className="reply">
-                        <p><strong>@{reply.user}</strong> • {reply.date}</p>
-                        <p>{typeof reply.text === "string" ? reply.text : "Invalid reply"}</p>  {/* ✅ Fix applied */}
-                        <div className="reply-actions">
-                          <span><BiHeart /> {reply.likes}</span>
-                        </div>
-                      </div>
-                    ))}
+                    <button onClick={() => handleCommentReply(comment.id)}>Post Reply</button>
                   </div>
                 )}
               </div>

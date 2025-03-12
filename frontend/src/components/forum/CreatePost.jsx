@@ -1,48 +1,63 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore"; // Firestore functions
+import { useAuth } from "../../context/AuthContext"; // ✅ Import Auth Context
+import { db } from "../../firebase"; // ✅ Import Firestore DB
 import Header from "../shared/Header";
 import "./CreatePost.css";
 
 const CreatePost = () => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // ✅ Get authenticated user
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
 
-  const handleCreatePost = () => {
+  const handleCreatePost = async () => {
     if (!title.trim() || !content.trim()) {
       console.error("⚠️ Cannot save post: Missing title or content!");
       return;
     }
   
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
-    const allPosts = JSON.parse(localStorage.getItem("forumPosts")) || [];
+    // const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
+    // const allPosts = JSON.parse(localStorage.getItem("forumPosts")) || [];
   
     // ✅ Generate a unique ID by finding the highest ID and adding 1
-    const newId = allPosts.length > 0 ? Math.max(...allPosts.map(post => post.id)) + 1 : 1;
+    //const newId = allPosts.length > 0 ? Math.max(...allPosts.map(post => post.id)) + 1 : 1;
   
+    try{
     const newPost = {
       id: Date.now(), // ✅ Ensuring unique ID
       title: title.trim(),
       content: content.trim(),
       tags: tags ? tags.split(",").map(tag => tag.trim()) : [],
-      author: loggedInUser.email || "Anonymous",
-      date: new Date().toLocaleDateString(),
+      author: user.email || "Anonymous",
+      date: serverTimestamp(), // ✅ Store timestamp in Firestore
       comments: [],
       likes: 0,
     };
+
+    // ✅ Save the post to Firestore
+    await addDoc(collection(db, "forum"), newPost);
+    console.log("✅ Post successfully created in Firestore!");
+
   
-    console.log("✅ Saving new post:", newPost);
+    //console.log("✅ Saving new post:", newPost);
   
-    const updatedPosts = [newPost, ...allPosts];
-    localStorage.setItem("forumPosts", JSON.stringify(updatedPosts));
+    // const updatedPosts = [newPost, ...allPosts];
+    // localStorage.setItem("forumPosts", JSON.stringify(updatedPosts));
   
-    // ✅ Trigger localStorage update event to refresh MyChats
-    window.dispatchEvent(new Event("storage"));
+    // // ✅ Trigger localStorage update event to refresh MyChats
+    // window.dispatchEvent(new Event("storage"));
   
-    console.log("📌 Updated posts in localStorage:", updatedPosts);
+    // console.log("📌 Updated posts in localStorage:", updatedPosts);
   
-    navigate("/forum");
+    // navigate("/forum");
+    // ✅ Navigate to the forum page after saving
+      navigate("/forum");
+    } catch (error) {
+      console.error("❌ Error saving post:", error);
+    }
   };
   
 
