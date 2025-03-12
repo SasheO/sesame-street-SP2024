@@ -73,11 +73,16 @@ const Forum = () => {
       thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      const matchesTags =
+    const matchesTags =
       selectedTags.length === 0 || selectedTags.every((tag) => thread.tags.includes(tag));    
 
     return matchesSearch && matchesTags;
   });
+
+  const truncateContent = (content, limit = 100) => {
+    if (content.length <= limit) return content;
+    return content.substring(0, limit) + "...";
+  };
 
   return (
     <div className="forum-page">
@@ -116,7 +121,19 @@ const Forum = () => {
                 >
                   <h3>{thread.title}</h3>
                   <p>{thread.user} • {thread.date}</p>
-                  <p>{thread.content}</p>
+                  <p>
+                    {truncateContent(thread.content)}
+                    {thread.content.length > 100 && (
+                      <button 
+                        className="read-more" 
+                        role="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/forum/${thread.id}`, { state: { post: thread } });
+                        }}
+                      > Read More</button>
+                    )}
+                  </p>
                   <p className="thread-tags">
                     <strong>Tags: </strong>
                     {thread.tags.map((tag) => (
@@ -134,7 +151,7 @@ const Forum = () => {
                   </p>
                   <div className="thread-actions">
                     <span>❤️ {thread.likes}</span>
-                    <span>💬 {thread.comments.length}</span> {/* ✅ Fixed issue */}
+                    <span>💬 {thread.comments.length}</span>
                   </div>
                 </div>
               ))}
