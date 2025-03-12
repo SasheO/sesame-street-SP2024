@@ -122,18 +122,20 @@ const Forum = () => {
                   <h3>{thread.title}</h3>
                   <p>{thread.user} • {thread.date}</p>
                   <p>
-                    {truncateContent(thread.content)}
+                    {truncateContent(thread.content)}{" "}
                     {thread.content.length > 100 && (
-                      <button 
-                        className="read-more" 
-                        role="button"
+                      <span 
+                        className="read-more"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/forum/${thread.id}`, { state: { post: thread } });
                         }}
-                      > Read More</button>
+                      >
+                        Read More
+                      </span>
                     )}
                   </p>
+
                   <p className="thread-tags">
                     <strong>Tags: </strong>
                     {thread.tags.map((tag) => (
