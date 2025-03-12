@@ -1,0 +1,30 @@
+.doctor-card {
+    display: flex;
+    align-items: stretch;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 8px;
+    width: 70%;
+    height:200px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .doctor-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .doctor-image {
+    display: flex;
+    width: 35%;
+    border-radius: 10px 0px 0px 10px;
+    object-fit: cover;
+    padding-right: 10px;
+  }
+
+  .doctor-info {
+    flex: 1;
+    text-align: left;
+  }

@@ -1,0 +1,130 @@
+.doctor-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    margin: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 16px;
+    width: 60%;
+    cursor: pointer;
+}
+
+.icons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 15px;
+}
+
+.back-icon {
+    display: flex;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #6979F8;
+    cursor: pointer;
+}
+
+.back-icon:hover {
+    transform: scale(1.1);
+}
+
+.trash-icon {
+    display: flex;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #6979F8;
+    cursor: pointer;
+}
+
+.doctor-info-container {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.doctor-info-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.doctor-info-image img {
+    border-radius: 8px;
+}
+
+.doctor-info-text {
+    flex: 1;
+    text-align: left;
+    padding-left: 12px;
+}
+
+.contact-button {
+    width: 70%;
+    padding: 15px;
+}
+.contact-button.request {
+    background-color: #6979F8; /* Purple */
+    color: white;
+}
+
+.contact-button.requested {
+    background-color: #a0a0a0; /* Grey */
+    color: white;
+}
+
+.bio {
+    padding: 12px;
+}
+
+.doctor-details h2 {
+    font-size: 24px;
+    color: #333;
+    margin: 10px 0px;
+}
+
+.doctor-details p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.popup {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    width: 50%;
+    text-align: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.popup input,
+.popup textarea {
+    width: 90%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

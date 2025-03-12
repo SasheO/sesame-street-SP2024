@@ -1,4 +1,6 @@
 import React from 'react';
+import { IoMdStar } from "react-icons/io";
+import { IoMdStarOutline } from "react-icons/io";
 import './LocationDetails.css';
 
 const LocationDetails = ({ facility, onBack }) => {
@@ -9,8 +11,12 @@ const LocationDetails = ({ facility, onBack }) => {
       <p>{facility.distance}</p>
       <p>Hours: {facility.hours}</p>
       <div className="rating">
-        {"⭐".repeat(facility.rating)}
-        {"☆".repeat(5 - facility.rating)}
+        {Array.from({ length: facility.rating }, (_, index) => (
+          <IoMdStar key={index} className="rating-icon" />
+        ))}
+        {Array.from({ length: 5 - facility.rating }, (_, index) => (
+          <IoMdStarOutline key={`empty-${index}`} className="rating-icon empty-star" />
+        ))}
       </div>
       <div className="map-placeholder">
         <p>Map goes here (use Google Maps or similar library)</p>

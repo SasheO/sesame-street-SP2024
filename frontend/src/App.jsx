@@ -10,6 +10,7 @@ import Forum from "./components/forum/forum"
 import ForumThread from "./components/Forum/ForumThread";
 import CreatePost from "./components/Forum/CreatePost";
 import SearchResults from "./components/HomePage/HomePage_components/SearchResults";
+import DoctorsPage from './components/Doctors/DoctorsPage';
 import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage"; 
 import MyChats from "./components/Forum/MyChats";
 import './App.css';
@@ -29,6 +30,7 @@ function App() {
         <Route path="/forum/create" element={<CreatePost />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/search-results" element={<SearchResults />} />
+        <Route path="/doctor" element={<DoctorsPage />} />
         <Route path="/doctor-patients" element={<DoctorPatientsPage />} /> 
         <Route path="/my-chats" element={<MyChats />} />
       </Routes>

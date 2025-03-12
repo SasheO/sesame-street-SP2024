@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import SearchBar from '../shared/SearchBar';
 import Header from '../shared/Header';
 import LocationCard from './Locations_components/LocationCard';
@@ -9,7 +8,6 @@ import './LocationsPage.css';
 
 const LocationsPage  = ({ onClick }) => {
   const [selectedFacility, setSelectedFacility] = useState(null);
-  const navigate = useNavigate();
 
   return (
     <div className="locations-page" onClick={onClick}>
