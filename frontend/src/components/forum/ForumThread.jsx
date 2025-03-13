@@ -78,7 +78,7 @@ const ForumThread = () => {
         user: user.displayName || user.email || "Unknown User", // ✅ Use email if displayName is null
         text: newComment,
         date: serverTimestamp(),
-        likes: 0,
+        likes: [],
         replies: [],
       });
 

@@ -4,7 +4,7 @@ import { BiHome } from "react-icons/bi";
 import { useAuth } from "../../context/AuthContext"; // ✅ Import Auth Context
 import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { signOut, deleteUser } from "firebase/auth";
+import { signOut, deleteUser, updateEmail } from "firebase/auth";
 import "./profile.css";
 
 const Profile = () => {
@@ -36,15 +36,50 @@ const Profile = () => {
 
   const handleEdit = () => setIsEditing(true);
 
+ 
   const handleSave = async () => {
     try {
-      await updateDoc(doc(db, "users", user.uid), { bio: updatedUser.bio });
-      setIsEditing(false);
-      console.log("✅ Bio updated successfully in Firestore");
+        if (!auth.currentUser) {
+            console.error("❌ No authenticated user found.");
+            return;
+        }
+
+        // Split the updated name into first_name and surname
+        const nameParts = updatedUser.name.trim().split(" ");
+        const firstName = nameParts[0];
+        const surname = nameParts.slice(1).join(" ");
+
+        // Update Firestore user document
+        await updateDoc(doc(db, "users", user.uid), {
+            first_name: firstName,
+            surname: surname,
+            bio: updatedUser.bio,
+            email: updatedUser.email // ✅ Update email in Firestore
+        });
+
+        // ✅ Update email in Firebase Authentication and disabled email verication feature for now
+        if (updatedUser.email !== user.email) {
+            try {
+                await updateEmail(auth.currentUser, updatedUser.email);
+                console.log("✅ Email updated in Firebase Auth");
+            } catch (error) {
+                if (error.code === "auth/operation-not-allowed") {
+                    console.warn("⚠️ Firebase email verification required, but ignoring for now.");
+                } else {
+                    console.error("❌ Error updating email:", error);
+                    alert("⚠️ Email update failed, but profile info was saved.");
+                }
+            }
+        }
+
+        setIsEditing(false);
+        console.log("✅ Profile updated successfully in Firestore and Firebase Auth");
+
     } catch (error) {
-      console.error("❌ Error updating profile:", error);
+        console.error("❌ Error updating profile:", error);
+        alert("⚠️ Error saving profile. Please try again.");
     }
-  };
+};
 
   const handleLogout = async () => {
     await signOut(auth);

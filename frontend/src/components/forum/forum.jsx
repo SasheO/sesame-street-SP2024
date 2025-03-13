@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, increment } from "firebase/firestore"; // ✅ Firestore functions
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, increment, getDoc } from "firebase/firestore"; 
 import { db } from "../../firebase"; // ✅ Import Firestore DB
 import { BiHome, BiPlus, BiMessageRounded, BiX, BiHeart } from "react-icons/bi"; // ✅ Import Icons
 import Header from "../shared/Header";
@@ -19,7 +19,7 @@ const Forum = () => {
       const forumCollection = collection(db, "forum");
       const q = query(forumCollection, orderBy("date", "desc"));
 
-      // Subscribe to Firestore changes
+      // Subscribe to real-time updates
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const posts = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -34,30 +34,22 @@ const Forum = () => {
     };
 
     fetchPosts();
-  }, []); // ✅ Runs once when the component mounts
-
-  const toggleTag = (tag) => {
-    setSelectedTags((prevTags) =>
-      prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
-    );
-  };
-
-  const clearAllTags = () => setSelectedTags([]);
-
-  // ✅ Handle likes
+  }, []);
   const handleLike = async (threadId) => {
     try {
-      const threadRef = doc(db, "forum", threadId);
+        const threadRef = doc(db, "forum", threadId);
+        
+        // ✅ Increment likes count only
+        await updateDoc(threadRef, {
+            likes: increment(1) // Directly increments likes
+        });
 
-      await updateDoc(threadRef, {
-        likes: increment(1), // ✅ Correctly increments the like count
-      });
-
-      console.log(`✅ Liked post ${threadId}`);
+        console.log(`✅ Liked post ${threadId}`);
     } catch (error) {
-      console.error("⚠️ Error liking post:", error);
+        console.error("⚠️ Error liking post:", error);
     }
-  };
+};
+
 
   // ✅ Filter forum threads based on search & selected tags
   const filteredThreads = threads.filter((thread) => {
@@ -88,10 +80,10 @@ const Forum = () => {
           <p>Filtering by: </p>
           {selectedTags.map((tag) => (
             <span key={tag} className="selected-tag">
-              {tag} <BiX className="remove-tag" onClick={() => toggleTag(tag)} />
+              {tag} <BiX className="remove-tag" onClick={() => setSelectedTags(selectedTags.filter(t => t !== tag))} />
             </span>
           ))}
-          <button className="clear-all-tags" onClick={clearAllTags}>Clear All</button>
+          <button className="clear-all-tags" onClick={() => setSelectedTags([])}>Clear All</button>
         </div>
       )}
 
@@ -119,22 +111,24 @@ const Forum = () => {
                         className={`tag ${selectedTags.includes(tag) ? "active" : ""}`}
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleTag(tag);
+                          setSelectedTags((prevTags) =>
+                            prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
+                          );
                         }}
                       >
                         {tag}
                       </span>
                     ))}
                   </p>
+                  
+                  {/* ✅ Like & Comment Count Centered on Same Level */}
                   <div className="thread-actions">
-                    {/* ✅ Like Button (Clickable) */}
-                    <span className="like-btn" onClick={(e) => {
-                      e.stopPropagation(); // Prevents navigating when clicking like
-                      handleLike(thread.id); // ✅ Remove thread.likes (only pass thread.id)
-                    }}>
-                      ❤️ {thread.likes || 0}
+                    <span className="action like-action" onClick={(e) => { e.stopPropagation(); handleLike(thread.id); }}>
+                      <BiHeart className="action-icon" /> {thread.likes || 0}
                     </span>
-                    <span>💬 {Array.isArray(thread.comments) ? thread.comments.length : 0}</span>
+                    <span className="action comment-action">
+                      <BiMessageRounded className="action-icon" /> {thread.comments || 0}
+                    </span>
                   </div>
                 </div>
               ))}

@@ -20,17 +20,15 @@ function HomePage() {
     }
   };
 
-  // ✅ Redirect to login page if user is not logged in (inside useEffect)
+  // ✅ Debugging: Check user state
   useEffect(() => {
-    console.log("User state in HomePage:", user, "Loading:", loading);
-    console.log("User role:", user?.role);
-    if (!loading && !user) {
-      navigate("/");
-    }
-  }, [user, loading, navigate]);
+    console.log("HomePage Check - User:", user);
+    console.log("HomePage Check - Loading State:", loading);
+    console.log("HomePage Check - User Role:", user?.role);
+  }, [user, loading]);
 
   // ✅ If loading, show a loading state
-  if (loading) {
+  if (loading ) {
     return <div>Loading...</div>;
   }
 
@@ -39,17 +37,16 @@ function HomePage() {
       <Header label="Carelink Home" />
       <SearchBar placeholder="Find a simple remedy" onSearch={handleSearch} initialValue={query} />
       <div className="features-container">
+        {/* ✅ Always show these two features */}
         <FeatureCard Icon={BiMap} label="Healthcare near you" onClick={() => navigate("/locations")} />
+        <FeatureCard Icon={BiMessageRoundedDetail} label="Community forum" onClick={() => navigate("/forum")} />
+
         
-        {/* ✅ Hide 'Chat with a doctor' if user is a doctor */}
-        {user?.role !== "doctor" && (
+        {user && user.role && user.role !== "doctor" && (
           <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" onClick={() => navigate("/doctor")} />
         )}
 
-        <FeatureCard Icon={BiMessageRoundedDetail} label="Community forum" onClick={() => navigate("/forum")} />
-
-        {/* ✅ Hide 'Patient Requests' if user is a patient */}
-        {user?.role !== "patient" && (
+        {user && user.role && user.role !== "patient" && (
           <FeatureCard Icon={BiSolidUserPlus} label="Patient requests" onClick={() => navigate("/doctor-patients?view=requests")} />
         )}
       </div>
