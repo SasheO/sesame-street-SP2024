@@ -778,21 +778,35 @@ app.post("/post_forum", (req, res) => {
       });
 });
 
+app.get("/send_doctor_connection_request", (req, res) => {
+  // user should be logged in patient
+  // they should send the doctor they want to connect with
+});
+
 app.get("/my_doctor_requests", (req, res) => {
   // user should be logged in patient
   // show them requests sent
-  // divide results into pending vs accepted
+  // divide results into pending vs accepted vs rejected
+  // return all requests as well as pending, accepted, rejected as separate lists
+});
+
+app.pot("/delete_doctor_requests", (req, res) => {
+  // user should be logged in patient
+  // should provide id of doctor request
+  // delete it
 });
 
 app.get("/my_patient_requests", (req, res) => {
   // user should be logged in practitioner
   // return all requests by still existing users
-  // divide results into pending vs accepted
+  // divide results into pending vs accepted vs rejected
+  // return all requests as well as pending, accepted, rejected as separate lists
 });
 
-app.get("/send_doctor_connection_request", (req, res) => {
-  // user should be logged in patient
-  // they should send the doctor they want to connect with
+app.get("/respond_to_patient_requests", (req, res) => {
+  // user should be logged in practitioner
+  // accept or delete based
+  // display message
 });
 
 // TODO: don't think i can sign in or out with
