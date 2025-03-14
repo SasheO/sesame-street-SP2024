@@ -778,9 +778,82 @@ app.post("/post_forum", (req, res) => {
       });
 });
 
-app.get("/send_doctor_connection_request", (req, res) => {
+app.post("/send_doctor_connection_request", (req, res) => {
   // user should be logged in patient
   // they should send the doctor they want to connect with
+  // info:
+  // a. Doctor id
+  // b. patient id
+  // c. user alert level (1 mild, 2 moderate, 3 severe)
+  // d. general background of user (i.e. user name, gender, age)
+  // e. Symptoms
+  // f. Doctor notes (initialized to null, updated when doctor  gives one)
+  // g. contact information of patient (phone number)
+  // h. Status of accepted or rejected or pending
+  // i. Doctor message to patient (initialized as null, will be populated when the doctor accepts or deletes)
+  // j. Timestamp received (created on backend)
+  // Patient not allowed to send a new request to same practitioner if existing on less than two weeks old
+  const idToken = req.body.idToken;
+
+  if (idToken==null ) {
+    console.log("idToken==null");
+    return res.status(401).json({message: "User is not logged in"});
+  }
+
+  const _practitionerUID = req.body.practitioner_id;
+  const _requestAlertLevel = req.body.alert_level;
+  const _symptoms = req.body.symptoms;
+  const _doctorNotes = null;
+  const _practictionerMessageToPatient = null;
+  const _patientPhoneNumber = req.body.phone_number;
+  const _status = "pending";
+
+  firebase.auth()
+      .verifyIdToken(idToken)
+      .then(async (decodedToken) => {
+        const _patientUID = decodedToken.uid;
+        console.log("patientUID: "+_patientUID);
+        // to do here: check if doctor exists
+        const userRef = db.collection("user");
+        await userRef.where("uid", "==", _practitionerUID).get().then((querySnapshot) => {
+          if (querySnapshot.empty) {
+            // return user data to client without revealing UID info
+            return res.status(422).json({message: "Doctor does not exist"});
+          }
+        })
+        // TODO here: check if user already has rejected request with doctor less than 2 weeks old
+
+        doctorPatientConnectionRequest = {
+          // all these are required fields for patients
+          patientUID: _patientUID,
+          request_alert_level: _requestAlertLevel;
+          symptoms = _symptoms,
+          doctor_notes: _doctorNotes,
+          practictioner_message_to_patient: _practictionerMessageToPatient,
+          patient_phone_number = _patientPhoneNumber,
+          status: _status,
+          created_at: Date.now(), // timestamp created in milliseconds
+        };
+
+        console.log(doctorPatientConnectionRequest);
+
+        const doctorPatientConnectionRef = db.collection("doctor_patient_connection");
+        doctorPatientConnectionRef.doc().set(doctorPatientConnectionRequest).then((request) =>{
+          // TODO: set up all other user info being saved, log it to the
+          console.log("Successfully sent request: "+request);
+          res.status(200).json({message: "Successfully sent request"});
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(500).json({message: "Some error has occurred..."});
+        });
+
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).json({message: "Some error has occurred..."});
+      });
+  
 });
 
 app.get("/my_doctor_requests", (req, res) => {
