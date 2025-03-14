@@ -826,11 +826,11 @@ app.post("/send_doctor_connection_request", (req, res) => {
         doctorPatientConnectionRequest = {
           // all these are required fields for patients
           patientUID: _patientUID,
-          request_alert_level: _requestAlertLevel;
-          symptoms = _symptoms,
+          request_alert_level: _requestAlertLevel,
+          symptoms: _symptoms,
           doctor_notes: _doctorNotes,
           practictioner_message_to_patient: _practictionerMessageToPatient,
-          patient_phone_number = _patientPhoneNumber,
+          patient_phone_number: _patientPhoneNumber,
           status: _status,
           created_at: Date.now(), // timestamp created in milliseconds
         };
@@ -863,7 +863,7 @@ app.get("/my_doctor_requests", (req, res) => {
   // return all requests as well as pending, accepted, rejected as separate lists
 });
 
-app.pot("/delete_doctor_requests", (req, res) => {
+app.post("/delete_doctor_requests", (req, res) => {
   // user should be logged in patient
   // should provide id of doctor request
   // delete it

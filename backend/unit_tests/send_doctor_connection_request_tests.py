@@ -42,7 +42,7 @@ test cases:
 5. 
 '''
 
-response = requests.post("http://localhost:5000/myforums", json=test_data)
+response = requests.post("http://localhost:5000/send_doctor_connection_request", json=test_data)
 try:
     print(response)
     print(response.json())
