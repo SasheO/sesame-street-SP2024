@@ -778,6 +778,23 @@ app.post("/post_forum", (req, res) => {
       });
 });
 
+app.get("/my_doctor_requests", (req, res) => {
+  // user should be logged in patient
+  // show them requests sent
+  // divide results into pending vs accepted
+});
+
+app.get("/my_patient_requests", (req, res) => {
+  // user should be logged in practitioner
+  // return all requests by still existing users
+  // divide results into pending vs accepted
+});
+
+app.get("/send_doctor_connection_request", (req, res) => {
+  // user should be logged in patient
+  // they should send the doctor they want to connect with
+});
+
 // TODO: don't think i can sign in or out with
 
 exports.app = onRequest(app); // exports.'app' is the app in firebase.json
