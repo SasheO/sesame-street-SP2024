@@ -6,19 +6,22 @@ import PatientDetails from "./PatientDetails";
 import mockPatients from "./mockPatients.json";
 import "./DoctorPatientsPage.css";
 
-const DoctorPatientsPage = ({ doctorRequests }) => {
+const DoctorPatientsPage = ({ doctorRequests = [], updateDoctorStatus }) => {
   const [filter, setFilter] = useState("current");
   const [search, setSearch] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [patients, setPatients] = useState([...mockPatients, ...doctorRequests]);
 
-  // Function to handle accepting a patient request
   const acceptPatient = (id) => {
+    // Accept a patient request
     setPatients((prevPatients) =>
       prevPatients.map((p) =>
         p.id === id ? { ...p, type: "current" } : p
       )
     );
+
+    // Update corresponding doctor status to accepted
+    updateDoctorStatus(id, "accepted");
   };
 
   // Function to handle denying a patient request
@@ -26,6 +29,9 @@ const DoctorPatientsPage = ({ doctorRequests }) => {
     setPatients((prevPatients) =>
       prevPatients.filter((p) => p.id !== id)
     );
+
+    // Move doctor back to available list
+    updateDoctorStatus(id, "denied");
   };
 
   // Search functionality

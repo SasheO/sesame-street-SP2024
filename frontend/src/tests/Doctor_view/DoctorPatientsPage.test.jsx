@@ -4,6 +4,13 @@ import { MemoryRouter } from "react-router-dom";
 import DoctorPatientsPage from "../../components/Doctor_view/DoctorPatientsPage";
 
 describe("DoctorPatientsPage", () => {
+
+  let mockUpdateDoctorStatus;
+
+  beforeEach(() => {
+    mockUpdateDoctorStatus = jest.fn(); // Create a mock function
+  });
+
   test("renders the page with correct elements", () => {
     render(
       <MemoryRouter>
@@ -37,7 +44,7 @@ describe("DoctorPatientsPage", () => {
   test("accepting a patient request moves them to Current Patients", () => {
     render(
       <MemoryRouter>
-        <DoctorPatientsPage />
+        <DoctorPatientsPage updateDoctorStatus={mockUpdateDoctorStatus} />
       </MemoryRouter>
     );
 
@@ -46,7 +53,11 @@ describe("DoctorPatientsPage", () => {
     expect(screen.getByText("Patient Three")).toBeInTheDocument();
 
     // Accept the patient
-    fireEvent.click(screen.getByText("Accept"));
+    const acceptButtons = screen.getAllByText("Accept");
+    fireEvent.click(acceptButtons[0]);
+
+    // Check that updateDoctorStatus was called correctly
+    expect(mockUpdateDoctorStatus).toHaveBeenCalledWith(3, "accepted");
 
     // Switch to current patients and check if patient is there
     fireEvent.click(screen.getByText("Current Patients"));
@@ -56,7 +67,7 @@ describe("DoctorPatientsPage", () => {
   test("denying a patient request removes them from the list", () => {
     render(
       <MemoryRouter>
-        <DoctorPatientsPage />
+        <DoctorPatientsPage updateDoctorStatus={mockUpdateDoctorStatus} />
       </MemoryRouter>
     );
 

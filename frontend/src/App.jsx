@@ -12,15 +12,31 @@ import CreatePost from "./components/Forum/CreatePost";
 import SearchResults from "./components/HomePage/HomePage_components/SearchResults";
 import DoctorsPage from './components/Doctors/DoctorsPage';
 import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage"; 
+import DummyDoctors from "./components/Doctors/DummyDoctors.json";
 import MyChats from "./components/Forum/MyChats";
 import './App.css';
 
 function App(){
-
+  const [doctors, setDoctors] = useState(DummyDoctors);
   const [doctorRequests, setDoctorRequests] = useState([]);
 
   const handleDoctorRequest = (newRequest) => {
     setDoctorRequests((prevRequests) => [...prevRequests, newRequest]);
+
+    // Update doctor state to requested
+    setDoctors((prevDoctors) =>
+      prevDoctors.map((doc) =>
+        doc.id === newRequest.id ? { ...doc, requested: true } : doc
+      )
+    );
+  };
+
+  const updateDoctorStatus = (id, status) => {
+    setDoctors((prevDoctors) =>
+      prevDoctors.map((doc) =>
+        doc.id === id ? { ...doc, requested: status !== "denied", accepted: status === "accepted" } : doc
+      )
+    );
   };
 
   return (
@@ -37,8 +53,8 @@ function App(){
         <Route path="/forum/create" element={<CreatePost />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/search-results" element={<SearchResults />} />
-        <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest}/>} />
-        <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests}/>} /> 
+        <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} />} />
+        <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus} />} /> 
         <Route path="/my-chats" element={<MyChats />} />
       </Routes>
     </Router>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoMdStar, IoMdStarOutline, IoIosArrowBack } from "react-icons/io";
 import { IoTrashOutline, IoClose } from "react-icons/io5";
 import "./DoctorDetails.css";
@@ -12,6 +12,13 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
   const [patientCondition, setpatientCondition] = useState("");
   const [patientExtraDetails, setPatientExtraDetails] = useState("");
 
+  useEffect(() => {
+    // If doctor is accepted, update button
+    if (doctor.accepted) {
+      doctor.requested = true;
+    }
+  }, [doctor.accepted]);
+
   // Handle doctor request submission
   const handleRequestSubmit = (e) => {
     e.preventDefault();
@@ -22,7 +29,7 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
 
     // Create a corresponding patient request
     const newPatientRequest = {
-      id: Date.now(), // Unique ID
+      id: doctor.id, // Unique ID
       name: patientName || `Request for ${doctor.name}`, // change to current user's name
       condition: patientCondition || "Pending Review",
       alertLevel: "Low",
