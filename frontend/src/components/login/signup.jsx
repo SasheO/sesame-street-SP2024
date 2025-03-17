@@ -4,8 +4,15 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./signup.css";
 import { BiShow, BiHide } from "react-icons/bi"; // ✅ Import eye icons
+import { auth, db } from "../../firebase";  // Import Firebase config - Angelica
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { useAuth } from "../../context/AuthContext"; // ✅ Import Auth Context
+
+
 
 const SignUp = () => {
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -23,42 +30,52 @@ const SignUp = () => {
     role: Yup.string().oneOf(["patient", "doctor"], "Please select a role").required("Role is required"),
   });
 
-  // Handle Sign-Up
-  const handleSignUp = (values) => {
-    let users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Check if user already exists
-    const userExists = users.some(user => user.email === values.email);
-    if (userExists) {
-      setErrorMessage("User already exists. Please log in.");
-      return;
+  const handleSignUp = async (values, { setSubmitting }) => {
+    setErrorMessage(""); // Reset previous errors
+  
+    try {
+      const { firstname, lastname, email, password, role } = values;
+  
+      // ✅ Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log("✅ User Created:", user);
+  
+      // ✅ Save user data to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        first_name: firstname,
+        surname: lastname,
+        email: values.email,
+        role: values.role,
+        profilePic: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",  // Default profile picture
+        createdAt: new Date(),
+      });
+  
+      console.log("✅ User Data Saved to Firestore");
+
+    //    // ✅ Store user session in localStorage
+    //    localStorage.setItem("loggedInUser", JSON.stringify({
+    //     uid: user.uid,
+    //     email: user.email,
+    //     first_name: firstname,
+    //     surname: lastname,
+    //     role: role
+    // }));
+  
+      // ✅ Store session in Firebase (Automatically managed)
+      setUser(user);
+      // Redirect based on role
+      navigate(role === "doctor" ? "/doctor-dashboard" : "/home");
+  
+    } catch (error) {
+      console.error("❌ Sign-up error:", error.message);
+      setErrorMessage(error.message);
+    } finally {
+      setSubmitting(false);
     }
-
-    // Create new user object
-    const newUser = {
-      name: `${values.firstname} ${values.lastname}`,
-      email: values.email,
-      password: values.password,
-      role: values.role, // Store user role
-      profilePic: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" // Default profile picture
-    };
-
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("loggedInUser", JSON.stringify(newUser));
-
-    console.log("✅ User Signed Up:", newUser);
-
-    // Redirect based on role
-    setTimeout(() => {
-      if (values.role === "doctor") {
-        navigate("/doctor-dashboard");
-      } else {
-        navigate("/home");
-      }
-    }, 2000);
   };
-
+  
   return (
     <div className="signup-container">
       <h2>Sign Up</h2>

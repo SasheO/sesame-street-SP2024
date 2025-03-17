@@ -1,42 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BiHome, BiPlus, BiMessageRounded, BiX } from "react-icons/bi";
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, increment, getDoc } from "firebase/firestore"; 
+import { db } from "../../firebase"; // ✅ Import Firestore DB
+import { BiHome, BiPlus, BiMessageRounded, BiX, BiHeart } from "react-icons/bi"; // ✅ Import Icons
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
 import "./Forum.css";
-
-const mockThreads = [
-  {
-    id: "mock-1",
-    title: "Local herbs for migraine",
-    user: "@username1",
-    date: "Dec 1, 2023",
-    content: "Natural remedies may help prevent the onset of migraine attacks...",
-    likes: 3456,
-    comments: [],
-    tags: ["health", "migraine", "herbs"],
-  },
-  {
-    id: "mock-2",
-    title: "What type of herb is this?",
-    user: "@username2",
-    date: "Jan 23, 2024",
-    content: "I came across this plant, does anyone know what this is?",
-    likes: 2540,
-    comments: [],
-    tags: ["plants", "herbs", "identification"],
-  },
-  {
-    id: "mock-3",
-    title: "Benefits of turmeric",
-    user: "@username3",
-    date: "Feb 5, 2024",
-    content: "Turmeric has anti-inflammatory properties that benefit health.",
-    likes: 1200,
-    comments: [],
-    tags: ["health", "herbs"],
-  }
-];
 
 const Forum = () => {
   const navigate = useNavigate();
@@ -44,37 +13,54 @@ const Forum = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [threads, setThreads] = useState([]);
 
+  // ✅ Fetch posts in real-time from Firestore
   useEffect(() => {
-    let storedThreads = JSON.parse(localStorage.getItem("forumPosts"));
+    const fetchPosts = () => {
+      const forumCollection = collection(db, "forum");
+      const q = query(forumCollection, orderBy("date", "desc"));
 
-    if (!storedThreads || storedThreads.length === 0) {
-      console.log("📌 No stored threads found. Initializing with mock data.");
-      localStorage.setItem("forumPosts", JSON.stringify(mockThreads));
-      storedThreads = mockThreads;
-    } else {
-      console.log("📌 Using stored forum posts.");
-    }
+      // Subscribe to real-time updates
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const posts = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-    setThreads(storedThreads);
+        console.log("📌 Fetched posts from Firestore:", posts);
+        setThreads(posts);
+      });
+
+      return unsubscribe; // Cleanup listener when component unmounts
+    };
+
+    fetchPosts();
   }, []);
+  const handleLike = async (threadId) => {
+    try {
+        const threadRef = doc(db, "forum", threadId);
+        
+        // ✅ Increment likes count only
+        await updateDoc(threadRef, {
+            likes: increment(1) // Directly increments likes
+        });
 
-  const toggleTag = (tag) => {
-    setSelectedTags((prevTags) =>
-      prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
-    );
-  };
+        console.log(`✅ Liked post ${threadId}`);
+    } catch (error) {
+        console.error("⚠️ Error liking post:", error);
+    }
+};
 
-  const clearAllTags = () => setSelectedTags([]);
 
+  // ✅ Filter forum threads based on search & selected tags
   const filteredThreads = threads.filter((thread) => {
     if (!thread || !thread.title) return false;
 
     const matchesSearch =
       thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      (Array.isArray(thread.tags) && thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())));
 
     const matchesTags =
-      selectedTags.length === 0 || selectedTags.every((tag) => thread.tags.includes(tag));    
+      selectedTags.length === 0 || selectedTags.every((tag) => Array.isArray(thread.tags) && thread.tags.includes(tag));
 
     return matchesSearch && matchesTags;
   });
@@ -99,10 +85,10 @@ const Forum = () => {
           <p>Filtering by: </p>
           {selectedTags.map((tag) => (
             <span key={tag} className="selected-tag">
-              {tag} <BiX className="remove-tag" onClick={() => toggleTag(tag)} />
+              {tag} <BiX className="remove-tag" onClick={() => setSelectedTags(selectedTags.filter(t => t !== tag))} />
             </span>
           ))}
-          <button className="clear-all-tags" onClick={clearAllTags}>Clear All</button>
+          <button className="clear-all-tags" onClick={() => setSelectedTags([])}>Clear All</button>
         </div>
       )}
 
@@ -120,37 +106,27 @@ const Forum = () => {
                   onClick={() => navigate(`/forum/${thread.id}`, { state: { post: thread } })}
                 >
                   <h3>{thread.title}</h3>
-                  <p>{thread.user} • {thread.date}</p>
-                  <p>
-                    {truncateContent(thread.content)}{" "}
-                    {thread.content.length > 100 && (
-                      <span 
-                        className="read-more"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/forum/${thread.id}`, { state: { post: thread } });
-                        }}
-                      >
-                        Read More
-                      </span>
-                    )}
-                  </p>
-
+                  <p>{thread.author || "Anonymous"} • {thread.date ? new Date(thread.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}</p>
+                  <p>{thread.content}</p>
                   <p className="thread-tags">
                     <strong>Tags: </strong>
-                    {thread.tags.map((tag) => (
+                    {(Array.isArray(thread.tags) ? thread.tags : []).map((tag) => (
                       <span
                         key={tag}
                         className={`tag ${selectedTags.includes(tag) ? "active" : ""}`}
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleTag(tag);
+                          setSelectedTags((prevTags) =>
+                            prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
+                          );
                         }}
                       >
                         {tag}
                       </span>
                     ))}
                   </p>
+                  
+                  {/* ✅ Like & Comment Count Centered on Same Level */}
                   <div className="thread-actions">
                     <span>❤️ {thread.likes}</span>
                     <span>💬 {thread.comments.length}</span>

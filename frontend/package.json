@@ -2,6 +2,7 @@
   "name": "carelink",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,6 +11,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.6",
+    "axios": "^1.8.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "firebase": "^11.3.0",
     "formik": "^2.4.6",
     "react": "^19.0.0",

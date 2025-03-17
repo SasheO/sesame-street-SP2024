@@ -1,49 +1,105 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BiHome } from "react-icons/bi";
+import { useAuth } from "../../context/AuthContext"; // ✅ Import Auth Context
+import { auth, db } from "../../firebase";
+import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { signOut, deleteUser, updateEmail } from "firebase/auth";
 import "./profile.css";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, loading } = useAuth(); // ✅ Get user session from Firebase
+  //const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [updatedUser, setUpdatedUser] = useState({ name: "", email: "", bio: "" });
 
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!loggedInUser) {
+    if (!user && !loading) {
       navigate("/login");
-    } else {
-      setUser(loggedInUser);
-      setUpdatedUser({ name: loggedInUser.name, email: loggedInUser.email, bio: loggedInUser.bio || "" });
+    } else if (user) {
+      fetchUserData();
     }
-  }, [navigate]);
+  }, [user, loading, navigate]);
+
+  const fetchUserData = async () => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setUpdatedUser({ name: userData.first_name + " " + userData.surname, email: userData.email, bio: userData.bio || "" });
+      }
+    } catch (error) {
+      console.error("❌ Error fetching user data:", error);
+    }
+  };
 
   const handleEdit = () => setIsEditing(true);
 
-  const handleSave = () => {
-    const updatedUserData = { ...user, ...updatedUser };
-    setUser(updatedUserData);
-    localStorage.setItem("loggedInUser", JSON.stringify(updatedUserData));
-    setIsEditing(false);
-  };
+ 
+  const handleSave = async () => {
+    try {
+        if (!auth.currentUser) {
+            console.error("❌ No authenticated user found.");
+            return;
+        }
 
-  const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
+        // Split the updated name into first_name and surname
+        const nameParts = updatedUser.name.trim().split(" ");
+        const firstName = nameParts[0];
+        const surname = nameParts.slice(1).join(" ");
+
+        // Update Firestore user document
+        await updateDoc(doc(db, "users", user.uid), {
+            first_name: firstName,
+            surname: surname,
+            bio: updatedUser.bio,
+            email: updatedUser.email // ✅ Update email in Firestore
+        });
+
+        // ✅ Update email in Firebase Authentication and disabled email verication feature for now
+        if (updatedUser.email !== user.email) {
+            try {
+                await updateEmail(auth.currentUser, updatedUser.email);
+                console.log("✅ Email updated in Firebase Auth");
+            } catch (error) {
+                if (error.code === "auth/operation-not-allowed") {
+                    console.warn("⚠️ Firebase email verification required, but ignoring for now.");
+                } else {
+                    console.error("❌ Error updating email:", error);
+                    alert("⚠️ Email update failed, but profile info was saved.");
+                }
+            }
+        }
+
+        setIsEditing(false);
+        console.log("✅ Profile updated successfully in Firestore and Firebase Auth");
+
+    } catch (error) {
+        console.error("❌ Error updating profile:", error);
+        alert("⚠️ Error saving profile. Please try again.");
+    }
+};
+
+  const handleLogout = async () => {
+    await signOut(auth);
     navigate("/");
   };
 
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete your account?")) {
-      let users = JSON.parse(localStorage.getItem("users")) || [];
-      users = users.filter((u) => u.email !== user.email);
-      localStorage.setItem("users", JSON.stringify(users));
-      localStorage.removeItem("loggedInUser");
-      navigate("/");
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action is irreversible.")) {
+      try {
+        await deleteDoc(doc(db, "users", user.uid));
+        await deleteUser(auth.currentUser);
+        navigate("/");
+      } catch (error) {
+        console.error("❌ Error deleting account:", error);
+      }
     }
   };
 
-  if (!user) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!user) return null;
 
   return (
     <div className="profile-container">
@@ -74,9 +130,9 @@ const Profile = () => {
         </div>
       ) : (
         <div className="profile-details">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Bio:</strong> {user.bio || "No bio set"}</p>
+          <p><strong>Name:</strong> {updatedUser.name} </p>
+          <p><strong>Email:</strong> {updatedUser.email}</p>
+          <p><strong>Bio:</strong> {updatedUser.bio || "No bio set"}</p>
         </div>
       )}
 
