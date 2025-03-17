@@ -883,11 +883,30 @@ app.post("/delete_doctor_requests", (req, res) => {
   firebase.auth()
   .verifyIdToken(idToken)
   .then(async (decodedToken) => {
-    const _currentUserUID = decodedToken.uid;
-    console.log("_currentUserUID: "+_currentUserUID);
+    const currentUserUID = decodedToken.uid;
+    console.log("_currentUserUID: "+currentUserUID);
     // check if logged in user is the one on the request.
     // delete if so
     // else give this request does not exist error
+    const doctorPatientConnectionRef = db.collection("doctor_patient_connection");
+
+    doctorPatientConnectionRef.doc(_requestID).get()
+    .then(async (querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const doctorPatientConnectionRequest = querySnapshot.data();
+        if (doctorPatientConnectionRequest.patientUID===currentUserUID){
+          // TODO: is this the right function for deleting? test
+          querySnapshot.ref.delete();
+          return res.status(200).json({message: "Request deleted successfully"});
+        }
+        else{
+          return res.status(204).json({message: "Your request with this request_id was not found"});
+        }
+      }
+      else{
+        return res.status(204).json({message: "Your request with this request_id was not found"});
+      }
+    });
 
   })
   .catch((error) => {
