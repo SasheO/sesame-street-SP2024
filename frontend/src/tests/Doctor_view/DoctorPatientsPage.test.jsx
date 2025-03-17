@@ -4,11 +4,10 @@ import { MemoryRouter } from "react-router-dom";
 import DoctorPatientsPage from "../../components/Doctor_view/DoctorPatientsPage";
 
 describe("DoctorPatientsPage", () => {
-
   let mockUpdateDoctorStatus;
 
   beforeEach(() => {
-    mockUpdateDoctorStatus = jest.fn(); // Create a mock function
+    mockUpdateDoctorStatus = jest.fn(); 
   });
 
   test("renders the page with correct elements", () => {
@@ -27,18 +26,20 @@ describe("DoctorPatientsPage", () => {
   test("switches between Current Patients and Patient Requests tabs", () => {
     render(
       <MemoryRouter>
-        <DoctorPatientsPage />
+        <DoctorPatientsPage updateDoctorStatus={mockUpdateDoctorStatus} />
       </MemoryRouter>
     );
 
     // Click "Patient Requests" tab
     fireEvent.click(screen.getByText("Patient Requests"));
     expect(screen.getByText("Patient Three")).toBeInTheDocument();
+    expect(screen.queryByText("Patient One")).toBeNull();
 
     // Click "Current Patients" tab
     fireEvent.click(screen.getByText("Current Patients"));
     expect(screen.getByText("Patient One")).toBeInTheDocument();
     expect(screen.getByText("Patient Two")).toBeInTheDocument();
+    expect(screen.queryByText("Patient Three")).toBeNull();
   });
 
   test("accepting a patient request moves them to Current Patients", () => {
@@ -53,8 +54,7 @@ describe("DoctorPatientsPage", () => {
     expect(screen.getByText("Patient Three")).toBeInTheDocument();
 
     // Accept the patient
-    const acceptButtons = screen.getAllByText("Accept");
-    fireEvent.click(acceptButtons[0]);
+    fireEvent.click(screen.getAllByText("Accept")[0]);
 
     // Check that updateDoctorStatus was called correctly
     expect(mockUpdateDoctorStatus).toHaveBeenCalledWith(3, "accepted");
@@ -80,5 +80,39 @@ describe("DoctorPatientsPage", () => {
 
     // Ensure patient is removed
     expect(screen.queryByText("Patient Three")).toBeNull();
+  });
+
+  test("search filters the displayed patients", () => {
+    render(
+      <MemoryRouter>
+        <DoctorPatientsPage/>
+      </MemoryRouter>
+    );
+
+    // Ensure all current patients are visible
+    expect(screen.getByText("Patient One")).toBeInTheDocument();
+    expect(screen.getByText("Patient Two")).toBeInTheDocument();
+
+    // Search for "Patient One"
+    fireEvent.change(screen.getByPlaceholderText("Search patients"), { target: { value: "Patient One" } });
+
+    // Ensure only "Patient One" is visible
+    expect(screen.getByText("Patient One")).toBeInTheDocument();
+    expect(screen.queryByText("Patient Two")).toBeNull();
+  });
+
+  test("clicking on a patient opens the patient details page", () => {
+    render(
+      <MemoryRouter>
+        <DoctorPatientsPage />
+      </MemoryRouter>
+    );
+
+    // Click on "Patient One"
+    fireEvent.click(screen.getByText("Patient One"));
+
+    // Expect the details page to open
+    expect(screen.getByText("Patient One")).toBeInTheDocument();
+    expect(screen.getByText("Edit Notes")).toBeInTheDocument();
   });
 });
