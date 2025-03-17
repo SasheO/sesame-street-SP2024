@@ -867,6 +867,33 @@ app.post("/delete_doctor_requests", (req, res) => {
   // user should be logged in patient
   // should provide id of doctor request
   // delete it
+  const idToken = req.body.idToken;
+  const _requestID = req.body.request_id;
+
+  if (idToken==null ) {
+    console.log("idToken==null");
+    return res.status(401).json({message: "User is not logged in"});
+  }
+
+  if (_requestID==null||_requestID==="") {
+    console.log("_requestID==null||_requestID===""");
+    return res.status(422).json({message: "No request_id given"});
+  }
+
+  firebase.auth()
+  .verifyIdToken(idToken)
+  .then(async (decodedToken) => {
+    const _currentUserUID = decodedToken.uid;
+    console.log("_currentUserUID: "+_currentUserUID);
+    // check if logged in user is the one on the request.
+    // delete if so
+    // else give this request does not exist error
+
+  })
+  .catch((error) => {
+    console.log(error);
+    return res.status(500).json({message: "Some error has occurred..."});
+  });
 });
 
 app.get("/my_patient_requests", (req, res) => {
@@ -876,10 +903,16 @@ app.get("/my_patient_requests", (req, res) => {
   // return all requests as well as pending, accepted, rejected as separate lists
 });
 
-app.get("/respond_to_patient_requests", (req, res) => {
+app.get("/edit_patient_requests", (req, res) => {
   // user should be logged in practitioner
+  // if pending status:
   // accept or delete based
   // display message
+  // if deleted status:
+  // can change to accepted
+  // if accepted status: 
+  // edit fields
+  // OR move patient into previous patients by changing status to previous
 });
 
 // TODO: don't think i can sign in or out with
