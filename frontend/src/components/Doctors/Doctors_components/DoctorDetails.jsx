@@ -56,7 +56,7 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
     <div className="doctor-details">
       {/* Header */}
       <div className="icons-container">
-        <IoIosArrowBack className="back-icon" onClick={onBack} />
+        <IoIosArrowBack data-testid="back-icon" className="back-icon" onClick={onBack} />
         <IoTrashOutline className="trash-icon" />
       </div>
 
