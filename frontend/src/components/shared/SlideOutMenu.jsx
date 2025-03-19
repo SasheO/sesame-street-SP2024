@@ -13,22 +13,22 @@ const SlideOutMenu = ({ isOpen, onClose }) => {
   // Define visible pages based on authentication status
   let menuItems = [
     { name: "Home", path: "/" }, // ✅ Always show Home
-    { name: "Healthcare near you", path: "/locations" },
+    { name: "Hospitals near you", path: "/locations" },
     { name: "Community forum", path: "/forum" },
   ];
 
   if (user) {
     if (user.role === "patient") {
-      menuItems.push({ name: "Chat with a doctor", path: "/doctor" });
+      menuItems.push({ name: "Doctors", path: "/doctor" });
     } else if (user.role === "doctor") {
-      menuItems.push({ name: "Patient requests", path: "/doctor-patients" });
+      menuItems.push({ name: "Patients", path: "/doctor-patients" });
     }
   }
 
   return (
     <div className={`slide-out-menu ${isOpen ? "open" : ""}`} data-testid="slideout-menu">
       <div className="menu-content">
-        <IoClose className="close-btn" aria-label="Close icon" onClick={onClose} />
+        <IoClose className="icons" aria-label="Close icon" onClick={onClose} />
         <SearchBar placeholder="How can we help you?" showMicrophoneIcon={false} />
         <div className="menu-items">
           {menuItems.map((page) => (
