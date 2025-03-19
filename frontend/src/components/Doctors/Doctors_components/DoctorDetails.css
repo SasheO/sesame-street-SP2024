@@ -9,7 +9,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin-bottom: 16px;
-    width: 60%;
+    width: 50%;
     cursor: pointer;
 }
 
@@ -131,4 +131,20 @@
     display: flex;
     margin: auto;
     justify-content: center;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+}
+
+.confirm-button {
+    width: 40%;
+    background-color: #a0a0a0; /* Grey */
+    color: white;
+}
+
+.cancel-button {
+    width: 40%;
 }

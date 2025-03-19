@@ -5,6 +5,7 @@ import "./DoctorDetails.css";
 
 const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [patientName, setPatientName] = useState("");
   const [patientEmail, setPatientEmail] = useState("");
@@ -41,6 +42,14 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
     onDoctorRequest(newPatientRequest);
   };
 
+  // Handle delete request
+  const handleDelete = () => {
+    doctor.requested = false;
+    doctor.accepted = false;
+    setShowConfirmDelete(false);
+    onBack();
+  };
+
   // Determine button text and class
   let buttonText = "Request Doctor";
   let buttonClass = "contact-button request";
@@ -57,7 +66,7 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
       {/* Header */}
       <div className="icons-container">
         <IoIosArrowBack data-testid="back-icon" className="back-icon" onClick={onBack} />
-        <IoTrashOutline className="trash-icon" />
+        {doctor.requested && <IoTrashOutline className="trash-icon" onClick={() => setShowConfirmDelete(true)}/>}
       </div>
 
       {/* Doctor Info */}
@@ -89,6 +98,21 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
 
       {/* Contact Button */}
       <button className={buttonClass} onClick={handleClick}>{buttonText}</button>
+
+      {/* Confirm delete Popup */}
+      {showConfirmDelete && (
+        <div className="popup">
+          <div className="popup-content">
+            <IoClose className="close-btn" onClick={() => setShowConfirmDelete(false)} />
+            <h3>Are you sure you want to delete this doctor's contact?</h3>
+            <p>You will have to go request again if you want to contact this doctor in the future.</p>
+            <div className="confirm-buttons">
+              <button className="confirm-button" onClick={handleDelete}>Yes</button>
+              <button className="cancel-button" onClick={() => setShowConfirmDelete(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Contact Doctor Popup */}
       {showContactPopup && (

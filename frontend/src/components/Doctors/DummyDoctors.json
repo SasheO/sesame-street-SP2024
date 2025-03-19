@@ -30,7 +30,7 @@
       "patients": 75,
       "rating": 4,
       "hospital": "Example Hospital",
-      "image":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4ZHvWk7V1KjUKY2dukivJtjxilzc7ttkjwaAXgLgpjfCF-fgvYykuXfDwSd6NVp16mAU&usqp=CAU",
+      "image":"https://media.istockphoto.com/id/1385471505/vector/portrait-avatar-of-doctor-or-nurse.jpg?s=612x612&w=0&k=20&c=vHs7a6vB_74sKLT7zKjwU_MXhZ9mZLP3NWNjNPZsF8o=",
       "bio": "Dr. Example is a 50 year old doctor with many years of experience. He solved world hunger with his innovative approach to the medical industry.",
       "requested": true,
       "accepted":true
@@ -54,7 +54,7 @@
       "patients": 70,
       "rating": 4,
       "hospital": "Example Hospital",
-      "image":"https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
+      "image":"https://media.istockphoto.com/id/1385471505/vector/portrait-avatar-of-doctor-or-nurse.jpg?s=612x612&w=0&k=20&c=vHs7a6vB_74sKLT7zKjwU_MXhZ9mZLP3NWNjNPZsF8o=",
       "bio": "Dr. Example is a 50 year old doctor with many years of experience. He solved world hunger with his innovative approach to the medical industry.",
       "requested": false,
       "accepted":false
