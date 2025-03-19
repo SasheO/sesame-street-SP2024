@@ -37,7 +37,8 @@
   }
   
   .notes-textarea {
-    width: 100%;
+    width: 95%;
+    margin: 15px 0;
     height: 150px;
     font-size: 14px;
     padding: 10px;
@@ -57,12 +58,23 @@
   }
   
   .edit-notes-btn {
-    background: #6979F8;
-    color: white;
-    border: none;
     padding: 15px;
     width: 70%;
-    cursor: pointer;
-    border-radius: 5px;
+    margin-top: 0px;
+    display: flex
+;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
   }
-  
+
+  .button-icons {
+    font-size: 24px;
+  }
+
+  .patients-buttons-container {
+    align-items: center;
+    display: flex;
+    gap: 36px;
+    margin: 0px 36px;
+  }
