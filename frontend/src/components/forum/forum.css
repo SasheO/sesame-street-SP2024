@@ -152,29 +152,13 @@
 .plus-btn:hover {
   background: #4F46E5;
 }
-
-.thread-actions {
-  display: flex;
-  justify-content: center; /* Centers items */
-  align-items: center;
-  gap: 15px; /* Space between heart & comment */
-  margin-top: 10px;
-}
-
-.action {
-  display: flex;
-  align-items: center;
-  font-size: 16px;
+.read-more {
+  color: #007bff;
   cursor: pointer;
-  color: #555;
-  transition: color 0.2s ease-in-out;
+  font-weight: bold;
+  text-decoration: none;
 }
 
-.action-icon {
-  font-size: 18px;
-  margin-right: 5px;
-}
-
-.like-action:hover, .comment-action:hover {
-  color: red;
+.read-more:hover {
+  text-decoration: underline;
 }

@@ -2,7 +2,17 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import Profile from "../../components/profile/Profile.jsx";
+
+// ✅ Mock useAuth() to prevent null errors
+jest.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { email: "test@example.com", displayName: "Test User" },
+    loading: false,
+  }),
+}));
+
 describe("Profile Component", () => {
+  
   beforeEach(() => {
     jest.spyOn(window, "confirm").mockImplementation(() => true); // ✅ Mock window.confirm()
 

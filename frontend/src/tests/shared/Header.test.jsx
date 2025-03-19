@@ -10,6 +10,12 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { email: "testuser@example.com", displayName: "Test User" },
+    loading: false,
+  }),
+}));
 describe("Header Component", () => {
   test("renders the header with the given title and buttons", () => {
     const testLabel = "CareLink Home";

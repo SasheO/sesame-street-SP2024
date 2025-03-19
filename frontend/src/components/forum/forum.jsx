@@ -65,6 +65,11 @@ const Forum = () => {
     return matchesSearch && matchesTags;
   });
 
+  const truncateContent = (content, limit = 100) => {
+    if (content.length <= limit) return content;
+    return content.substring(0, limit) + "...";
+  };
+
   return (
     <div className="forum-page">
       <Header label="Carelink Forum" />
@@ -123,12 +128,8 @@ const Forum = () => {
                   
                   {/* ✅ Like & Comment Count Centered on Same Level */}
                   <div className="thread-actions">
-                    <span className="action like-action" onClick={(e) => { e.stopPropagation(); handleLike(thread.id); }}>
-                      <BiHeart className="action-icon" /> {thread.likes || 0}
-                    </span>
-                    <span className="action comment-action">
-                      <BiMessageRounded className="action-icon" /> {thread.comments || 0}
-                    </span>
+                    <span>❤️ {thread.likes}</span>
+                    <span>💬 {thread.comments.length}</span>
                   </div>
                 </div>
               ))}

@@ -3,6 +3,13 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import DoctorPatientsPage from "../../components/Doctor_view/DoctorPatientsPage";
 
+jest.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { email: "testuser@example.com", displayName: "Test User" },
+    loading: false,
+  }),
+}));
+
 describe("DoctorPatientsPage", () => {
   let mockUpdateDoctorStatus;
 

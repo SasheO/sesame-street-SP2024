@@ -9,6 +9,12 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
+jest.mock("firebase/auth", () => ({
+  getAuth: jest.fn(() => ({
+    currentUser: { email: "testuser@example.com", displayName: "Test User" },
+  })),
+}));
+
 describe("SlideOutMenu Component", () => {
   test("renders menu when open", () => {
     render(

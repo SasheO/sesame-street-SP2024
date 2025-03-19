@@ -6,6 +6,13 @@ import HomePage from '../../components/HomePage/HomePage';
 // Mock SlideOutMenu to prevent it from rendering
 jest.mock('../../components/shared/SlideOutMenu', () => () => <div data-testid="slideout-menu-mock"></div>);
 
+jest.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { email: "testuser@example.com", displayName: "Test User" },
+    loading: false,
+  }),
+}));
+
 test('renders header, search bar, and feature cards', () => {
   render(
     <MemoryRouter>

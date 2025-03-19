@@ -2,6 +2,13 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import ForumThread from "../../components/Forum/ForumThread";
 import React from "react";
+
+jest.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { email: "testuser@example.com", displayName: "Test User" },
+    loading: false,
+  }),
+}));
 // Mock localStorage before each test
 beforeEach(() => {
   localStorage.setItem("forumPosts", JSON.stringify([
