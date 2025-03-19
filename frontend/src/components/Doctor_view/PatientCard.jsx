@@ -12,8 +12,15 @@ const PatientCard = ({ patient, onClick, onAccept, onDeny }) => {
 
         {onAccept && onDeny && (
           <div className="action-buttons">
-            <button className="accept-btn" onClick={(e) => { e.stopPropagation(); onAccept(); }}>Accept</button>
-            <button className="deny-btn" onClick={(e) => { e.stopPropagation(); onDeny(); }}>Deny</button>
+            <button className="accept-btn" onClick={(e) => { 
+              e.stopPropagation(); 
+              onAccept(patient.id); // Pass patient ID to accept function
+            }}>Accept</button>
+
+            <button className="deny-btn" onClick={(e) => { 
+              e.stopPropagation(); 
+              onDeny(patient.id); // Pass patient ID to deny function
+            }}>Deny</button>
           </div>
         )}
       </div>

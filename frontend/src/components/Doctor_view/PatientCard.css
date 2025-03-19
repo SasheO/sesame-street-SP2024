@@ -1,22 +1,43 @@
 .patient-card {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     background: white;
-    padding: 10px;
-    border-radius: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 8px;
+    width: 70%;
+    height:200px;
+    transition: transform 0.2s ease-in-out;
     cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .patient-card:hover {
+    transform: scale(1.02);
   }
   
   .patient-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
+    display: flex;
+    width: 35%;
+    border-radius: 10px 0px 0px 10px;
+    object-fit: cover;
+    padding-right: 10px;
   }
   
   .alert-level {
     font-weight: bold;
     color: red;
+  }
+
+  .patient-info {
+    flex: 1;
+    text-align: left;
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 0px 20px;
   }
   

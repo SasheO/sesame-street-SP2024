@@ -42,13 +42,13 @@ function HomePage() {
         <FeatureCard Icon={BiMessageRoundedDetail} label="Community forum" onClick={() => navigate("/forum")} />
 
         
-        {user && user.role && user.role !== "doctor" && (
+        {/* {user && user.role && user.role !== "doctor" && ( */}
           <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" onClick={() => navigate("/doctor")} />
-        )}
+        {/* )} */}
 
-        {user && user.role && user.role !== "patient" && (
+        {/* {user && user.role && user.role !== "patient" && ( */}
           <FeatureCard Icon={BiSolidUserPlus} label="Patient requests" onClick={() => navigate("/doctor-patients?view=requests")} />
-        )}
+        {/* )} */}
       </div>
     </div>
   );

@@ -1,33 +1,29 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
 import SearchBar from "../shared/SearchBar";
 import Header from "../shared/Header";
 import DoctorCard from "./Doctors_components/DoctorCard";
 import DoctorDetails from "./Doctors_components/DoctorDetails";
-import DummyDoctors from "./DummyDoctors.json";
 import "./DoctorsPage.css";
 
-const DoctorsPage = ({ onClick }) => {
+const DoctorsPage = ({ onDoctorRequest, doctors }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [search, setSearch] = useState("");
   const [showRequested, setShowRequested] = useState(false);
-  const navigate = useNavigate();
 
   const handleSearchChange = (term) => {
     setSearch(term);
   };
 
-  // First filter doctors by category, then by search term
-  const doctorsToShow = DummyDoctors.filter((doctor) =>
+  const doctorsToShow = doctors.filter((doctor) =>
     showRequested ? doctor.requested : !doctor.requested
   ).filter((doctor) => doctor.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="doctors-page" onClick={onClick}>
+    <div className="doctors-page">
       <Header label="Carelink" />
 
       {selectedDoctor ? (
-        <DoctorDetails doctor={selectedDoctor} onBack={() => setSelectedDoctor(null)} />
+        <DoctorDetails doctor={selectedDoctor} onBack={() => setSelectedDoctor(null)} onDoctorRequest={onDoctorRequest} />
       ) : (
         <>
           <SearchBar 
@@ -50,18 +46,11 @@ const DoctorsPage = ({ onClick }) => {
             )}
           </div>
 
-          {/* Toggle Buttons */}
           <div className="toggle-buttons">
-            <button
-              className={`toggle-button ${!showRequested ? "active" : ""}`}
-              onClick={() => setShowRequested(false)}
-            >
+            <button className={`toggle-button ${!showRequested ? "active" : ""}`} onClick={() => setShowRequested(false)}>
               Available Doctors
             </button>
-            <button
-              className={`toggle-button ${showRequested ? "active" : ""}`}
-              onClick={() => setShowRequested(true)}
-            >
+            <button className={`toggle-button ${showRequested ? "active" : ""}`} onClick={() => setShowRequested(true)}>
               Requested Doctors
             </button>
           </div>

@@ -67,7 +67,6 @@ const MyChats = () => {
   return (
     <div className="my-chats-page">
       <Header label="CareLink" />
-      <button className="back-button" onClick={() => navigate("/forum")}>← Back to Forum</button>
       <SearchBar placeholder="Search chats" onSearch={(term) => setSearchTerm(term)} />
 
       {filteredPosts.length === 0 ? (

@@ -66,7 +66,8 @@ const SignUp = () => {
       // ✅ Store session in Firebase (Automatically managed)
       setUser(user);
       // Redirect based on role
-      navigate(role === "doctor" ? "/doctor-dashboard" : "/home");
+      // navigate(role === "doctor" ? "/doctor-dashboard" : "/home");
+      navigate("/");
   
     } catch (error) {
       console.error("❌ Sign-up error:", error.message);
@@ -164,7 +165,7 @@ const SignUp = () => {
         )}
       </Formik>
 
-      <p>Already have an account? <a href="/">Log in</a></p>
+      <p>Already have an account? <a href="/login">Log in</a></p>
     </div>
   );
 };

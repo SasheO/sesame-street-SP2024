@@ -75,7 +75,8 @@ const Login = () => {
   
         // ✅ Redirect based on role AFTER state update
         setTimeout(() => {
-          navigate(userData.role === "doctor" ? "/doctor-dashboard" : "/home");
+          // navigate(userData.role === "doctor" ? "/doctor-dashboard" : "/home");
+          navigate("/");
         }, 500); // Small delay to ensure UI updates
       } else {
         setErrorMessage("User data is incomplete. Please contact support.");

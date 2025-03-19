@@ -10,7 +10,7 @@ const LocationCard = ({ facility, onClick }) => {
         src={facility.photo} 
         alt={facility.name} 
         className="facility-image" 
-        onError={(e) => { e.target.src = "https://via.placeholder.com/400"; }} // ✅ Default image if broken
+        onError={(e) => { e.target.src = "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/hospital.png"; }} // ✅ Default image if broken
       />
 
       <div className="facility-info">
