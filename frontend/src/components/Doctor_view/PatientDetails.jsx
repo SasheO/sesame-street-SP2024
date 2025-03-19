@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IoIosArrowBack } from "react-icons/io";
 import './PatientDetails.css';
 
 const PatientDetails = ({ patient, onBack }) => {
@@ -16,18 +17,27 @@ const PatientDetails = ({ patient, onBack }) => {
 
   return (
     <div className="patient-details">
-      <button className="back-button" onClick={onBack}>← Back</button>
-      <h2>{patient.name}</h2>
-      <p>{patient.condition}</p>
-      <p className="alert-level">Alert Level: {patient.alertLevel}</p>
+      <IoIosArrowBack className="back-icon" onClick={onBack} />
 
-      <h3>Notes</h3>
-      {isEditing ? (
-        <textarea
-          className="notes-textarea"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-        />
+      <div className="patient-info-container">
+        <div className="patient-info-image">
+          <img src={patient.image} alt={patient.name} />
+        </div>
+        <div className="patient-info-text">
+          <h2>{patient.name}</h2>
+          <p>{patient.condition}</p>
+          <p className="alert-level">Alert Level: {patient.alertLevel}</p>
+        </div>
+      </div>
+
+        <h3>Notes</h3>
+        {isEditing ? (
+          <textarea
+            className="notes-textarea"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+            
       ) : (
         <p className="notes-display">{notes || "No notes yet..."}</p>
       )}

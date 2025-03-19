@@ -108,35 +108,35 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
             <IoClose className="close-btn" onClick={() => setShowRequestForm(false)} />
             <h3>Request to Speak with {doctor.name}</h3>
             <form onSubmit={handleRequestSubmit}>
-              <label>Name:</label>
+              <label class="form-label">Name:</label>
               <input type="text" 
               placeholder="Enter your name" 
               value={patientName} 
               onChange={(e) => setPatientName(e.target.value)}
               required />
 
-              <label>Email:</label>
+              <label class="form-label">Email:</label>
               <input type="email" 
               placeholder="Enter your email" 
               value={patientEmail} 
               onChange={(e) => setPatientEmail(e.target.value)}
               required />
 
-              <label>Phone Number:</label>
+              <label class="form-label">Phone Number:</label>
               <input type="tel" 
               placeholder="Enter your phone number" 
               value={patientPhone} 
               onChange={(e) => setPatientPhone(e.target.value)}
               required />
 
-              <label>Health Conditions:</label>
+              <label class="form-label">Health Conditions:</label>
               <input type="text" 
               placeholder="Enter your health condition(s)" 
               value={patientCondition} 
               onChange={(e) => setpatientCondition(e.target.value)}
               required />
 
-              <label>Reason for Appointment:</label>
+              <label class="form-label">Reason for Appointment:</label>
               <textarea placeholder="Describe your symptoms" 
               value={patientExtraDetails} 
               onChange={(e) => setPatientExtraDetails(e.target.value)}

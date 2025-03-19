@@ -1,13 +1,15 @@
 .location-card {
   display: flex;
-  align-items: center;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  margin-bottom: 16px;
-  transition: transform 0.2s ease-in-out;
-  cursor: pointer;
+    align-items: stretch;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 8px;
+    width: 70%;
+    height:200px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
 }
 
 .location-card:hover {
@@ -16,25 +18,45 @@
 
 .facility-image {
   display: flex;
-  width: 30%;
-  border-radius: 10px 0px 0px 10px;
-  object-fit: cover;
+    width: 200px;
+    border-radius: 10px 0px 0px 10px;
+    object-fit: cover;
+    padding-right: 10px;
 }
 
 .facility-info {
   flex: 1;
   text-align: left;
-  padding: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .facility-info h3 {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 
 .facility-info p {
-  font-size: 18px;
+  font-size: 14px;
   color: #555;
-  margin: 4px 0;
+  margin: 2px 0;
+}
+
+.rating {
+  align-items: center;
+  gap: 2px;
+  font-size: 24px;
+  color: #f8c611;
+  margin-top: 12px;
+}
+
+/* ✅ Ensure consistent spacing between cards */
+.facility-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
 }

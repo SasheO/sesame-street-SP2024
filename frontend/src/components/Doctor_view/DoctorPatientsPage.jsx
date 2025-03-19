@@ -47,48 +47,49 @@ const DoctorPatientsPage = ({ doctorRequests = [], updateDoctorStatus }) => {
   return (
     <div className="doctor-patients-page">
       <Header label="Doctor's Patients" />
-      <SearchBar 
-        placeholder="Search patients" 
-        initialValue={search} 
-        onSearch={handleSearchChange}
-        autoSearch={true}
-      />
 
       {selectedPatient ? (
         <PatientDetails patient={selectedPatient} onBack={() => setSelectedPatient(null)} />
       ) : (
-        <div className="patient-list">
-          {filteredPatients.length > 0 ? (
-            filteredPatients.map((patient) => (
-              <PatientCard
-                key={patient.id}
-                patient={patient}
-                onClick={() => setSelectedPatient(patient)}
-                onAccept={filter === "requests" ? () => acceptPatient(patient.id) : null}
-                onDeny={filter === "requests" ? () => denyPatient(patient.id) : null}
-              />
-            ))
-          ) : (
-            <p className="no-results">No patients found</p>
-          )}
+        <> 
+          <SearchBar 
+            placeholder="Search patients" 
+            initialValue={search} 
+            onSearch={handleSearchChange}
+            autoSearch={true}
+          />
+          <div className="patient-list">
+            {filteredPatients.length > 0 ? (
+              filteredPatients.map((patient) => (
+                <PatientCard
+                  key={patient.id}
+                  patient={patient}
+                  onClick={() => setSelectedPatient(patient)}
+                  onAccept={filter === "requests" ? () => acceptPatient(patient.id) : null}
+                  onDeny={filter === "requests" ? () => denyPatient(patient.id) : null}
+                />
+              ))
+            ) : (
+              <p className="no-results">No patients found</p>
+            )}
+          </div>
+
+          <div className="filter-buttons">
+          <button
+            className={filter === "current" ? "active" : ""}
+            onClick={() => setFilter("current")}
+          >
+            Current Patients
+          </button>
+          <button
+            className={filter === "requests" ? "active" : ""}
+            onClick={() => setFilter("requests")}
+          >
+            Patient Requests
+          </button>
         </div>
+        </>
       )}
-
-      <div className="filter-buttons">
-        <button
-          className={filter === "current" ? "active" : ""}
-          onClick={() => setFilter("current")}
-        >
-          Current Patients
-        </button>
-        <button
-          className={filter === "requests" ? "active" : ""}
-          onClick={() => setFilter("requests")}
-        >
-          Patient Requests
-        </button>
-      </div>
-
     </div>
   );
 };
