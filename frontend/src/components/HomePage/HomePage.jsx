@@ -38,16 +38,16 @@ function HomePage() {
       <SearchBar placeholder="Find a simple remedy" onSearch={handleSearch} initialValue={query} />
       <div className="features-container">
         {/* ✅ Always show these two features */}
-        <FeatureCard Icon={BiMap} label="Healthcare near you" onClick={() => navigate("/locations")} />
+        <FeatureCard Icon={BiMap} label="Hospitals near you" onClick={() => navigate("/locations")} />
         <FeatureCard Icon={BiMessageRoundedDetail} label="Community forum" onClick={() => navigate("/forum")} />
 
         
         {/* {user && user.role && user.role !== "doctor" && ( */}
-          <FeatureCard Icon={TbStethoscope} label="Chat with a doctor" onClick={() => navigate("/doctor")} />
+          <FeatureCard Icon={TbStethoscope} label="Doctors" onClick={() => navigate("/doctor")} />
         {/* )} */}
 
         {/* {user && user.role && user.role !== "patient" && ( */}
-          <FeatureCard Icon={BiSolidUserPlus} label="Patient requests" onClick={() => navigate("/doctor-patients?view=requests")} />
+          <FeatureCard Icon={BiSolidUserPlus} label="Patients" onClick={() => navigate("/doctor-patients?view=requests")} />
         {/* )} */}
       </div>
     </div>

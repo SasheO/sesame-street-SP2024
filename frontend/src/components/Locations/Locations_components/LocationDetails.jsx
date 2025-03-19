@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IoMdStar, IoMdStarOutline } from "react-icons/io";
+import { IoMdStar, IoMdStarOutline, IoIosArrowBack } from "react-icons/io";
 import { GoogleMap, LoadScript, Marker, Polyline } from "@react-google-maps/api";
 import "./LocationDetails.css";
 
@@ -71,7 +71,7 @@ const LocationDetails = ({ facility, userLocation, onBack }) => {
 
   return (
     <div className="location-details">
-      <button className="back-button" onClick={onBack}>← Back</button>
+      <IoIosArrowBack className="icons" onClick={onBack} />
       <h2>{facility.name}</h2>
       <p><strong>Distance:</strong> {facility.distance ? facility.distance.toFixed(2) : "Unknown"} km</p>
       <p><strong>Hours:</strong> {facility.hours || "No data available"}</p>

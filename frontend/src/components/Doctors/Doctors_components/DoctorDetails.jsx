@@ -5,6 +5,7 @@ import "./DoctorDetails.css";
 
 const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [patientName, setPatientName] = useState("");
   const [patientEmail, setPatientEmail] = useState("");
@@ -35,10 +36,19 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
       alertLevel: "Low",
       type: "requests", // Ensures it appears under Patient Requests
       image: doctor.image,
+      notes: ["No notes yet..."],
     };
 
     // Pass new patient request to DoctorPatientsPage
     onDoctorRequest(newPatientRequest);
+  };
+
+  // Handle delete request
+  const handleDelete = () => {
+    doctor.requested = false;
+    doctor.accepted = false;
+    setShowConfirmDelete(false);
+    onBack();
   };
 
   // Determine button text and class
@@ -56,8 +66,8 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
     <div className="doctor-details">
       {/* Header */}
       <div className="icons-container">
-        <IoIosArrowBack data-testid="back-icon" className="back-icon" onClick={onBack} />
-        <IoTrashOutline className="trash-icon" />
+        <IoIosArrowBack data-testid="back-icon" className="icons" onClick={onBack} />
+        {doctor.requested && <IoTrashOutline className="icons" onClick={() => setShowConfirmDelete(true)}/>}
       </div>
 
       {/* Doctor Info */}
@@ -90,11 +100,26 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
       {/* Contact Button */}
       <button className={buttonClass} onClick={handleClick}>{buttonText}</button>
 
+      {/* Confirm delete Popup */}
+      {showConfirmDelete && (
+        <div className="popup">
+          <div className="popup-content">
+            <IoClose className="icons" onClick={() => setShowConfirmDelete(false)} />
+            <h3>Are you sure you want to delete this doctor's contact?</h3>
+            <p>You will have to go request again if you want to contact this doctor in the future.</p>
+            <div className="confirm-buttons">
+              <button className="confirm-button" onClick={handleDelete}>Yes</button>
+              <button className="cancel-button" onClick={() => setShowConfirmDelete(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Contact Doctor Popup */}
       {showContactPopup && (
         <div className="popup">
           <div className="popup-content">
-            <IoClose className="close-btn" onClick={() => setShowContactPopup(false)} />
+            <IoClose className="icons" onClick={() => setShowContactPopup(false)} />
             <h3>Contact {doctor.name}</h3>
             <p>Phone: (123) 456-7890</p>
           </div>
@@ -105,7 +130,7 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
       {showRequestForm && (
         <div className="popup">
           <div className="popup-content">
-            <IoClose className="close-btn" onClick={() => setShowRequestForm(false)} />
+            <IoClose className="icons" onClick={() => setShowRequestForm(false)} />
             <h3>Request to Speak with {doctor.name}</h3>
             <form onSubmit={handleRequestSubmit}>
               <label class="form-label">Name:</label>
@@ -129,15 +154,14 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
               onChange={(e) => setPatientPhone(e.target.value)}
               required />
 
-              <label class="form-label">Health Conditions:</label>
+              <label class="form-label">Previous Health Conditions:</label>
               <input type="text" 
-              placeholder="Enter your health condition(s)" 
+              placeholder="Enter any health condition(s) you have" 
               value={patientCondition} 
-              onChange={(e) => setpatientCondition(e.target.value)}
-              required />
+              onChange={(e) => setpatientCondition(e.target.value)}/>
 
               <label class="form-label">Reason for Appointment:</label>
-              <textarea placeholder="Describe your symptoms" 
+              <textarea placeholder="Describe your current symptoms" 
               value={patientExtraDetails} 
               onChange={(e) => setPatientExtraDetails(e.target.value)}
               required></textarea>

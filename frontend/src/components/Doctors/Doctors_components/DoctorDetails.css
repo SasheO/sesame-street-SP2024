@@ -9,7 +9,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin-bottom: 16px;
-    width: 60%;
+    width: 50%;
     cursor: pointer;
 }
 
@@ -20,27 +20,6 @@
     padding-bottom: 15px;
 }
 
-.back-icon {
-    display: flex;
-    background: none;
-    border: none;
-    font-size: 32px;
-    color: #6979F8;
-    cursor: pointer;
-}
-
-.back-icon:hover {
-    transform: scale(1.1);
-}
-
-.trash-icon {
-    display: flex;
-    background: none;
-    border: none;
-    font-size: 32px;
-    color: #6979F8;
-    cursor: pointer;
-}
 
 .doctor-info-container {
     display: flex;
@@ -131,4 +110,20 @@
     display: flex;
     margin: auto;
     justify-content: center;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+}
+
+.confirm-button {
+    width: 40%;
+    background-color: #a0a0a0; /* Grey */
+    color: white;
+}
+
+.cancel-button {
+    width: 40%;
 }

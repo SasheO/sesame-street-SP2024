@@ -18,13 +18,17 @@
     transform: translateX(0);
   }
   
-  .close-btn {
+  .icons {
     display: flex;
     background: none;
     border: none;
     font-size: 32px;
     color: #6979F8;
     cursor: pointer;
+  }
+
+  .icons:hover {
+    transform: scale(1.1);
   }
   
   .menu-content {
