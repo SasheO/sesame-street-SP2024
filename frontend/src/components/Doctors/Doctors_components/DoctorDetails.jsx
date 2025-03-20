@@ -7,6 +7,7 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest 
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const [patientName, setPatientName] = useState("");
   const [patientEmail, setPatientEmail] = useState("");
   const [patientPhone, setPatientPhone] = useState("");
@@ -49,6 +50,12 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest 
     setShowConfirmDelete(false);
     onDeleteDoctorRequest(doctor.id);
     onBack();
+  };
+
+  // Handle edit request
+  const handleEditClick = () => {
+    setShowReviewForm(false);
+    setShowRequestForm(true); // Change both values at once
   };
 
   // Determine button text and class
@@ -98,7 +105,12 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest 
       </div>
 
       {/* Contact Button */}
-      <button className={buttonClass} onClick={handleClick}>{buttonText}</button>
+      <div className="buttons-container">
+        <button className={buttonClass} onClick={handleClick}>{buttonText}</button>
+        {doctor.requested && !doctor.accepted && (
+          <button className="buttons-in-container" onClick={() => setShowReviewForm(true)}>View Request</button>
+        )}
+      </div>
 
       {/* Confirm delete Popup */}
       {showConfirmDelete && (
@@ -168,6 +180,33 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest 
 
               <button type="submit">Submit Request</button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Review submitted request Popup */}
+      {showReviewForm && (
+        <div className="popup">
+          <div className="popup-content">
+            <IoClose className="icons" onClick={() => setShowReviewForm(false)} />
+              <label class="form-label">Name:</label>
+              <p> {patientName} </p>
+
+              <label class="form-label">Email:</label>
+              <p> {patientEmail} </p>
+
+              <label class="form-label">Phone Number:</label>
+              <p> {patientPhone} </p>
+
+              <label class="form-label">Previous Health Conditions:</label>
+              <p> {patientCondition} </p>
+
+              <label class="form-label">Reason for Appointment:</label>
+              <p> {patientExtraDetails} </p>
+
+            <div className="confirm-buttons">
+              <button onClick={() => handleEditClick()}>Edit Form</button>
+            </div>
           </div>
         </div>
       )}

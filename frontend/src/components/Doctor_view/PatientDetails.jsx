@@ -60,13 +60,13 @@ const PatientDetails = ({ patient, onBack }) => {
         <p className="notes-display">{notes || "No notes yet..."}</p>
       )}
 
-      <div className="patients-buttons-container">
-        <button className="edit-notes-btn" onClick={() => setIsEditing(!isEditing)}>
+      <div className="buttons-container">
+        <button className="buttons-in-container" onClick={() => setIsEditing(!isEditing)}>
           <PiNotePencilBold className="button-icons"/>
           {isEditing ? "Save Notes" : "Edit Notes"}
         </button>
 
-        <button className="edit-notes-btn" onClick={() => setShowContactPopup(true)}>
+        <button className="buttons-in-container" onClick={() => setShowContactPopup(true)}>
           <IoMdCall className="button-icons"/>
           Contact Patient
         </button>
