@@ -14,6 +14,7 @@ import CreatePost from "./components/Forum/CreatePost";
 import SearchResults from "./components/HomePage/HomePage_components/SearchResults";
 import DoctorsPage from "./components/Doctors/DoctorsPage";
 import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage";
+import DoctorDetails from "./components/Doctors/Doctors_components/DoctorDetails";
 import DummyDoctors from "./components/Doctors/DummyDoctors.json";
 import MyChats from "./components/Forum/MyChats";
 import "./App.css";
@@ -36,15 +37,30 @@ function App(){
     );
   };
 
-  const updateDoctorStatus = (id, status) => {
+  const updateDoctorStatus = (doctorId, status) => {
     setDoctors((prevDoctors) =>
       prevDoctors.map((doc) =>
-        doc.id === id ? { ...doc, requested: status !== "denied", accepted: status === "accepted" } : doc
+        doc.id === doctorId ? { ...doc, requested: status !== "denied", accepted: status === "accepted" } : doc
+      )
+    );
+  };
+
+  // Update patients list to remove the doctor request if deleted by the patient
+  const handleDeleteDoctorRequest = (doctorId) => {
+    setDoctorRequests((prevRequests) =>
+      prevRequests.filter((request) => request.id !== doctorId)
+    );
+  
+    // Also update doctors list to reflect that the doctor is no longer requested
+    setDoctors((prevDoctors) =>
+      prevDoctors.map((doc) =>
+        doc.id === doctorId ? { ...doc, requested: false, accepted: false } : doc
       )
     );
   };
 
   return (
+    console.log("handleDeleteDoctorRequest in App.jsx:", handleDeleteDoctorRequest),
     <AuthProvider> {/* ✅ Wrap entire app with Auth Context */}
       <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={libraries}> {/* ✅ Load Google Maps API globally */}
         <Router>
@@ -60,8 +76,8 @@ function App(){
             <Route path="/forum/create" element={<CreatePost />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/search-results" element={<SearchResults />} />
-            <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} />} />
-            <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus} />} /> 
+            <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} onDeleteDoctorRequest={handleDeleteDoctorRequest}/>} />
+            <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus}/>} /> 
             <Route path="/my-chats" element={<MyChats />} />
           </Routes>
         </Router>

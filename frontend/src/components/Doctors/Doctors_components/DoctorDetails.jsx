@@ -3,7 +3,7 @@ import { IoMdStar, IoMdStarOutline, IoIosArrowBack } from "react-icons/io";
 import { IoTrashOutline, IoClose } from "react-icons/io5";
 import "./DoctorDetails.css";
 
-const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
+const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest }) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
@@ -43,11 +43,11 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest }) => {
     onDoctorRequest(newPatientRequest);
   };
 
+
   // Handle delete request
   const handleDelete = () => {
-    doctor.requested = false;
-    doctor.accepted = false;
     setShowConfirmDelete(false);
+    onDeleteDoctorRequest(doctor.id);
     onBack();
   };
 

@@ -5,7 +5,7 @@ import DoctorCard from "./Doctors_components/DoctorCard";
 import DoctorDetails from "./Doctors_components/DoctorDetails";
 import "./DoctorsPage.css";
 
-const DoctorsPage = ({ onDoctorRequest, doctors }) => {
+const DoctorsPage = ({ onDoctorRequest, doctors, onDeleteDoctorRequest }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [search, setSearch] = useState("");
   const [showRequested, setShowRequested] = useState(false);
@@ -23,7 +23,7 @@ const DoctorsPage = ({ onDoctorRequest, doctors }) => {
       <Header label="Carelink" />
 
       {selectedDoctor ? (
-        <DoctorDetails doctor={selectedDoctor} onBack={() => setSelectedDoctor(null)} onDoctorRequest={onDoctorRequest} />
+        <DoctorDetails doctor={selectedDoctor} onBack={() => setSelectedDoctor(null)} onDoctorRequest={onDoctorRequest} onDeleteDoctorRequest={onDeleteDoctorRequest}/>
       ) : (
         <>
           <SearchBar 
