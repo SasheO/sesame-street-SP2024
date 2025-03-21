@@ -171,3 +171,36 @@
   border-radius: 5px;
   cursor: pointer;
 }
+
+/* ✅ FULLY REMOVE HOVER, FOCUS, AND ANY GHOST EFFECT */
+.back-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: 10px;
+  padding: 0; /* ✅ Ensures No Invisible Box */
+  transition: transform 0.2s ease-in-out; /* ✅ Smooth Hover Effect */
+}
+
+/* ✅ KILL THE BLUE BOX (Chrome's Default Focus) */
+.back-button:focus,
+.back-button:focus-visible,
+.back-button:hover {
+  outline: none !important; /* ❌ Kills default browser styling */
+  box-shadow: none !important; /* ❌ No Glow */
+  background: none !important; /* ❌ No weird background */
+  border: none !important; /* ❌ Ensures no border on hover */
+}
+
+/* ✅ Arrow Icon */
+.back-icon {
+  font-size: 24px;
+  color: #6979F8;
+}
+
+/* ✅ OPTIONAL: Only Scale the Icon on Hover */
+.back-button:hover .back-icon {
+  transform: scale(1.2); /* If you still want it to grow */
+}

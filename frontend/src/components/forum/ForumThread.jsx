@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { doc, getDoc, collection, addDoc, onSnapshot, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
-import { useAuth } from "../../context/AuthContext"; // ✅ Use AuthContext instead of Firebase Auth directly
-import { db } from "../../firebase"; // ✅ Firestore Database Import
+import { useAuth } from "../../context/AuthContext";
+import { db } from "../../firebase";
 import Header from "../shared/Header";
-import { BiHeart, BiMessageRounded, BiShare } from "react-icons/bi";
+import { BiHeart, BiMessageRounded, BiShare, BiArrowBack } from "react-icons/bi"; // ✅ Added Back Icon
 import "./ForumThread.css";
 
 const ForumThread = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { user } = useAuth(); // ✅ Get user from AuthContext
+  const { user } = useAuth();
   const [post, setPost] = useState(location.state?.post || null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -57,12 +57,12 @@ const ForumThread = () => {
       setComments(loadedComments);
     });
 
-    return () => unsubscribe(); // Cleanup listener on unmount
+    return () => unsubscribe();
   }, [id, post]);
 
   if (!post) return <div className="error-message">⚠️ Post not found.</div>;
 
-  // ✅ Handle new comment submission (Only If Logged In)
+  // ✅ Handle new comment submission
   const handleReply = async () => {
     if (!user) {
       alert("You must be logged in to reply!");
@@ -75,7 +75,7 @@ const ForumThread = () => {
       const commentsRef = collection(db, "forum", id, "comments");
 
       await addDoc(commentsRef, {
-        user: user.displayName || user.email || "Unknown User", // ✅ Use email if displayName is null
+        user: user.displayName || user.email || "Unknown User",
         text: newComment,
         date: serverTimestamp(),
         likes: [],
@@ -88,34 +88,6 @@ const ForumThread = () => {
     }
   };
 
-  // ✅ Handle comment reply (Only If Logged In)
-  const handleCommentReply = async (commentId) => {
-    if (!user) {
-      alert("You must be logged in to reply!");
-      return;
-    }
-
-    if (!newReply.trim()) return;
-
-    try {
-      const commentRef = doc(db, "forum", id, "comments", commentId);
-
-      await updateDoc(commentRef, {
-        replies: arrayUnion({
-          user: user.displayName || user.email || "Unknown User", // ✅ Use email if displayName is null
-          text: newReply,
-          date: new Date().toISOString(),
-          likes: 0,
-        }),
-      });
-
-      setNewReply("");
-      setReplyingTo(null);
-    } catch (error) {
-      console.error("Error adding reply:", error);
-    }
-  };
-
   // ✅ Sort comments based on likes or newest
   const sortedComments = [...comments].sort((a, b) => {
     if (sortOrder === "best") return b.likes - a.likes;
@@ -125,7 +97,11 @@ const ForumThread = () => {
   return (
     <div className="forum-thread-page">
       <Header label="Forum Post" />
-      <button className="back-button" onClick={() => navigate("/forum")}>← Back to Forum</button>
+
+      {/* ✅ Back Button (Styled to Match the Doctor Card) */}
+      <button className="back-button" onClick={() => navigate(-1)}>
+        <BiArrowBack className="back-icon" />
+      </button>
 
       <div className="post-container">
         <h2 className="post-title">{post.title}</h2>
@@ -139,7 +115,6 @@ const ForumThread = () => {
           <span className="action"><BiShare /></span>
         </div>
 
-        {/* ✅ Show comment box only if logged in */}
         {user ? (
           <div className="comment-box">
             <input type="text" placeholder="Join the conversation" value={newComment} onChange={(e) => setNewComment(e.target.value)} />
@@ -149,7 +124,6 @@ const ForumThread = () => {
           <p className="login-message">🔒 <a href="/login">Log in</a> to join the conversation.</p>
         )}
 
-        {/* ✅ Comments Section */}
         <div className="comments-section">
           {sortedComments.length > 0 ? (
             sortedComments.map((comment) => (
@@ -160,22 +134,7 @@ const ForumThread = () => {
                 <p>{typeof comment.text === "string" ? comment.text : "Invalid comment"}</p>
                 <div className="comment-actions">
                   <span><BiHeart /> {comment.likes}</span>
-
-                  {/* ✅ Only allow logged-in users to reply */}
-                  {user && (
-                    <span className="reply-btn" onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}>
-                      <BiMessageRounded /> Reply
-                    </span>
-                  )}
                 </div>
-
-                {/* ✅ Reply Input (Only If Logged In) */}
-                {user && replyingTo === comment.id && (
-                  <div className="reply-box">
-                    <input type="text" placeholder="Write a reply..." value={newReply} onChange={(e) => setNewReply(e.target.value)} />
-                    <button onClick={() => handleCommentReply(comment.id)}>Post Reply</button>
-                  </div>
-                )}
               </div>
             ))
           ) : (
