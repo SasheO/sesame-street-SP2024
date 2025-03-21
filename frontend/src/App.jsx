@@ -26,13 +26,25 @@ function App(){
   const [doctors, setDoctors] = useState(DummyDoctors);
   const [doctorRequests, setDoctorRequests] = useState([]);
 
-  const handleDoctorRequest = (newRequest) => {
-    setDoctorRequests((prevRequests) => [...prevRequests, newRequest]);
+  const handleDoctorRequest = (updatedRequest) => {
+    setDoctorRequests((prevRequests) => {
+      const existingRequestIndex = prevRequests.findIndex((req) => req.id === updatedRequest.id);
+  
+      if (existingRequestIndex !== -1) {
+        // Update the existing request instead of creating a new one
+        const updatedRequests = [...prevRequests];
+        updatedRequests[existingRequestIndex] = updatedRequest;
+        return updatedRequests;
+      } else {
+        // Add a new request if it doesn't exist
+        return [...prevRequests, updatedRequest];
+      }
+    });
 
     // Update doctor state to requested
     setDoctors((prevDoctors) =>
       prevDoctors.map((doc) =>
-        doc.id === newRequest.id ? { ...doc, requested: true } : doc
+        doc.id === updatedRequest.id ? { ...doc, requested: true } : doc
       )
     );
   };
@@ -60,7 +72,6 @@ function App(){
   };
 
   return (
-    console.log("handleDeleteDoctorRequest in App.jsx:", handleDeleteDoctorRequest),
     <AuthProvider> {/* ✅ Wrap entire app with Auth Context */}
       <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} libraries={libraries}> {/* ✅ Load Google Maps API globally */}
         <Router>
@@ -76,7 +87,7 @@ function App(){
             <Route path="/forum/create" element={<CreatePost />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/search-results" element={<SearchResults />} />
-            <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} onDeleteDoctorRequest={handleDeleteDoctorRequest}/>} />
+            <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} onDeleteDoctorRequest={handleDeleteDoctorRequest} doctorRequests={doctorRequests}/>} />
             <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus}/>} /> 
             <Route path="/my-chats" element={<MyChats />} />
           </Routes>

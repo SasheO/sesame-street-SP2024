@@ -5,10 +5,11 @@ import DoctorCard from "./Doctors_components/DoctorCard";
 import DoctorDetails from "./Doctors_components/DoctorDetails";
 import "./DoctorsPage.css";
 
-const DoctorsPage = ({ onDoctorRequest, doctors, onDeleteDoctorRequest }) => {
+const DoctorsPage = ({ onDoctorRequest, doctors, onDeleteDoctorRequest, doctorRequests }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [search, setSearch] = useState("");
   const [showRequested, setShowRequested] = useState(false);
+  const selectedDoctorRequest = doctorRequests.find((req) => req.id === selectedDoctor?.id);
 
   const handleSearchChange = (term) => {
     setSearch(term);
@@ -23,7 +24,11 @@ const DoctorsPage = ({ onDoctorRequest, doctors, onDeleteDoctorRequest }) => {
       <Header label="Carelink" />
 
       {selectedDoctor ? (
-        <DoctorDetails doctor={selectedDoctor} onBack={() => setSelectedDoctor(null)} onDoctorRequest={onDoctorRequest} onDeleteDoctorRequest={onDeleteDoctorRequest}/>
+        <DoctorDetails doctor={selectedDoctor} 
+        onBack={() => setSelectedDoctor(null)} 
+        onDoctorRequest={onDoctorRequest} 
+        onDeleteDoctorRequest={onDeleteDoctorRequest}
+        existingRequest={selectedDoctorRequest}/>
       ) : (
         <>
           <SearchBar 

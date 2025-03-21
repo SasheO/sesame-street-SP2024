@@ -3,23 +3,27 @@ import { IoMdStar, IoMdStarOutline, IoIosArrowBack } from "react-icons/io";
 import { IoTrashOutline, IoClose } from "react-icons/io5";
 import "./DoctorDetails.css";
 
-const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest }) => {
+const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest, existingRequest }) => {
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [patientName, setPatientName] = useState("");
-  const [patientEmail, setPatientEmail] = useState("");
-  const [patientPhone, setPatientPhone] = useState("");
-  const [patientCondition, setpatientCondition] = useState("");
-  const [patientExtraDetails, setPatientExtraDetails] = useState("");
+  const [patientName, setPatientName] = useState(existingRequest?.name || "");
+  const [patientEmail, setPatientEmail] = useState(existingRequest?.email || "");
+  const [patientPhone, setPatientPhone] = useState(existingRequest?.phone || "");
+  const [patientCondition, setPatientCondition] = useState(existingRequest?.condition || "");
+  const [patientExtraDetails, setPatientExtraDetails] = useState(existingRequest?.extraDetails || "");
 
   useEffect(() => {
-    // If doctor is accepted, update button
-    if (doctor.accepted) {
-      doctor.requested = true;
+    // Load the existing request when doctor details are opened
+    if (existingRequest) {
+      setPatientName(existingRequest.name);
+      setPatientEmail(existingRequest.email);
+      setPatientPhone(existingRequest.phone);
+      setPatientCondition(existingRequest.condition);
+      setPatientExtraDetails(existingRequest.extraDetails);
     }
-  }, [doctor.accepted]);
+  }, [existingRequest]);
 
   // Handle doctor request submission
   const handleRequestSubmit = (e) => {
@@ -30,18 +34,19 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest 
     doctor.requested = true;
 
     // Create a corresponding patient request
-    const newPatientRequest = {
-      id: doctor.id, // Unique ID
-      name: patientName || `Request for ${doctor.name}`, // change to current user's name
-      condition: patientCondition || "Pending Review",
-      alertLevel: "Low",
-      type: "requests", // Ensures it appears under Patient Requests
+    const updatedRequest = {
+      id: doctor.id,
+      name: patientName,
+      email: patientEmail,
+      phone: patientPhone,
+      condition: patientCondition,
+      extraDetails: patientExtraDetails,
       image: doctor.image,
-      notes: ["No notes yet..."],
+      type: "requests",
     };
 
-    // Pass new patient request to DoctorPatientsPage
-    onDoctorRequest(newPatientRequest);
+    // Pass the updated request to the parent component
+    onDoctorRequest(updatedRequest);
   };
 
 
@@ -170,7 +175,7 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest 
               <input type="text" 
               placeholder="Enter any health condition(s) you have" 
               value={patientCondition} 
-              onChange={(e) => setpatientCondition(e.target.value)}/>
+              onChange={(e) => setPatientCondition(e.target.value)}/>
 
               <label class="form-label">Reason for Appointment:</label>
               <textarea placeholder="Describe your current symptoms" 
