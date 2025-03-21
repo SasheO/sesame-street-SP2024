@@ -186,3 +186,28 @@
   margin-bottom: 5px;
   display: block;
 }
+
+.thread-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.like-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  gap: 5px;
+  color: #555;
+}
+
+.like-button:hover {
+  color: red;
+}
+
+/* Filled heart icon for liked posts */
+.liked {
+  color: red;
+}
