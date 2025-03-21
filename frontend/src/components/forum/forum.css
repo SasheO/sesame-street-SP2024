@@ -179,3 +179,10 @@
   right: 0;
   z-index: 1000; /* ensures it's above other elements */
 }
+
+.thread-meta {
+  font-size: 12px !important;  /* FORCE smaller size */
+  color: #888 !important;  /* Lighter color */
+  margin-bottom: 5px;
+  display: block;
+}
