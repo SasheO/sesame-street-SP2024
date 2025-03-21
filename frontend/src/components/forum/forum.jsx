@@ -109,8 +109,13 @@ const Forum = () => {
                   className="thread-card"
                   onClick={() => navigate(`/forum/${thread.id}`, { state: { thread } })}
                 >
+                  
+                  
                   <h3>{thread.title}</h3>
-                  <p>{thread.user} • {thread.date}</p>
+                  {/* Meta Section: Username & Date */}
+                  <div className="thread-meta">
+                    <span className="username">{thread.user}</span> • <span className="post-date">{thread.date}</span>
+                  </div>
                   <p>{thread.content}</p>
                   
                   {/* Tag List */}
