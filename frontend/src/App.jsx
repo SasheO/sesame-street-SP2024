@@ -88,8 +88,6 @@ function App(){
             <Route path="/forum/create" element={<CreatePost />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/search-results" element={<SearchResults />} />
-            <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} />} />
-            <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus} />} /> 
             <Route path="/patient/:patientId" element={<PatientDetails />} />
             <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} onDeleteDoctorRequest={handleDeleteDoctorRequest} doctorRequests={doctorRequests}/>} />
             <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus}/>} /> 
