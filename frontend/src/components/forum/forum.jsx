@@ -35,6 +35,7 @@ const Forum = () => {
 
     fetchPosts();
   }, []);
+
   const handleLike = async (threadId) => {
     try {
         const threadRef = doc(db, "forum", threadId);
@@ -48,8 +49,7 @@ const Forum = () => {
     } catch (error) {
         console.error("⚠️ Error liking post:", error);
     }
-};
-
+  };
 
   // ✅ Filter forum threads based on search & selected tags
   const filteredThreads = threads.filter((thread) => {
@@ -64,11 +64,6 @@ const Forum = () => {
 
     return matchesSearch && matchesTags;
   });
-
-  const truncateContent = (content, limit = 100) => {
-    if (content.length <= limit) return content;
-    return content.substring(0, limit) + "...";
-  };
 
   return (
     <div className="forum-page">
@@ -105,9 +100,21 @@ const Forum = () => {
                   className="thread-card"
                   onClick={() => navigate(`/forum/${thread.id}`, { state: { post: thread } })}
                 >
+                  {/* ✅ Title First */}
                   <h3>{thread.title}</h3>
-                  <p>{thread.author || "Anonymous"} • {thread.date ? new Date(thread.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}</p>
+
+                  {/* ✅ Thread Meta (Username & Date) */}
+                  <div className="thread-meta">
+                    <span className="username">{thread.author || "Anonymous"}</span> • 
+                    <span className="post-date">
+                      {thread.date ? new Date(thread.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}
+                    </span>
+                  </div>
+
+                  {/* ✅ Post Content */}
                   <p>{thread.content}</p>
+
+                  {/* ✅ Tags */}
                   <p className="thread-tags">
                     <strong>Tags: </strong>
                     {(Array.isArray(thread.tags) ? thread.tags : []).map((tag) => (
@@ -125,10 +132,18 @@ const Forum = () => {
                       </span>
                     ))}
                   </p>
-                  
-                  {/* ✅ Like & Comment Count Centered on Same Level */}
+
+                  {/* ✅ Like & Comment Count */}
                   <div className="thread-actions">
-                    <span>❤️ {thread.likes}</span>
+                    <span 
+                      className="like-button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLike(thread.id);
+                      }}
+                    >
+                      ❤️ {thread.likes}
+                    </span>
                     <span>💬 {thread.comments.length}</span>
                   </div>
                 </div>

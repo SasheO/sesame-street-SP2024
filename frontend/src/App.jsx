@@ -17,6 +17,7 @@ import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage";
 import DoctorDetails from "./components/Doctors/Doctors_components/DoctorDetails";
 import DummyDoctors from "./components/Doctors/DummyDoctors.json";
 import MyChats from "./components/Forum/MyChats";
+import PatientDetails from './components/Doctor_view/PatientDetails';
 import "./App.css";
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -87,6 +88,9 @@ function App(){
             <Route path="/forum/create" element={<CreatePost />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/search-results" element={<SearchResults />} />
+            <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} />} />
+            <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus} />} /> 
+            <Route path="/patient/:patientId" element={<PatientDetails />} />
             <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} onDeleteDoctorRequest={handleDeleteDoctorRequest} doctorRequests={doctorRequests}/>} />
             <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus}/>} /> 
             <Route path="/my-chats" element={<MyChats />} />
