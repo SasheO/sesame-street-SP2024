@@ -57,12 +57,11 @@
     white-space: pre-wrap; /* Keeps line breaks */
   }
   
-  .edit-notes-btn {
+  .buttons-in-container {
     padding: 15px;
     width: 70%;
     margin-top: 0px;
-    display: flex
-;
+    display: flex;
     gap: 10px;
     align-items: center;
     justify-content: center;
@@ -72,9 +71,9 @@
     font-size: 24px;
   }
 
-  .patients-buttons-container {
+  .buttons-container {
     align-items: center;
     display: flex;
-    gap: 36px;
+    gap: 48px;
     margin: 0px 36px;
   }

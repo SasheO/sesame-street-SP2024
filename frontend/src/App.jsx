@@ -14,6 +14,7 @@ import CreatePost from "./components/Forum/CreatePost";
 import SearchResults from "./components/HomePage/HomePage_components/SearchResults";
 import DoctorsPage from "./components/Doctors/DoctorsPage";
 import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage";
+import DoctorDetails from "./components/Doctors/Doctors_components/DoctorDetails";
 import DummyDoctors from "./components/Doctors/DummyDoctors.json";
 import MyChats from "./components/Forum/MyChats";
 import PatientDetails from './components/Doctor_view/PatientDetails';
@@ -26,21 +27,47 @@ function App(){
   const [doctors, setDoctors] = useState(DummyDoctors);
   const [doctorRequests, setDoctorRequests] = useState([]);
 
-  const handleDoctorRequest = (newRequest) => {
-    setDoctorRequests((prevRequests) => [...prevRequests, newRequest]);
+  const handleDoctorRequest = (updatedRequest) => {
+    setDoctorRequests((prevRequests) => {
+      const existingRequestIndex = prevRequests.findIndex((req) => req.id === updatedRequest.id);
+  
+      if (existingRequestIndex !== -1) {
+        // Update the existing request instead of creating a new one
+        const updatedRequests = [...prevRequests];
+        updatedRequests[existingRequestIndex] = updatedRequest;
+        return updatedRequests;
+      } else {
+        // Add a new request if it doesn't exist
+        return [...prevRequests, updatedRequest];
+      }
+    });
 
     // Update doctor state to requested
     setDoctors((prevDoctors) =>
       prevDoctors.map((doc) =>
-        doc.id === newRequest.id ? { ...doc, requested: true } : doc
+        doc.id === updatedRequest.id ? { ...doc, requested: true } : doc
       )
     );
   };
 
-  const updateDoctorStatus = (id, status) => {
+  const updateDoctorStatus = (doctorId, status) => {
     setDoctors((prevDoctors) =>
       prevDoctors.map((doc) =>
-        doc.id === id ? { ...doc, requested: status !== "denied", accepted: status === "accepted" } : doc
+        doc.id === doctorId ? { ...doc, requested: status !== "denied", accepted: status === "accepted" } : doc
+      )
+    );
+  };
+
+  // Update patients list to remove the doctor request if deleted by the patient
+  const handleDeleteDoctorRequest = (doctorId) => {
+    setDoctorRequests((prevRequests) =>
+      prevRequests.filter((request) => request.id !== doctorId)
+    );
+  
+    // Also update doctors list to reflect that the doctor is no longer requested
+    setDoctors((prevDoctors) =>
+      prevDoctors.map((doc) =>
+        doc.id === doctorId ? { ...doc, requested: false, accepted: false } : doc
       )
     );
   };
@@ -64,6 +91,8 @@ function App(){
             <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} />} />
             <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus} />} /> 
             <Route path="/patient/:patientId" element={<PatientDetails />} />
+            <Route path="/doctor" element={<DoctorsPage onDoctorRequest={handleDoctorRequest} doctors={doctors} onDeleteDoctorRequest={handleDeleteDoctorRequest} doctorRequests={doctorRequests}/>} />
+            <Route path="/doctor-patients" element={<DoctorPatientsPage doctorRequests={doctorRequests} updateDoctorStatus={updateDoctorStatus}/>} /> 
             <Route path="/my-chats" element={<MyChats />} />
           </Routes>
         </Router>

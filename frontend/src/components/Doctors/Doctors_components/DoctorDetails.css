@@ -45,8 +45,13 @@
 }
 
 .contact-button {
-    width: 70%;
     padding: 15px;
+    width: 272px;
+    margin-top: 0px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 }
 .contact-button.request {
     background-color: #6979F8; /* Purple */
@@ -110,6 +115,7 @@
     display: flex;
     margin: auto;
     justify-content: center;
+    margin-top: 8px;
 }
 
 .confirm-buttons {

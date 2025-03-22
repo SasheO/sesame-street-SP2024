@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
 import PatientCard from "./PatientCard";
@@ -11,6 +11,11 @@ const DoctorPatientsPage = ({ doctorRequests = [], updateDoctorStatus }) => {
   const [search, setSearch] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [patients, setPatients] = useState([...mockPatients, ...doctorRequests]);
+
+  // automatically update the patients list when doctorRequests changes
+  useEffect(() => {
+    setPatients([...mockPatients, ...doctorRequests]);
+  }, [doctorRequests]);
 
   const acceptPatient = (id) => {
     // Accept a patient request
