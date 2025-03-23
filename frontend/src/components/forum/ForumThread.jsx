@@ -4,7 +4,7 @@ import { doc, getDoc, collection, addDoc, onSnapshot, updateDoc, arrayUnion, ser
 import { useAuth } from "../../context/AuthContext";
 import { db } from "../../firebase";
 import Header from "../shared/Header";
-import { BiHeart, BiMessageRounded, BiShare, BiArrowBack } from "react-icons/bi"; // ✅ Added Back Icon
+import { BiHeart, BiMessageRounded, BiArrowBack, BiSend } from "react-icons/bi";
 import "./ForumThread.css";
 
 const ForumThread = () => {
@@ -112,13 +112,15 @@ const ForumThread = () => {
         <div className="post-actions">
           <span className="action"><BiHeart /> {post.likes || 0}</span>
           <span className="action"><BiMessageRounded /> {comments.length}</span>
-          <span className="action"><BiShare /></span>
+          
         </div>
 
         {user ? (
           <div className="comment-box">
             <input type="text" placeholder="Join the conversation" value={newComment} onChange={(e) => setNewComment(e.target.value)} />
-            <button onClick={handleReply}>Reply</button>
+            <button onClick={handleReply} aria-label="Send reply">
+              <BiSend size={18} />
+            </button>
           </div>
         ) : (
           <p className="login-message">🔒 <a href="/login">Log in</a> to join the conversation.</p>
