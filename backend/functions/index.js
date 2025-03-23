@@ -950,8 +950,6 @@ app.post("/delete_doctor_requests", (req, res) => {
 app.get("/my_patient_requests", (req, res) => {
   // user should be logged in practitioner
   // return all requests by still existing users
-  // divide results into pending vs accepted vs rejected
-  // return all requests as well as pending, accepted, rejected as separate lists
   const idToken = req.body.idToken;
   if (idToken==null ) {
     console.log("idToken==null");
@@ -969,6 +967,8 @@ app.get("/my_patient_requests", (req, res) => {
       await doctorPatientConnectionRef.where("practitionerUID", "==", decodedToken.uid).get()
           .then(async (querySnapshot) => {
             if (!querySnapshot.empty) {
+              // TODO: divide results into pending vs accepted vs rejected
+              // return all requests as well as pending, accepted, rejected as separate lists
               const myPatientRequests = [];
               for (const item of querySnapshot.docs) {
                 myPatientRequests.push(item);
