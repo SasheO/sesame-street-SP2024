@@ -998,6 +998,7 @@ app.post("/edit_patient_requests", (req, res) => {
   const idToken = req.body.idToken;
   const _requestID = req.body.request_id;
   const _status = req.body.status;
+  const _doctorNotes = req.body.doctor_notes;
   if (idToken==null ) {
     console.log("idToken==null");
     return res.status(401).json({message: "User is not logged in"});
@@ -1015,13 +1016,23 @@ app.post("/edit_patient_requests", (req, res) => {
       // check if it is for the current doctor
       doctorPatientConnectionRef.doc(_requestID).get()
       .then(async (querySnapshot) => {
+        // TODO: is this right?
+        // https://firebase.google.com/docs/firestore/manage-data/add-data#web_3
         if (!querySnapshot.empty) {
-          const doctorPatientConnectionRequest = querySnapshot.data();
-          if (doctorPatientConnectionRequest.patientUID===currentUserUID){
-            
-            
-
-            return res.status(200).json({message: ""});
+          const doctorPatientConnectionRequest = querySnapshot;
+          if (doctorPatientConnectionRequest.data().practitionerUID===currentUserUID){
+            washingtonRef.update({
+                status: _status,
+                doctor_notes: _doctorNotes
+            })
+            .then(() => {
+                return res.status(200).json({message: "Patient request successfully edited!"});
+            })
+            .catch((error) => {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+                return res.status(501).json({message: "Error updating document..."});
+            });
           }
           else{
             return res.status(204).json({message: "Your request with this request_id was not found"});
