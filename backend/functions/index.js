@@ -862,7 +862,7 @@ app.get("/my_doctor_requests", (req, res) => {
   // show them requests sent
   // divide results into pending vs accepted vs rejected
   // return all requests as well as pending, accepted, rejected as separate lists
-  const idToken = req.body.idToken;
+  const idToken = req.query.idToken;
   if (idToken==null ) {
     console.log("idToken==null");
     return res.status(401).json({message: "User is not logged in"});
@@ -950,7 +950,7 @@ app.post("/delete_doctor_requests", (req, res) => {
 app.get("/my_patient_requests", (req, res) => {
   // user should be logged in practitioner
   // return all requests by still existing users
-  const idToken = req.body.idToken;
+  const idToken = req.query.idToken;
   if (idToken==null ) {
     console.log("idToken==null");
     return res.status(401).json({message: "User is not logged in"});
@@ -985,7 +985,7 @@ app.get("/my_patient_requests", (req, res) => {
   });
 });
 
-app.get("/edit_patient_requests", (req, res) => {
+app.post("/edit_patient_requests", (req, res) => {
   // user should be logged in practitioner
   // if pending status:
   // accept or delete based
@@ -995,6 +995,47 @@ app.get("/edit_patient_requests", (req, res) => {
   // if accepted status: 
   // edit fields
   // OR move patient into previous patients by changing status to previous
+  const idToken = req.body.idToken;
+  const _requestID = req.body.request_id;
+  const _status = req.body.status;
+  if (idToken==null ) {
+    console.log("idToken==null");
+    return res.status(401).json({message: "User is not logged in"});
+  }
+
+  // TODO here: check if the user type is practitioner
+  // if not, return an error of invalid user type (mayber code 422?)
+
+  const doctorPatientConnectionRef = db.collection("doctor_patient_connection");
+  firebase.auth()
+    .verifyIdToken(idToken)
+    .then(async (decodedToken) => {
+      const uid = decodedToken.uid;
+      // TODO retrieve connection request with given ID
+      // check if it is for the current doctor
+      doctorPatientConnectionRef.doc(_requestID).get()
+      .then(async (querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const doctorPatientConnectionRequest = querySnapshot.data();
+          if (doctorPatientConnectionRequest.patientUID===currentUserUID){
+            
+            
+
+            return res.status(200).json({message: ""});
+          }
+          else{
+            return res.status(204).json({message: "Your request with this request_id was not found"});
+          }
+        }
+        else{
+          return res.status(204).json({message: "Your request with this request_id was not found"});
+        }
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(500).json({message: "Some error has occurred..."});
+  });
 });
 
 // TODO: don't think i can sign in or out with
