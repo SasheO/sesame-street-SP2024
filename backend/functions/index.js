@@ -826,6 +826,7 @@ app.post("/send_doctor_connection_request", (req, res) => {
         doctorPatientConnectionRequest = {
           // all these are required fields for patients
           patientUID: _patientUID,
+          practitionerUID: _practitionerUID,
           request_alert_level: _requestAlertLevel,
           symptoms: _symptoms,
           doctor_notes: _doctorNotes,
@@ -892,9 +893,6 @@ app.get("/my_doctor_requests", (req, res) => {
       console.log(error);
       return res.status(500).json({message: "Some error has occurred..."});
   });
-  
-
-
 });
 
 app.post("/delete_doctor_requests", (req, res) => {
@@ -954,6 +952,37 @@ app.get("/my_patient_requests", (req, res) => {
   // return all requests by still existing users
   // divide results into pending vs accepted vs rejected
   // return all requests as well as pending, accepted, rejected as separate lists
+  const idToken = req.body.idToken;
+  if (idToken==null ) {
+    console.log("idToken==null");
+    return res.status(401).json({message: "User is not logged in"});
+  }
+
+  // TODO here: check if the user type is practitioner
+  // if not, return an error of invalid user type (mayber code 422?)
+
+  const doctorPatientConnectionRef = db.collection("doctor_patient_connection");
+  firebase.auth()
+    .verifyIdToken(idToken)
+    .then(async (decodedToken) => {
+      const uid = decodedToken.uid;
+      await doctorPatientConnectionRef.where("practitionerUID", "==", decodedToken.uid).get()
+          .then(async (querySnapshot) => {
+            if (!querySnapshot.empty) {
+              const myPatientRequests = [];
+              for (const item of querySnapshot.docs) {
+                myPatientRequests.push(item);
+              }
+              return res.status(200).json({patient_requests: myPatientRequests});
+            } else {
+              return res.status(200).json({patient_requests: []});
+            }
+          });
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(500).json({message: "Some error has occurred..."});
+  });
 });
 
 app.get("/edit_patient_requests", (req, res) => {
