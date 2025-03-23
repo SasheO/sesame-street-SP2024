@@ -861,6 +861,40 @@ app.get("/my_doctor_requests", (req, res) => {
   // show them requests sent
   // divide results into pending vs accepted vs rejected
   // return all requests as well as pending, accepted, rejected as separate lists
+  const idToken = req.body.idToken;
+  if (idToken==null ) {
+    console.log("idToken==null");
+    return res.status(401).json({message: "User is not logged in"});
+  }
+
+  // TODO here: check if the user type is patient
+  // if not, return an error of invalid user type (mayber code 422?)
+
+  const doctorPatientConnectionRef = db.collection("doctor_patient_connection");
+  firebase.auth()
+    .verifyIdToken(idToken)
+    .then(async (decodedToken) => {
+      const uid = decodedToken.uid;
+      await doctorPatientConnectionRef.where("patientUID", "==", decodedToken.uid).get()
+          .then(async (querySnapshot) => {
+            if (!querySnapshot.empty) {
+              const myDoctorRequests = [];
+              for (const item of querySnapshot.docs) {
+                myDoctorRequests.push(item);
+              }
+              return res.status(200).json({doctor_requests: myDoctorRequests});
+            } else {
+              return res.status(200).json({doctor_requests: []});
+            }
+          });
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(500).json({message: "Some error has occurred..."});
+  });
+  
+
+
 });
 
 app.post("/delete_doctor_requests", (req, res) => {
