@@ -978,9 +978,10 @@ app.post("/delete_doctor_requests", (req, res) => {
     .then(async (querySnapshot) => {
       if (!querySnapshot.empty) {
         const doctorPatientConnectionRequest = querySnapshot.data();
-        console.log(doctorPatientConnectionRequest);
+        if (doctorPatientConnectionRequest==undefined){
+          return res.status(500).json({message: "Some error has occurred..."});
+        }
         if (doctorPatientConnectionRequest.patientUID===currentUserUID){
-          // TODO: is this the right function for deleting? test
           querySnapshot.ref.delete();
           return res.status(200).json({message: "Request deleted successfully"});
         }

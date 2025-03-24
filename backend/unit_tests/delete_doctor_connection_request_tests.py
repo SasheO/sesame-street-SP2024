@@ -21,11 +21,15 @@ def sign_in_with_email_and_password(email, password, return_secure_token=True):
 email1 = "tester.person@gmail.com"
 password1 = "12.3rdaskufq24eS"
 user_credentials1 = sign_in_with_email_and_password(email1, password1)
-email2 = "tester.person@gmail.com"
+email2 = "testuseremail9@gmail.com"
 password2 = "12.3rdaskufq24eS"
-user_credentials2 = sign_in_with_email_and_password(email1, password1)
+user_credentials2 = sign_in_with_email_and_password(email2, password2)
 
-existing_requests = ["4umHvh9U04Kitxu3viMa", "7k37XKVImttb6FRtrJFJ", "AXmTbY1G4Y0Pd5IGJtQe"]
+existing_requests = [
+    "TgvBWHh777xuWc7FUTZs",
+    "i5WhJGjciUc8qsiDHOYW",
+    "lsJFK3eZP60ITe0Jlj3F"
+    ]
 
 test_datas = {
     "good request 1": {
@@ -84,3 +88,4 @@ for label, test_data in test_datas.items():
     print()
     print()
     print()
+    # break
