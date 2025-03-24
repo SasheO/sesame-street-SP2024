@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { IoMdStar, IoMdStarOutline } from "react-icons/io";
 import { GoogleMap, LoadScript, Marker, Polyline } from "@react-google-maps/api";
 import "./LocationDetails.css";
+import { decode } from '@googlemaps/polyline-codec';
+
 
 const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY; // ✅ Ensure API key is set
 
@@ -52,11 +54,17 @@ const LocationDetails = ({ facility, userLocation, onBack }) => {
         console.log("Routes API Response:", data);
 
         if (data.routes && data.routes.length > 0) {
-          const decodedPath = window.google.maps.geometry.encoding.decodePath(
-            data.routes[0].polyline.encodedPolyline
-          );
-
+          // const decodedPath = window.google.maps.geometry?.encoding.decodePath(
+          //   data.routes[0].polyline.encodedPolyline
+          // );
+          const encodedPolyline = data.routes[0].polyline.encodedPolyline;
+          const decodedPath = decode(encodedPolyline).map(([lat, lng]) => ({ lat, lng }));
+  
+        
           setDirections(decodedPath);
+
+          
+          console.log("New directions: ",directions);
         } else {
           setError("No route found.");
         }
@@ -98,6 +106,9 @@ const LocationDetails = ({ facility, userLocation, onBack }) => {
         >
           {/* ✅ Show the Driving Route */}
           {directions && (
+            console.log("Hello"),
+            console.log("Directions: ",directions),
+
             <Polyline
               path={directions}
               options={{
