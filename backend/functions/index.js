@@ -1021,18 +1021,36 @@ app.post("/edit_patient_requests", (req, res) => {
         if (!querySnapshot.empty) {
           const doctorPatientConnectionRequest = querySnapshot;
           if (doctorPatientConnectionRequest.data().practitionerUID===currentUserUID){
-            washingtonRef.update({
+            if (['deleted', 'accepted', 'previous'].includes(_status)){
+              washingtonRef.update({
                 status: _status,
-                doctor_notes: _doctorNotes
             })
             .then(() => {
-                return res.status(200).json({message: "Patient request successfully edited!"});
+              console.log("Patient request successfully edited!")
             })
             .catch((error) => {
                 // The document probably doesn't exist.
                 console.error("Error updating document: ", error);
                 return res.status(501).json({message: "Error updating document..."});
             });
+            return res.status(200).json({message: "Patient request successfully edited!"});
+
+            }
+            if (!(!_doctorNotes)&&_doctorNotes!==""){
+              washingtonRef.update({
+                doctor_notes: _doctorNotes
+            })
+            .then(() => {
+              console.log("Patient request successfully edited!")
+            })
+            .catch((error) => {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+                return res.status(501).json({message: "Error updating document..."});
+            });
+            return res.status(200).json({message: "Patient request successfully edited!"});
+            }
+            
           }
           else{
             return res.status(204).json({message: "Your request with this request_id was not found"});
