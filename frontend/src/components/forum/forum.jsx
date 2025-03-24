@@ -12,7 +12,15 @@ const Forum = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [threads, setThreads] = useState([]);
-
+  const fetchCommentCounts = async (posts) => {
+    const postsWithCounts = await Promise.all(posts.map(async (post) => {
+      const commentsRef = collection(db, "forum", post.id, "comments");
+      const commentSnapshot = await getDocs(commentsRef);
+      return { ...post, commentCount: commentSnapshot.size };
+    }));
+  
+    return postsWithCounts;
+  };
   // ✅ Fetch posts in real-time from Firestore
   useEffect(() => {
     const fetchPosts = () => {

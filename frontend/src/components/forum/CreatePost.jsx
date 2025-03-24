@@ -5,6 +5,8 @@ import { useAuth } from "../../context/AuthContext"; // ✅ Import Auth Context
 import { db } from "../../firebase"; // ✅ Import Firestore DB
 import Header from "../shared/Header";
 import "./CreatePost.css";
+import { BiArrowBack } from "react-icons/bi";
+
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -64,8 +66,9 @@ const CreatePost = () => {
   return (
     <div className="create-post-page">
       <Header label="Carelink Forum" />
-      <button className="back-button" onClick={() => navigate("/forum")}>← Back to Forum</button>
-
+      <button className="back-button" onClick={() => navigate(-1)}>
+        <BiArrowBack className="back-icon" />
+      </button>
       <div className="create-post-container">
         <h2>Create a New Post</h2>
 
