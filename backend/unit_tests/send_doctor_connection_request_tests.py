@@ -52,7 +52,73 @@ test_datas = {
     "symptoms": ["heart palpitations", "shortness of breath"],
     "phone_number": "+12021234567"
     },
-
+    "good request 2": {
+    "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": ["I am tired all the time. i don't know why"],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    },
+    "empty symptoms": {
+    "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": [],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    },
+    "no symptoms": {
+    "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
+    "alert_level": ALERT_LEVEL['high'],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    },
+    "empty phone number/contact info": {
+    "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": ["I am tired all the time. i don't know why"],
+    "phone_number": "",
+    "idToken": user_credentials['idToken']
+    },
+    "no phone number/contact info": {
+    "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": ["I am tired all the time. i don't know why"],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    },
+    "empty practitioner id": {
+    "practitioner_id": "",
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": ["I am tired all the time. i don't know why"],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    },
+    "no practitioner id": {
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": ["I am tired all the time. i don't know why"],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    },
+    "empty string alert level": {
+    "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
+    "alert_level": "",
+    "symptoms": ["I am tired all the time. i don't know why"],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    },
+    "null alert level": {
+    "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
+    "alert_level": None,
+    "symptoms": ["I am tired all the time. i don't know why"],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    },
+    "no alert level": {
+    "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
+    "symptoms": ["I am tired all the time. i don't know why"],
+    "phone_number": "+12021225569",
+    "idToken": user_credentials['idToken']
+    }
 }
 
 '''
