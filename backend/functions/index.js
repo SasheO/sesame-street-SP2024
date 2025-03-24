@@ -893,8 +893,8 @@ app.post("/send_doctor_connection_request", (req, res) => {
         const doctorPatientConnectionRef = db.collection("doctor_patient_connection");
         doctorPatientConnectionRef.doc().set(doctorPatientConnectionRequest).then((request) =>{
           // TODO: set up all other user info being saved, log it to the
-          console.log("Successfully sent request: "+request);
-          res.status(200).json({message: "Successfully sent request"});
+          console.log("Successfully sent request");
+          return res.status(200).json({message: "Successfully sent request"});
         })
         .catch((error) => {
           console.log(error);
