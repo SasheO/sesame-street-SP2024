@@ -801,11 +801,34 @@ app.post("/send_doctor_connection_request", (req, res) => {
   }
 
   const _practitionerUID = req.body.practitioner_id;
+  if (_practitionerUID==null||_requestID==="") {
+    console.log("_practitionerUID==null||_requestID===''");
+    return res.status(422).json({message: "No practitioner_id given"});
+  }
+
   const _requestAlertLevel = req.body.alert_level;
+  if (!([1,2,3].includes(_requestAlertLevel))) {
+    console.log("Invalid value for _requestAlertLevel");
+    return res.status(422).json({message: "Invalid value for alert_level"});
+  }
+
   const _symptoms = req.body.symptoms;
+  if (_symptoms === undefined || _symptoms.length == 0) {
+    console.log("_symptoms === undefined || _symptoms.length == 0");
+    return res.status(422).json({message: "No symptoms given"});
+  }
+
+  const _patientPhoneNumber = req.body.phone_number;
+  // TODO: check if phone number is in phone number format
+  // this currently just checks if the phone number is givens
+  if (_patientPhoneNumber==null||_patientPhoneNumber==="") {
+    console.log("_patientPhoneNumber==null||_patientPhoneNumber===''");
+    return res.status(422).json({message: "No phone_number given"});
+  }
+  
   const _doctorNotes = null;
   const _practictionerMessageToPatient = null;
-  const _patientPhoneNumber = req.body.phone_number;
+
   const _status = "pending";
 
   firebase.auth()
@@ -933,7 +956,7 @@ app.post("/delete_doctor_requests", (req, res) => {
   }
 
   if (_requestID==null||_requestID==="") {
-    console.log("_requestID==null||_requestID===""");
+    console.log("_requestID==null||_requestID===''");
     return res.status(422).json({message: "No request_id given"});
   }
 
