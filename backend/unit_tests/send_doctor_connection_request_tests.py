@@ -83,7 +83,6 @@ test_datas = {
     "practitioner_id": "eDeef1VPrHNboouF7VTAc68CiEA3",
     "alert_level": ALERT_LEVEL['high'],
     "symptoms": ["I am tired all the time. i don't know why"],
-    "phone_number": "12021225569",
     "idToken": user_credentials['idToken']
     },
     "empty practitioner id": {
@@ -130,7 +129,7 @@ test cases:
 4. non-valid alert level
 5. 
 '''
-for label, test_data in test_datas:
+for label, test_data in test_datas.items():
     print(label)
     response = requests.post("http://localhost:5000/send_doctor_connection_request", json=test_data)
     try:

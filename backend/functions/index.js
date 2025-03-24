@@ -801,8 +801,8 @@ app.post("/send_doctor_connection_request", (req, res) => {
   }
 
   const _practitionerUID = req.body.practitioner_id;
-  if (_practitionerUID==null||_requestID==="") {
-    console.log("_practitionerUID==null||_requestID===''");
+  if (_practitionerUID==null||_practitionerUID==="") {
+    console.log("_practitionerUID==null||_practitionerUID===''");
     return res.status(422).json({message: "No practitioner_id given"});
   }
 
@@ -825,7 +825,7 @@ app.post("/send_doctor_connection_request", (req, res) => {
     console.log("_patientPhoneNumber==null||_patientPhoneNumber===''");
     return res.status(422).json({message: "No phone_number given"});
   }
-  
+
   const _doctorNotes = null;
   const _practictionerMessageToPatient = null;
 
@@ -847,8 +847,10 @@ app.post("/send_doctor_connection_request", (req, res) => {
           }
           else{
             const user = querySnapshot.docs[0];
-            const userType = user.data()["user_type"];
-            if (userType!="patient"){
+            // TODO: change logging in to "user_type" in firestore for uniform camel case there.
+            // TODO: then change to user.data()["user_type"]
+            const userType = user.data()["userType"];
+            if (userType!=="patient"){
               return res.status(401).json({message: "Wrong user type for this request"});
             }
           }
@@ -862,7 +864,9 @@ app.post("/send_doctor_connection_request", (req, res) => {
           }
           else{
             const user = querySnapshot.docs[0];
-            const userType = user.data()["user_type"];
+            // TODO: change logging in to "user_type" in firestore for uniform camel case there.
+            // TODO: then change to user.data()["user_type"]
+            const userType = user.data()["userType"];
             if (userType!="practitioner"){
               return res.status(422).json({message: "Doctor does not exist"});
             }
