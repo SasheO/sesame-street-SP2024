@@ -24,12 +24,35 @@ email = "tester.person@gmail.com"
 password = "12.3rdaskufq24eS"
 user_credentials = sign_in_with_email_and_password(email, password)
 
-test_data = {
+test_datas = {
+    "good request 1": {
     "practitioner_id": "sl0UdIiiu3ZB9nX4uRbJiFsjxLN2",
     "alert_level": ALERT_LEVEL['high'],
     "symptoms": ["heart palpitations", "shortness of breath"],
     "phone_number": "+12021234567",
     "idToken": user_credentials['idToken']
+    },
+    "practitioner does not exist": {
+    "practitioner_id": "arwoiuw40asndvwi9e",
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": ["heart palpitations", "shortness of breath"],
+    "phone_number": "+12021234567",
+    "idToken": user_credentials['idToken']
+    },
+    "not logged in": {
+    "practitioner_id": "sl0UdIiiu3ZB9nX4uRbJiFsjxLN2",
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": ["heart palpitations", "shortness of breath"],
+    "phone_number": "+12021234567",
+    "idToken": "sadfwdf"
+    },
+    "not logged in 2 (no token given)": {
+    "practitioner_id": "sl0UdIiiu3ZB9nX4uRbJiFsjxLN2",
+    "alert_level": ALERT_LEVEL['high'],
+    "symptoms": ["heart palpitations", "shortness of breath"],
+    "phone_number": "+12021234567"
+    },
+
 }
 
 '''
@@ -41,10 +64,17 @@ test cases:
 4. non-valid alert level
 5. 
 '''
-
-response = requests.post("http://localhost:5000/send_doctor_connection_request", json=test_data)
-try:
-    print(response)
-    print(response.json())
-except Exception as e:
-    print(1, e)
+for label, test_data in test_datas:
+    print(label)
+    response = requests.post("http://localhost:5000/send_doctor_connection_request", json=test_data)
+    try:
+        print(response)
+        print(response.json())
+    except Exception as e:
+        print(1, e)
+    print()
+    print()
+    print()
+    print()
+    print()
+    print()

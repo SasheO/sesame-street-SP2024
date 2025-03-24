@@ -813,14 +813,39 @@ app.post("/send_doctor_connection_request", (req, res) => {
       .then(async (decodedToken) => {
         const _patientUID = decodedToken.uid;
         console.log("patientUID: "+_patientUID);
-        // to do here: check if doctor exists
+        
+        // check if uid is patient
         const userRef = db.collection("user");
+        await userRef.where("uid", "==", _patientUID).get().then((querySnapshot) => {
+          if (querySnapshot.empty) {
+            // return user data to client without revealing UID info
+            console.log("user is logged in but not in user collection");
+            return res.status(500).json({message: "Some error has occurred..."});
+          }
+          else{
+            const user = querySnapshot.docs[0];
+            const userType = user.data()["user_type"];
+            if (userType!="patient"){
+              return res.status(401).json({message: "Wrong user type for this request"});
+            }
+          }
+        });
+
+        // confirm _practitionerUID belongs to an actual doctor
         await userRef.where("uid", "==", _practitionerUID).get().then((querySnapshot) => {
           if (querySnapshot.empty) {
             // return user data to client without revealing UID info
             return res.status(422).json({message: "Doctor does not exist"});
           }
+          else{
+            const user = querySnapshot.docs[0];
+            const userType = user.data()["user_type"];
+            if (userType!="practitioner"){
+              return res.status(422).json({message: "Doctor does not exist"});
+            }
+          }
         })
+
         // TODO here: check if user already has rejected request with doctor less than 2 weeks old
 
         doctorPatientConnectionRequest = {
