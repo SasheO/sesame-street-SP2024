@@ -4,29 +4,30 @@ import { PiDotsThreeVerticalBold, PiNotePencilBold } from "react-icons/pi";
 import { IoClose } from "react-icons/io5";
 import './PatientDetails.css';
 
-const PatientDetails = ({ patient, onBack }) => {
+const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
   if (!patient) {
     return <p>No patient selected.</p>;
   }
+
   const [showPatientsPopup, setShowPatientsPopup] = useState(false);
   const [showContactPopup, setShowContactPopup] = useState(false);
-  const [notes, setNotes] = useState(patient.notes.join("\n") || ""); // Store all notes in one field
+  const [notes, setNotes] = useState(patient.notes.join("\n") || "");
   const [isEditing, setIsEditing] = useState(false);
 
-  // Function to save edited notes
   const saveNotes = () => {
     setIsEditing(false);
+    // Optional: Persist notes to backend here
   };
 
   return (
     <div className="patient-details">
-
+      {/* Top Bar */}
       <div className="icons-container">
         <IoIosArrowBack className="icons" onClick={onBack} />
-        <PiDotsThreeVerticalBold className="icons" onClick= {() => setShowPatientsPopup(true)} />
+        <PiDotsThreeVerticalBold className="icons" onClick={() => setShowPatientsPopup(true)} />
       </div>
 
-      {/* Delete Patient or Mark as Healthy Popup */}
+      {/* Popup */}
       {showPatientsPopup && (
         <div className="popup">
           <div className="popup-content">
@@ -37,6 +38,7 @@ const PatientDetails = ({ patient, onBack }) => {
         </div>
       )}
 
+      {/* Patient Info */}
       <div className="patient-info-container">
         <div className="patient-info-image">
           <img src={patient.image} alt={patient.name} />
@@ -48,32 +50,59 @@ const PatientDetails = ({ patient, onBack }) => {
         </div>
       </div>
 
-        <h3>Notes</h3>
-        {isEditing ? (
-          <textarea
-            className="notes-textarea"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-            
+      {/* Notes */}
+      <h3>Notes</h3>
+      {editable && isEditing ? (
+        <textarea
+          className="notes-textarea"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
       ) : (
         <p className="notes-display">{notes || "No notes yet..."}</p>
       )}
 
+      {/* Edit + Contact Buttons */}
       <div className="buttons-container">
-        <button className="buttons-in-container" onClick={() => setIsEditing(!isEditing)}>
-          <PiNotePencilBold className="button-icons"/>
-          {isEditing ? "Save Notes" : "Edit Notes"}
-        </button>
+        {editable && (
+          <button
+            className="buttons-in-container edit-button"
+            onClick={() => {
+              if (isEditing) saveNotes();
+              setIsEditing(!isEditing);
+            }}
+          >
+            <PiNotePencilBold className="button-icons" />
+            {isEditing ? "Save Notes" : "Edit Notes"}
+          </button>
+        )}
 
-        <button className="buttons-in-container" onClick={() => setShowContactPopup(true)}>
-          <IoMdCall className="button-icons"/>
+        <button
+          className="buttons-in-container contact-button"
+          onClick={() => setShowContactPopup(true)}
+        >
+          <IoMdCall className="button-icons" />
           Contact Patient
         </button>
-
-        {/* <IoMdCall className="icons" onClick={() => setShowContactPopup(true)}/> */}
       </div>
-      
+
+      {/* Accept/Deny Buttons for Requests */}
+      {patient.type === "requests" && (
+        <div className="buttons-container">
+          {onAccept && (
+            <button className="accept-button" onClick={() => onAccept(patient.id)}>
+              Accept
+            </button>
+          )}
+          {onDeny && (
+            <button className="deny-button" onClick={() => onDeny(patient.id)}>
+              Deny
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Contact Popup */}
       {showContactPopup && (
         <div className="popup">
           <div className="popup-content">
