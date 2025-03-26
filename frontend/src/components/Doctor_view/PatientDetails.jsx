@@ -5,23 +5,25 @@ import { IoClose } from "react-icons/io5";
 import './PatientDetails.css';
 
 const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
-  if (!patient) {
-    return <p>No patient selected.</p>;
-  }
+  if (!patient) return <p>No patient selected.</p>;
 
   const [showPatientsPopup, setShowPatientsPopup] = useState(false);
   const [showContactPopup, setShowContactPopup] = useState(false);
   const [notes, setNotes] = useState(patient.notes.join("\n") || "");
   const [isEditing, setIsEditing] = useState(false);
+  const [alertLevel, setAlertLevel] = useState(patient.alertLevel || "");
+
+  const isRequested = patient.type === "requests";
+  const isCurrent = patient.type === "current";
 
   const saveNotes = () => {
     setIsEditing(false);
-    // Optional: Persist notes to backend here
+    // Optional: persist alertLevel and notes to backend/state here
   };
 
   return (
     <div className="patient-details">
-      {/* Top Bar */}
+      {/* Top controls */}
       <div className="icons-container">
         <IoIosArrowBack className="icons" onClick={onBack} />
         <PiDotsThreeVerticalBold className="icons" onClick={() => setShowPatientsPopup(true)} />
@@ -38,7 +40,7 @@ const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
         </div>
       )}
 
-      {/* Patient Info */}
+      {/* Patient header */}
       <div className="patient-info-container">
         <div className="patient-info-image">
           <img src={patient.image} alt={patient.name} />
@@ -46,48 +48,41 @@ const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
         <div className="patient-info-text">
           <h2>{patient.name}</h2>
           <p>{patient.condition}</p>
-          <p className="alert-level">Alert Level: {patient.alertLevel}</p>
+
+          {isCurrent && (
+            <>
+              {isEditing ? (
+                <div className="alert-dropdown">
+                  <label htmlFor="alert-select"><strong>Alert Level: </strong></label>
+                  <select
+                    id="alert-select"
+                    value={alertLevel}
+                    onChange={(e) => setAlertLevel(e.target.value)}
+                  >
+                    <option value="✔️">✔️ Normal</option>
+                    <option value="⚠️">⚠️ Caution</option>
+                    <option value="❗">❗ High Alert</option>
+                  </select>
+                </div>
+              ) : (
+                <p className="alert-level"><strong>Alert Level:</strong> {alertLevel}</p>
+              )}
+            </>
+          )}
         </div>
       </div>
 
-      {/* Notes */}
-      <h3>Notes</h3>
-      {editable && isEditing ? (
-        <textarea
-          className="notes-textarea"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-        />
-      ) : (
-        <p className="notes-display">{notes || "No notes yet..."}</p>
-      )}
-
-      {/* Edit + Contact Buttons */}
-      <div className="buttons-container">
-        {editable && (
-          <button
-            className="buttons-in-container edit-button"
-            onClick={() => {
-              if (isEditing) saveNotes();
-              setIsEditing(!isEditing);
-            }}
-          >
-            <PiNotePencilBold className="button-icons" />
-            {isEditing ? "Save Notes" : "Edit Notes"}
-          </button>
-        )}
-
-        <button
-          className="buttons-in-container contact-button"
-          onClick={() => setShowContactPopup(true)}
-        >
-          <IoMdCall className="button-icons" />
-          Contact Patient
-        </button>
+      {/* Form Fields (always shown) */}
+      <div className="request-info">
+        <p><strong>Name:</strong> {patient.name}</p>
+        <p><strong>Email:</strong> {patient.email}</p>
+        <p><strong>Phone Number:</strong> {patient.phone}</p>
+        <p><strong>Previous Health Conditions:</strong> {patient.conditions}</p>
+        <p><strong>Reason for Appointment:</strong> {patient.reason}</p>
       </div>
 
-      {/* Accept/Deny Buttons for Requests */}
-      {patient.type === "requests" && (
+      {/* Accept/Deny buttons for requested patients */}
+      {isRequested && (
         <div className="buttons-container">
           {onAccept && (
             <button className="accept-button" onClick={() => onAccept(patient.id)}>
@@ -102,15 +97,53 @@ const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
         </div>
       )}
 
-      {/* Contact Popup */}
-      {showContactPopup && (
-        <div className="popup">
-          <div className="popup-content">
-            <IoClose className="icons" onClick={() => setShowContactPopup(false)} />
-            <h3>Contact {patient.name}</h3>
-            <p>Phone: (123) 456-7890</p>
+      {/* Notes + Contact for current patients */}
+      {isCurrent && (
+        <>
+          <h3>Notes</h3>
+          {editable && isEditing ? (
+            <textarea
+              className="notes-textarea"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            />
+          ) : (
+            <p className="notes-display">{notes || "No notes yet..."}</p>
+          )}
+
+          <div className="buttons-container">
+            {editable && (
+              <button
+                className="buttons-in-container edit-button"
+                onClick={() => {
+                  if (isEditing) saveNotes();
+                  setIsEditing(!isEditing);
+                }}
+              >
+                <PiNotePencilBold className="button-icons" />
+                {isEditing ? "Save Notes" : "Edit Notes"}
+              </button>
+            )}
+
+            <button
+              className="buttons-in-container contact-button"
+              onClick={() => setShowContactPopup(true)}
+            >
+              <IoMdCall className="button-icons" />
+              Contact Patient
+            </button>
           </div>
-        </div>
+
+          {showContactPopup && (
+            <div className="popup">
+              <div className="popup-content">
+                <IoClose className="icons" onClick={() => setShowContactPopup(false)} />
+                <h3>Contact {patient.name}</h3>
+                <p>Phone: {patient.phone || "(123) 456-7890"}</p>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
