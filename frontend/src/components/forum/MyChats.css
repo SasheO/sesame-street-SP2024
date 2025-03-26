@@ -132,3 +132,62 @@
   .delete-icon:hover {
     transform: scale(1.1);
   }
+  .forum-post-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .forum-post-card:hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .post-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .post-meta {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+  }
+  
+  .post-content {
+    font-size: 15px;
+    color: #444;
+    margin-bottom: 10px;
+  }
+  
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .tag {
+    background: #6979F8;
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 12px;
+  }
+  
+  .post-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #6979F8;
+  }
+  
+  .delete-icon {
+    cursor: pointer;
+  }
+  

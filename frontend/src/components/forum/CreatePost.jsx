@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"; // Firestore functions
-import { useAuth } from "../../context/AuthContext"; // ✅ Import Auth Context
-import { db } from "../../firebase"; // ✅ Import Firestore DB
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useAuth } from "../../context/AuthContext";
+import { db } from "../../firebase";
 import Header from "../shared/Header";
 import "./CreatePost.css";
 import { BiArrowBack } from "react-icons/bi";
 
-
 const CreatePost = () => {
   const navigate = useNavigate();
-  const { user } = useAuth(); // ✅ Get authenticated user
+  const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
@@ -20,48 +19,26 @@ const CreatePost = () => {
       console.error("⚠️ Cannot save post: Missing title or content!");
       return;
     }
-  
-    // const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
-    // const allPosts = JSON.parse(localStorage.getItem("forumPosts")) || [];
-  
-    // ✅ Generate a unique ID by finding the highest ID and adding 1
-    //const newId = allPosts.length > 0 ? Math.max(...allPosts.map(post => post.id)) + 1 : 1;
-  
-    try{
-    const newPost = {
-      id: Date.now(), // ✅ Ensuring unique ID
-      title: title.trim(),
-      content: content.trim(),
-      tags: tags ? tags.split(",").map(tag => tag.trim()) : [],
-      author: user.email || "Anonymous",
-      date: serverTimestamp(), // ✅ Store timestamp in Firestore
-      comments: [],
-      likes: 0,
-    };
 
-    // ✅ Save the post to Firestore
-    await addDoc(collection(db, "forum"), newPost);
-    console.log("✅ Post successfully created in Firestore!");
+    try {
+      const newPost = {
+        title: title.trim(),
+        content: content.trim(),
+        tags: tags ? tags.split(",").map(tag => tag.trim()) : [],
+        author: user.email || "Anonymous",
+        date: serverTimestamp(),
+        comments: [],
+        likes: 0,
+      };
 
-  
-    //console.log("✅ Saving new post:", newPost);
-  
-    // const updatedPosts = [newPost, ...allPosts];
-    // localStorage.setItem("forumPosts", JSON.stringify(updatedPosts));
-  
-    // // ✅ Trigger localStorage update event to refresh MyChats
-    // window.dispatchEvent(new Event("storage"));
-  
-    // console.log("📌 Updated posts in localStorage:", updatedPosts);
-  
-    // navigate("/forum");
-    // ✅ Navigate to the forum page after saving
+      await addDoc(collection(db, "forum"), newPost);
+      console.log("✅ Post successfully created in Firestore!");
+
       navigate("/forum");
     } catch (error) {
       console.error("❌ Error saving post:", error);
     }
   };
-  
 
   return (
     <div className="create-post-page">

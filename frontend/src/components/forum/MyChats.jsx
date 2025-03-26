@@ -2,90 +2,121 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
-import "./MyChats.css";
+import "../forum/Forum.css";
+import { db } from "../../firebase";
 import { BiHome, BiPlus, BiMessageRounded, BiTrash } from "react-icons/bi";
+import { useAuth } from "../../context/AuthContext";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 const MyChats = () => {
   const navigate = useNavigate();
   const [userPosts, setUserPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchUserPosts = () => {
-      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser")) || {};
-      const allPosts = JSON.parse(localStorage.getItem("forumPosts")) || [];
+    const fetchUserPosts = async () => {
+      const currentUserEmail = (user?.email || "").toLowerCase();
 
-      console.log("📌 Loaded posts from localStorage:", allPosts);
+      try {
+        const forumSnapshot = await getDocs(collection(db, "forum"));
 
-      // ✅ Ensure every post has valid fields before adding to userPosts
-      const userRelatedPosts = allPosts.filter((post) => {
-        if (!post || !post.title || typeof post.title !== "string") return false; // Ensure valid title
-        if (typeof post.author !== "string") return false;
-        if (!Array.isArray(post.comments)) post.comments = [];
+        const allPosts = await Promise.all(
+          forumSnapshot.docs.map(async (postDoc) => {
+            const postData = { docId: postDoc.id, ...postDoc.data() }; // ✅ Save Firestore doc ID
+            const commentsSnapshot = await getDocs(collection(db, "forum", postDoc.id, "comments"));
+            const comments = commentsSnapshot.docs.map((commentDoc) => ({
+              id: commentDoc.id,
+              ...commentDoc.data(),
+            }));
 
-        return (
-          post.author === loggedInUser.email ||
-          (Array.isArray(post.comments) && post.comments.some(comment => comment.user === loggedInUser.email))
+            return { ...postData, comments };
+          })
         );
-      });
 
-      console.log("📌 MyChats Loaded Posts:", userRelatedPosts);
-      setUserPosts(userRelatedPosts);
+        const userRelatedPosts = allPosts.filter((post) => {
+          const authorMatch = post.author?.toLowerCase() === currentUserEmail;
+          const commentMatch = Array.isArray(post.comments) &&
+            post.comments.some((comment) => comment.user?.toLowerCase() === currentUserEmail);
+          return authorMatch || commentMatch;
+        });
+
+        setUserPosts(userRelatedPosts);
+      } catch (error) {
+        console.error("❌ Error loading MyChats:", error);
+      }
     };
 
-    fetchUserPosts();
-
-    // ✅ Listen for localStorage updates and refresh MyChats
-    const handleStorageChange = () => {
-      console.log("🔄 Storage Updated, Re-fetching MyChats...");
+    if (user?.email) {
       fetchUserPosts();
-    };
+    }
+  }, [user]);
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
-  const handleDeletePost = (postId) => {
-    const allPosts = JSON.parse(localStorage.getItem("forumPosts")) || [];
-    const updatedPosts = allPosts.filter((post) => post.id !== postId);
+  const handleDeletePost = async (docId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
 
-    localStorage.setItem("forumPosts", JSON.stringify(updatedPosts));
+    try {
+      console.log("🗑️ Deleting post with docId:", docId);
 
-    // Update MyChats UI immediately
-    setUserPosts(updatedPosts.filter((post) =>
-      post.author === JSON.parse(localStorage.getItem("loggedInUser")).email
-    ));
+      const postRef = doc(db, "forum", docId);
+      await deleteDoc(postRef);
 
-    // ✅ Trigger update for all components
-    window.dispatchEvent(new Event("storage"));
+      console.log("✅ Post deleted successfully");
+
+      setUserPosts((prev) => prev.filter((post) => post.docId !== docId));
+    } catch (error) {
+      console.error("❌ Error deleting post:", error.message || error);
+    }
   };
-  
-  // ✅ Ensure post.title exists before calling `.toLowerCase()`
+
   const filteredPosts = userPosts.filter(
-    (post) => post.title && typeof post.title === "string" && post.title.toLowerCase().includes(searchTerm.toLowerCase())
+    (post) =>
+      post.title &&
+      typeof post.title === "string" &&
+      post.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="my-chats-page">
+    <div className="forum-container">
       <Header label="CareLink" />
       <SearchBar placeholder="Search chats" onSearch={(term) => setSearchTerm(term)} />
+      <h3 style={{ textAlign: "center", marginBottom: "15px" }}>My Forum Posts and Replies</h3>
 
       {filteredPosts.length === 0 ? (
         <p className="no-chats">No conversations started yet</p>
       ) : (
-        <div className="chat-list">
+        <div className="thread-list">
           {filteredPosts.map((post) => (
-            <div key={post.id} className="chat-card">
-              <div onClick={() => navigate(`/forum/${post.id}`, { state: { post } })}>
+            <div key={post.docId} className="thread-card">
+              <div onClick={() => navigate(`/forum/${post.docId}`, { state: { post } })}>
                 <h3>{post.title}</h3>
-                <p>{post.content.substring(0, 50)}...</p>
+                <p>{post.content?.substring(0, 50)}...</p>
+                <span className="thread-meta">
+                  {post.author} • {post.date?.seconds ? new Date(post.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}
+                </span>
+                <div className="thread-actions">
+                  <span className="like-button">❤️ {post.likes || 0}</span>
+                  <span className="like-button">💬 {post.comments?.length || 0}</span>
+                </div>
               </div>
-              <BiTrash className="delete-icon" onClick={() => handleDeletePost(post.id)} />
+              {post.author?.toLowerCase() === user?.email?.toLowerCase() && (
+                <span
+                  className="like-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeletePost(post.docId);
+                  }}
+                  style={{ cursor: "pointer", color: "red", marginTop: "10px", display: "inline-block" }}
+                >
+                  <BiTrash /> Delete
+                </span>
+              )}
             </div>
           ))}
         </div>
       )}
 
-      {/* Navigation Bar */}
       <div className="bottom-bar">
         <button onClick={() => navigate("/forum")} className="bottom-icon">
           <BiHome />

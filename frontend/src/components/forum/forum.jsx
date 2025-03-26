@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, increment, getDoc } from "firebase/firestore"; 
-import { db } from "../../firebase"; // ✅ Import Firestore DB
-import { BiHome, BiPlus, BiMessageRounded, BiX, BiHeart } from "react-icons/bi"; // ✅ Import Icons
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, increment, deleteDoc } from "firebase/firestore"; 
+import { db } from "../../firebase";
+import { BiHome, BiPlus, BiMessageRounded, BiX, BiHeart } from "react-icons/bi";
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
 import "./Forum.css";
@@ -12,22 +12,12 @@ const Forum = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [threads, setThreads] = useState([]);
-  const fetchCommentCounts = async (posts) => {
-    const postsWithCounts = await Promise.all(posts.map(async (post) => {
-      const commentsRef = collection(db, "forum", post.id, "comments");
-      const commentSnapshot = await getDocs(commentsRef);
-      return { ...post, commentCount: commentSnapshot.size };
-    }));
-  
-    return postsWithCounts;
-  };
-  // ✅ Fetch posts in real-time from Firestore
+
   useEffect(() => {
     const fetchPosts = () => {
       const forumCollection = collection(db, "forum");
       const q = query(forumCollection, orderBy("date", "desc"));
 
-      // Subscribe to real-time updates
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const posts = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -38,7 +28,7 @@ const Forum = () => {
         setThreads(posts);
       });
 
-      return unsubscribe; // Cleanup listener when component unmounts
+      return unsubscribe;
     };
 
     fetchPosts();
@@ -46,20 +36,29 @@ const Forum = () => {
 
   const handleLike = async (threadId) => {
     try {
-        const threadRef = doc(db, "forum", threadId);
-        
-        // ✅ Increment likes count only
-        await updateDoc(threadRef, {
-            likes: increment(1) // Directly increments likes
-        });
-
-        console.log(`✅ Liked post ${threadId}`);
+      const threadRef = doc(db, "forum", threadId);
+      await updateDoc(threadRef, {
+        likes: increment(1),
+      });
+      console.log(`✅ Liked post ${threadId}`);
     } catch (error) {
-        console.error("⚠️ Error liking post:", error);
+      console.error("⚠️ Error liking post:", error);
     }
   };
 
-  // ✅ Filter forum threads based on search & selected tags
+  const handleDelete = async (e, threadId) => {
+    e.stopPropagation();
+    const confirm = window.confirm("Are you sure you want to delete this post?");
+    if (!confirm) return;
+
+    try {
+      await deleteDoc(doc(db, "forum", threadId));
+      console.log("✅ Post deleted successfully:", threadId);
+    } catch (err) {
+      console.error("❌ Failed to delete post:", err);
+    }
+  };
+
   const filteredThreads = threads.filter((thread) => {
     if (!thread || !thread.title) return false;
 
@@ -108,21 +107,14 @@ const Forum = () => {
                   className="thread-card"
                   onClick={() => navigate(`/forum/${thread.id}`, { state: { post: thread } })}
                 >
-                  {/* ✅ Title First */}
                   <h3>{thread.title}</h3>
-
-                  {/* ✅ Thread Meta (Username & Date) */}
                   <div className="thread-meta">
                     <span className="username">{thread.author || "Anonymous"}</span> • 
                     <span className="post-date">
                       {thread.date ? new Date(thread.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}
                     </span>
                   </div>
-
-                  {/* ✅ Post Content */}
                   <p>{thread.content}</p>
-
-                  {/* ✅ Tags */}
                   <p className="thread-tags">
                     <strong>Tags: </strong>
                     {(Array.isArray(thread.tags) ? thread.tags : []).map((tag) => (
@@ -140,8 +132,6 @@ const Forum = () => {
                       </span>
                     ))}
                   </p>
-
-                  {/* ✅ Like & Comment Count */}
                   <div className="thread-actions">
                     <span 
                       className="like-button"
@@ -152,7 +142,7 @@ const Forum = () => {
                     >
                       ❤️ {thread.likes}
                     </span>
-                    <span>💬 {thread.comments.length}</span>
+                    <span>💬 {thread.comments?.length || 0}</span>
                   </div>
                 </div>
               ))}
