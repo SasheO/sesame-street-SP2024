@@ -39,9 +39,10 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest,
       name: patientName,
       email: patientEmail,
       phone: patientPhone,
-      condition: patientCondition,
-      extraDetails: patientExtraDetails,
+      conditions: patientCondition,
+      reason: patientExtraDetails,
       image: doctor.image,
+      notes: ["No notes yet..."],
       type: "requests",
     };
 

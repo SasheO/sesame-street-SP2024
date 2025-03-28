@@ -95,12 +95,12 @@ const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny, onClick }
       {isRequested && (
         <div className="buttons-container">
           {onAccept && (
-            <button className="accept-button" onClick={() => onAccept(patient.id)}>
+            <button className="buttons-in-container accept" onClick={() => onAccept(patient.id)}>
               Accept
             </button>
           )}
           {onDeny && (
-            <button className="deny-button" onClick={() => onDeny(patient.id)}>
+            <button className="buttons-in-container deny" onClick={() => onDeny(patient.id)}>
               Deny
             </button>
           )}
