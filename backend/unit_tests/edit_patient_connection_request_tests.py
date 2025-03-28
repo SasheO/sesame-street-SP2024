@@ -32,10 +32,11 @@ existing_requests = [
     ]
 
 test_datas = {
-    "good request 1 (accepted)": {
+    "good request 1 (accepted + doctor's notes)": {
     "request_id":existing_requests[0],
     "idToken": practitioner_credentials1['idToken'],
-    "status": "accepted"
+    "status": "accepted",
+    "doctors_notes":"will ask patient to come in for further testing"
     },
     "patient tries to edit": {
     "request_id":existing_requests[1],
@@ -50,6 +51,15 @@ test_datas = {
     "good request 2 (rejected for previously accepted)": {
     "request_id":existing_requests[0],
     "idToken": practitioner_credentials1['idToken'],
+    "status": "rejected"
+    },
+    "non-existing request": {
+    "request_id":"dafew",
+    "idToken": practitioner_credentials1['idToken'],
+    "status": "rejected"
+    },
+    "not logged in": {
+    "request_id":existing_requests[0],
     "status": "rejected"
     },
 }

@@ -1042,9 +1042,9 @@ app.get("/my_patient_requests", (req, res) => {
 app.post("/edit_patient_requests", (req, res) => {
   // user should be logged in practitioner
   // if pending status:
-  // accept or delete based
+  // accept or reject based
   // display message
-  // if deleted status:
+  // if rejectd status:
   // can change to accepted
   // if accepted status: 
   // edit fields
@@ -1069,13 +1069,13 @@ app.post("/edit_patient_requests", (req, res) => {
       // TODO retrieve connection request with given ID
       // check if it is for the current doctor
       doctorPatientConnectionRef.doc(_requestID).get()
-      .then(async (querySnapshot) => {
+      .then(async (docSnapshot) => {
         // TODO: is this right?
         // https://firebase.google.com/docs/firestore/manage-data/add-data#web_3
-        if (!querySnapshot.empty) {
-          const doctorPatientConnectionRequest = querySnapshot;
+        if (docSnapshot.exists) {
+          const doctorPatientConnectionRequest = docSnapshot;
           if (doctorPatientConnectionRequest.data().practitionerUID===currentUserUID){
-            if (['deleted', 'accepted', 'previous'].includes(_status)){
+            if (['accepted', 'previous', 'rejected'].includes(_status)){
               doctorPatientConnectionRef.doc(_requestID).update({
                 status: _status,
             })
@@ -1104,14 +1104,14 @@ app.post("/edit_patient_requests", (req, res) => {
             });
             return res.status(200).json({message: "Patient request successfully edited!"});
             }
-            
+            return res.status(422).json({message: "Request not fulfilled"});
           }
           else{
-            return res.status(204).json({message: "Your request with this request_id was not found"});
+            return res.status(403).json({message: "Your request with this request_id was not found"});
           }
         }
         else{
-          return res.status(204).json({message: "Your request with this request_id was not found"});
+          return res.status(403).json({message: "Your request with this request_id was not found"});
         }
       });
     })
