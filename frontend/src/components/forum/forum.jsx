@@ -1,14 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, increment, deleteDoc } from "firebase/firestore"; 
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 import { db } from "../../firebase";
 import { BiHome, BiPlus, BiMessageRounded, BiX, BiHeart } from "react-icons/bi";
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
 import "./Forum.css";
+import { useAuth } from "../../context/AuthContext";
 
 const Forum = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [threads, setThreads] = useState([]);
@@ -18,44 +30,52 @@ const Forum = () => {
       const forumCollection = collection(db, "forum");
       const q = query(forumCollection, orderBy("date", "desc"));
 
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const posts = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+      const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+        const postsWithExtras = await Promise.all(
+          querySnapshot.docs.map(async (docSnap) => {
+            const postData = { id: docSnap.id, ...docSnap.data() };
 
-        console.log("📌 Fetched posts from Firestore:", posts);
-        setThreads(posts);
+            // 🧠 Normalize likes to be an array
+            const likesArray = Array.isArray(postData.likes) ? postData.likes : [];
+
+            // 🔁 Fetch comment count
+            const commentsSnapshot = await getDocs(collection(db, "forum", docSnap.id, "comments"));
+            const commentCount = commentsSnapshot.size;
+
+            return {
+              ...postData,
+              commentCount,
+              likes: likesArray.length,
+              isLiked: likesArray.includes(user?.email),
+            };
+          })
+        );
+
+        console.log("📌 Fetched posts from Firestore:", postsWithExtras);
+        setThreads(postsWithExtras);
       });
 
       return unsubscribe;
     };
 
-    fetchPosts();
-  }, []);
+    if (user?.email) {
+      fetchPosts();
+    }
+  }, [user]);
 
-  const handleLike = async (threadId) => {
+  const handleToggleLike = async (threadId, isCurrentlyLiked) => {
     try {
       const threadRef = doc(db, "forum", threadId);
+
       await updateDoc(threadRef, {
-        likes: increment(1),
+        likes: isCurrentlyLiked
+          ? arrayRemove(user.email)
+          : arrayUnion(user.email),
       });
-      console.log(`✅ Liked post ${threadId}`);
+
+      console.log(isCurrentlyLiked ? "💔 Unliked" : "❤️ Liked", threadId);
     } catch (error) {
-      console.error("⚠️ Error liking post:", error);
-    }
-  };
-
-  const handleDelete = async (e, threadId) => {
-    e.stopPropagation();
-    const confirm = window.confirm("Are you sure you want to delete this post?");
-    if (!confirm) return;
-
-    try {
-      await deleteDoc(doc(db, "forum", threadId));
-      console.log("✅ Post deleted successfully:", threadId);
-    } catch (err) {
-      console.error("❌ Failed to delete post:", err);
+      console.error("⚠️ Error toggling like:", error);
     }
   };
 
@@ -64,10 +84,12 @@ const Forum = () => {
 
     const matchesSearch =
       thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (Array.isArray(thread.tags) && thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())));
+      (Array.isArray(thread.tags) &&
+        thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())));
 
     const matchesTags =
-      selectedTags.length === 0 || selectedTags.every((tag) => Array.isArray(thread.tags) && thread.tags.includes(tag));
+      selectedTags.length === 0 ||
+      selectedTags.every((tag) => Array.isArray(thread.tags) && thread.tags.includes(tag));
 
     return matchesSearch && matchesTags;
   });
@@ -87,10 +109,16 @@ const Forum = () => {
           <p>Filtering by: </p>
           {selectedTags.map((tag) => (
             <span key={tag} className="selected-tag">
-              {tag} <BiX className="remove-tag" onClick={() => setSelectedTags(selectedTags.filter(t => t !== tag))} />
+              {tag}{" "}
+              <BiX
+                className="remove-tag"
+                onClick={() => setSelectedTags(selectedTags.filter((t) => t !== tag))}
+              />
             </span>
           ))}
-          <button className="clear-all-tags" onClick={() => setSelectedTags([])}>Clear All</button>
+          <button className="clear-all-tags" onClick={() => setSelectedTags([])}>
+            Clear All
+          </button>
         </div>
       )}
 
@@ -109,9 +137,11 @@ const Forum = () => {
                 >
                   <h3>{thread.title}</h3>
                   <div className="thread-meta">
-                    <span className="username">{thread.author || "Anonymous"}</span> • 
+                    <span className="username">{thread.author || "Anonymous"}</span> •{" "}
                     <span className="post-date">
-                      {thread.date ? new Date(thread.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}
+                      {thread.date
+                        ? new Date(thread.date.seconds * 1000).toLocaleDateString()
+                        : "Unknown Date"}
                     </span>
                   </div>
                   <p>{thread.content}</p>
@@ -124,7 +154,9 @@ const Forum = () => {
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedTags((prevTags) =>
-                            prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
+                            prevTags.includes(tag)
+                              ? prevTags.filter((t) => t !== tag)
+                              : [...prevTags, tag]
                           );
                         }}
                       >
@@ -133,16 +165,16 @@ const Forum = () => {
                     ))}
                   </p>
                   <div className="thread-actions">
-                    <span 
-                      className="like-button"
+                    <span
+                      className={`like-button ${thread.isLiked ? "liked" : ""}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleLike(thread.id);
+                        handleToggleLike(thread.id, thread.isLiked);
                       }}
                     >
-                      ❤️ {thread.likes}
+                      {thread.isLiked ? "❤️" : "🤍"} {thread.likes}
                     </span>
-                    <span>💬 {thread.comments?.length || 0}</span>
+                    <span>💬 {thread.commentCount}</span>
                   </div>
                 </div>
               ))}
