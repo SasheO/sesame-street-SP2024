@@ -4,7 +4,7 @@ import { PiDotsThreeVerticalBold, PiNotePencilBold } from "react-icons/pi";
 import { IoClose } from "react-icons/io5";
 import './PatientDetails.css';
 
-const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
+const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny, onClick }) => {
   if (!patient) return <p>No patient selected.</p>;
 
   const [showPatientsPopup, setShowPatientsPopup] = useState(false);
@@ -21,6 +21,14 @@ const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
     // Optional: persist alertLevel and notes to backend/state here
   };
 
+  const handleDenyClick = () => {
+    if (onDeny) {
+      onDeny(patient.id);
+      setShowPatientsPopup(false);
+      onBack(); // Optional: go back after action
+    }
+  };
+
   return (
     <div className="patient-details">
       {/* Top controls */}
@@ -34,8 +42,10 @@ const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
         <div className="popup">
           <div className="popup-content">
             <IoClose className="icons" onClick={() => setShowPatientsPopup(false)} />
-            <p>Mark patient as healthy</p>
-            <p>Delete patient</p>
+              <div className="menu-items" onClick={onClick}>
+                <p onClick={handleDenyClick}>Mark patient as healthy</p>
+                <p onClick={handleDenyClick}>Delete patient</p>
+              </div>
           </div>
         </div>
       )}
@@ -85,12 +95,12 @@ const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny }) => {
       {isRequested && (
         <div className="buttons-container">
           {onAccept && (
-            <button className="accept-button" onClick={() => onAccept(patient.id)}>
+            <button className="buttons-in-container accept" onClick={() => onAccept(patient.id)}>
               Accept
             </button>
           )}
           {onDeny && (
-            <button className="deny-button" onClick={() => onDeny(patient.id)}>
+            <button className="buttons-in-container deny" onClick={() => onDeny(patient.id)}>
               Deny
             </button>
           )}

@@ -52,6 +52,8 @@
     gap: 10px;
     align-items: center;
     justify-content: center;
+    flex: 1;
+    font-weight: bold;
 }
 .contact-button.request {
     background-color: #6979F8; /* Purple */
