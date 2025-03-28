@@ -12,41 +12,51 @@ const DoctorPatientsPage = ({ doctorRequests = [], updateDoctorStatus }) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [patients, setPatients] = useState([...mockPatients, ...doctorRequests]);
 
-  // automatically update the patients list when doctorRequests changes
+  // Automatically update patient list when new requests come in
   useEffect(() => {
     setPatients([...mockPatients, ...doctorRequests]);
   }, [doctorRequests]);
 
   const acceptPatient = (id) => {
-    // Accept a patient request
-    setPatients((prevPatients) =>
-      prevPatients.map((p) =>
-        p.id === id ? { ...p, type: "current" } : p
-      )
+    // Update the patient's type to "current"
+    const updatedPatients = patients.map((p) =>
+      p.id === id ? { ...p, type: "current" } : p
     );
 
-    // Update corresponding doctor status to accepted
+    setPatients(updatedPatients);
     updateDoctorStatus(id, "accepted");
+
+    // Find and open updated patient
+    const acceptedPatient = updatedPatients.find((p) => p.id === id);
+
+    // Set as selected patient (after update is applied)
+    setTimeout(() => {
+      setSelectedPatient(acceptedPatient);
+    }, 0);
+
+    setFilter("current"); // Optionally switch to current tab
   };
 
-  // Function to handle denying a patient request
   const denyPatient = (id) => {
-    setPatients((prevPatients) =>
-      prevPatients.filter((p) => p.id !== id)
-    );
-
-    // Move doctor back to available list
+    // Remove the patient from list
+    const updatedPatients = patients.filter((p) => p.id !== id);
+    setPatients(updatedPatients);
     updateDoctorStatus(id, "denied");
+
+    // If denied while viewing details, go back
+    if (selectedPatient?.id === id) {
+      setSelectedPatient(null);
+    }
   };
 
-  // Search functionality
   const handleSearchChange = (term) => {
     setSearch(term);
   };
 
-  // Apply search filter along with category filter
   const filteredPatients = patients.filter(
-    (p) => p.type === filter && p.name.toLowerCase().includes(search.toLowerCase())
+    (p) =>
+      p.type === filter &&
+      p.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -54,17 +64,22 @@ const DoctorPatientsPage = ({ doctorRequests = [], updateDoctorStatus }) => {
       <Header label="Doctor's Patients" />
 
       {selectedPatient ? (
-        <PatientDetails patient={selectedPatient} 
-        onBack={() => setSelectedPatient(null)}
-        onDeny={denyPatient} />
+        <PatientDetails
+          patient={selectedPatient}
+          onBack={() => setSelectedPatient(null)}
+          editable={selectedPatient?.type === "current"}
+          onAccept={acceptPatient}
+          onDeny={denyPatient}
+        />
       ) : (
-        <> 
-          <SearchBar 
-            placeholder="Search patients" 
-            initialValue={search} 
+        <>
+          <SearchBar
+            placeholder="Search patients"
+            initialValue={search}
             onSearch={handleSearchChange}
             autoSearch={true}
           />
+
           <div className="patient-list">
             {filteredPatients.length > 0 ? (
               filteredPatients.map((patient) => (
@@ -82,19 +97,19 @@ const DoctorPatientsPage = ({ doctorRequests = [], updateDoctorStatus }) => {
           </div>
 
           <div className="filter-buttons">
-          <button
-            className={filter === "current" ? "active" : ""}
-            onClick={() => setFilter("current")}
-          >
-            Current Patients
-          </button>
-          <button
-            className={filter === "requests" ? "active" : ""}
-            onClick={() => setFilter("requests")}
-          >
-            Patient Requests
-          </button>
-        </div>
+            <button
+              className={filter === "current" ? "active" : ""}
+              onClick={() => setFilter("current")}
+            >
+              Current Patients
+            </button>
+            <button
+              className={filter === "requests" ? "active" : ""}
+              onClick={() => setFilter("requests")}
+            >
+              Patient Requests
+            </button>
+          </div>
         </>
       )}
     </div>

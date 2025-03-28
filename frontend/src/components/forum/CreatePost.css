@@ -9,6 +9,12 @@
   margin: auto;
 }
 
+.page-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px; /* optional spacing */
+}
+
 /* Input Group Styling */
 .input-group {
   display: flex;
@@ -46,4 +52,35 @@
 
 .submit-post:hover {
   background: #5767c8;
+}
+
+
+
+.create-post-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+/* Input Group Styling */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  width: 100%; /* ✅ Ensure full width */
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%; /* ✅ Take up full container width */
+  padding: 10px;
+  border: 2px solid #6979F8;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box; /* ✅ Prevent overflow */
 }
