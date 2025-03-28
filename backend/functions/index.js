@@ -1065,7 +1065,7 @@ app.post("/edit_patient_requests", (req, res) => {
   firebase.auth()
     .verifyIdToken(idToken)
     .then(async (decodedToken) => {
-      const uid = decodedToken.uid;
+      const currentUserUID = decodedToken.uid;
       // TODO retrieve connection request with given ID
       // check if it is for the current doctor
       doctorPatientConnectionRef.doc(_requestID).get()
@@ -1076,7 +1076,7 @@ app.post("/edit_patient_requests", (req, res) => {
           const doctorPatientConnectionRequest = querySnapshot;
           if (doctorPatientConnectionRequest.data().practitionerUID===currentUserUID){
             if (['deleted', 'accepted', 'previous'].includes(_status)){
-              washingtonRef.update({
+              doctorPatientConnectionRef.doc(_requestID).update({
                 status: _status,
             })
             .then(() => {
@@ -1091,7 +1091,7 @@ app.post("/edit_patient_requests", (req, res) => {
 
             }
             if (!(!_doctorNotes)&&_doctorNotes!==""){
-              washingtonRef.update({
+              doctorPatientConnectionRef.doc(_requestID).update({
                 doctor_notes: _doctorNotes
             })
             .then(() => {
