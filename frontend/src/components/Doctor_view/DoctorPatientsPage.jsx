@@ -54,7 +54,9 @@ const DoctorPatientsPage = ({ doctorRequests = [], updateDoctorStatus }) => {
       <Header label="Doctor's Patients" />
 
       {selectedPatient ? (
-        <PatientDetails patient={selectedPatient} onBack={() => setSelectedPatient(null)} />
+        <PatientDetails patient={selectedPatient} 
+        onBack={() => setSelectedPatient(null)}
+        onDeny={denyPatient} />
       ) : (
         <> 
           <SearchBar 

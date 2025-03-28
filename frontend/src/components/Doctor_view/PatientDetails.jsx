@@ -4,7 +4,7 @@ import { PiDotsThreeVerticalBold, PiNotePencilBold } from "react-icons/pi";
 import { IoClose } from "react-icons/io5";
 import './PatientDetails.css';
 
-const PatientDetails = ({ patient, onBack }) => {
+const PatientDetails = ({ patient, onBack, onDeny, onClick }) => {
   if (!patient) {
     return <p>No patient selected.</p>;
   }
@@ -16,6 +16,14 @@ const PatientDetails = ({ patient, onBack }) => {
   // Function to save edited notes
   const saveNotes = () => {
     setIsEditing(false);
+  };
+
+  const handleDenyClick = () => {
+    if (onDeny) {
+      onDeny(patient.id);
+      setShowPatientsPopup(false);
+      onBack(); // Optional: go back after action
+    }
   };
 
   return (
@@ -31,8 +39,10 @@ const PatientDetails = ({ patient, onBack }) => {
         <div className="popup">
           <div className="popup-content">
             <IoClose className="icons" onClick={() => setShowPatientsPopup(false)} />
-            <p>Mark patient as healthy</p>
-            <p>Delete patient</p>
+              <div className="menu-items" onClick={onClick}>
+                <p onClick={handleDenyClick}>Mark patient as healthy</p>
+                <p onClick={handleDenyClick}>Delete patient</p>
+              </div>
           </div>
         </div>
       )}
