@@ -13,29 +13,30 @@ const PatientCard = ({ patient, onClick, onAccept, onDeny }) => {
           <p className="alert-level">Alert Level: {patient.alertLevel}</p>
         )}
 
-        {onAccept && (
-          <button
-            className="accept-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAccept();
-            }}
-          >
-            Accept
-          </button>
-        )}
+        <div className="buttons-container">
+          {onAccept && (
+            <button
+              className="accept-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAccept();
+              }}
+            >
+              Accept
+            </button>
+          )}
 
-        {onDeny && (
-          <button
-            className="deny-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDeny();
-            }}
-          >
-            Deny
-          </button>
-        )}
+          {onDeny && (
+            <button
+              className="deny-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeny();
+              }}>
+              Deny
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

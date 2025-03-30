@@ -6,6 +6,7 @@ import {
   DirectionsService,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+import { IoIosArrowBack } from "react-icons/io";
 import "./LocationDetails.css";
 
 const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -43,9 +44,7 @@ const LocationDetails = ({ facility, userLocation, onBack }) => {
 
   return (
     <div className="location-details">
-      <button className="back-button" onClick={onBack}>
-        ← Back
-      </button>
+      <IoIosArrowBack className="icons" onClick={onBack} />
       <h2>{facility.name}</h2>
       <p>
         <strong>Distance:</strong>{" "}
