@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "name": "Patient One",
+    "condition": "Diabetes",
+    "alertLevel": "⚠️",
+    "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
+    "type": "current",
+    "notes": ["Needs more exercise", "Monitor sugar levels"],
+    "email": "patient1@example.com",
+    "phone": "(555) 111-2222",
+    "conditions": "Type 2 Diabetes, Obesity",
+    "reason": "Follow-up for glucose monitoring"
+  },
+  {
+    "id": 2,
+    "name": "Patient Two",
+    "condition": "High Blood Pressure",
+    "alertLevel": "✔️",
+    "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
+    "type": "current",
+    "notes": ["Encourage low-sodium diet", "Monitor BP daily"],
+    "email": "patient2@example.com",
+    "phone": "(555) 222-3333",
+    "conditions": "Hypertension, Family history of stroke",
+    "reason": "Medication review and blood pressure check"
+  },
+  {
+    "id": 3,
+    "name": "Patient Three",
+    "condition": "Asthma",
+    "alertLevel": "⚠️",
+    "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
+    "type": "requests",
+    "notes": ["Needs inhaler prescription", "Avoid allergens"],
+    "email": "patient3@example.com",
+    "phone": "(555) 333-4444",
+    "conditions": "Mild asthma, Dust allergy",
+    "reason": "Difficulty breathing, needs prescription refill"
+  }
+]

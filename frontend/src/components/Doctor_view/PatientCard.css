@@ -1,0 +1,67 @@
+.patient-card {
+    display: flex;
+    align-items: stretch;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 8px;
+    width: 70%;
+    height:200px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+  }
+
+  .patient-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .patient-image {
+    display: flex;
+    width: 35%;
+    border-radius: 10px 0px 0px 10px;
+    object-fit: cover;
+    padding-right: 10px;
+  }
+  
+  .alert-level {
+    font-weight: bold;
+    color: red;
+  }
+
+  .patient-info {
+    flex: 1;
+    text-align: left;
+  }
+
+  .accept-button, .deny-button {
+    padding: 15px;
+    font-size: 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .accept-button {
+    background-color: #4CAF50;
+    color: white;
+    margin-left: 24px;
+  }
+  
+  .accept-button:hover {
+    background-color: #388e3c;
+  }
+  
+  .deny-button {
+    background-color: #f44336;
+    color: white;
+    margin-right: 24px;
+  }
+  
+  .deny-button:hover {
+    background-color: #c62828;
+  }

@@ -1,55 +1,42 @@
+.results-section {
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+}
 
-  .results-display-container {
-    max-width: inherit;
-    padding: 0px 20px;
-  }
-  
-  .results-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .result-item {
-    background: #f9f9f9;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .result-item h3 {
-    margin: 0 0 5px;
-  }
-  
-  .result-item p {
-    color: #555;
-  }
-  
-  .result-item button {
-    margin-top: 10px;
-    background: #6979F8;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .result-item button:hover {
-    background: #5a6fd8;
-  }
-  .back-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  .back-button:hover {
-    background-color: #0056b3;
-  }
-  
+.results-list {
+  list-style: none;
+  padding: 0;
+}
+
+.result-item-box {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.result-item-box:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.result-title {
+  font-size: 18px;
+  color: #1a0dab;
+  font-weight: bold;
+  text-decoration: none;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.result-title:hover {
+  text-decoration: underline;
+}
+
+.result-snippet {
+  color: #4d5156;
+  font-size: 14px;
+  margin-top: 6px;
+}

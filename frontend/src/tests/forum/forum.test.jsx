@@ -1,92 +1,106 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
-import Forum from "../../components/forum/forum";
 import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter, useNavigate } from "react-router-dom";
+import Forum from "../../components/Forum/Forum";
 
-describe("Forum Page", () => {
-  test("clicking multiple tags filters the posts correctly", async () => {
-    render(
-      <MemoryRouter initialEntries={["/forum"]}>
-        <Routes>
-          <Route path="/forum" element={<Forum />} />
-        </Routes>
-      </MemoryRouter>
-    );
+// Mock React Router's useNavigate
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: jest.fn(),
+}));
 
-    // Wait for tags to render
-    const tagHealthList = await screen.findAllByTestId("tag-health");
-    const tagHerbsList = await screen.findAllByTestId("tag-herbs");
+jest.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { email: "testuser@example.com", displayName: "Test User" },
+    loading: false,
+  }),
+}));
 
-    // Click the first occurrence of each tag
-    fireEvent.click(tagHealthList[0]);
-    fireEvent.click(tagHerbsList[0]);
+beforeEach(() => {
+  localStorage.clear();
+  localStorage.setItem(
+    "forumPosts",
+    JSON.stringify([
+      {
+        id: "mock-1",
+        title: "Local herbs for migraine",
+        user: "@username1",
+        date: "Dec 1, 2023",
+        content:
+          "Natural remedies may help prevent the onset of migraine attacks. Here are some tips. This is a long enough text to trigger the 'Read More' button...",
+        likes: 3456,
+        comments: [],
+        tags: ["health", "migraine", "herbs"],
+      },
+      {
+        id: "mock-2",
+        title: "What type of herb is this?",
+        user: "@username2",
+        date: "Jan 23, 2024",
+        content: "I came across this plant, does anyone know what this is?",
+        likes: 2540,
+        comments: [],
+        tags: ["plants", "herbs", "identification"],
+      },
+    ])
+  );
+});
 
-    // Ensure selected tags appear
-    await waitFor(() => {
-      expect(screen.getByTestId("selected-tag-health")).toBeInTheDocument();
-      expect(screen.getByTestId("selected-tag-herbs")).toBeInTheDocument();
-    });
+test("filters posts by multiple selected tags", () => {
+  render(
+    <MemoryRouter>
+      <Forum />
+    </MemoryRouter>
+  );
 
-    // Ensure all posts containing "health" OR "herbs" remain visible
-    expect(screen.getByText("Local herbs for migraine")).toBeInTheDocument();
-    expect(screen.getByText("Benefits of turmeric")).toBeInTheDocument();
-    expect(screen.getByText("Best teas for digestion?")).toBeInTheDocument();
-    expect(screen.getByText("What type of herb is this?")).toBeInTheDocument(); // ✅ Should be visible
+  // Use `getAllByText` and find the correct "migraine" tag span
+  const migraineTag = screen.getAllByText(/migraine/i).find(
+    (element) => element.tagName.toLowerCase() === "span"
+  );
+  fireEvent.click(migraineTag);
 
-    // Ensure unrelated posts (ones that do not contain "health" or "herbs") are hidden
-    // Since all posts contain at least one of the selected tags, nothing should be hidden
-  });
+  const herbsTag = screen.getAllByText(/herbs/i).find(
+    (element) => element.tagName.toLowerCase() === "span"
+  );
+  fireEvent.click(herbsTag);
 
-  test("clicking the X on selected tags removes them one by one", async () => {
-    render(
-      <MemoryRouter initialEntries={["/forum"]}>
-        <Routes>
-          <Route path="/forum" element={<Forum />} />
-        </Routes>
-      </MemoryRouter>
-    );
+  expect(screen.getByText(/Local herbs for migraine/i)).toBeInTheDocument();
+  expect(screen.queryByText(/What type of herb is this?/i)).not.toBeInTheDocument();
+});
 
-    // Click multiple tags
-    const tagHealthList = await screen.findAllByTestId("tag-health");
-    const tagHerbsList = await screen.findAllByTestId("tag-herbs");
-    fireEvent.click(tagHealthList[0]);
-    fireEvent.click(tagHerbsList[0]);
+test("truncates content and shows 'Read More' option", () => {
+  render(
+    <MemoryRouter>
+      <Forum />
+    </MemoryRouter>
+  );
 
-    // Ensure selected tags appear
-    await waitFor(() => {
-      expect(screen.getByTestId("selected-tag-health")).toBeInTheDocument();
-      expect(screen.getByTestId("selected-tag-herbs")).toBeInTheDocument();
-    });
+  // Check truncated text appears
+  expect(
+    screen.getByText(/Natural remedies may help prevent the onset of migraine attacks.../i)
+  ).toBeInTheDocument();
 
-    // Click the X to remove "health" tag
-    const removeHealthTag = await screen.findByTestId("clear-tag-health");
-    fireEvent.click(removeHealthTag);
+  // Ensure "Read More" button is rendered
+  expect(
+    screen.getByText((content, element) => {
+      return element.tagName.toLowerCase() === "button" && /Read More/i.test(content);
+    })
+  ).toBeInTheDocument();
+});
 
-    // Ensure "health" is removed but "herbs" remains
-    await waitFor(() => {
-      expect(screen.queryByTestId("selected-tag-health")).toBeNull();
-      expect(screen.getByTestId("selected-tag-herbs")).toBeInTheDocument();
-    });
+test("clicking 'Read More' navigates to full post", () => {
+  const mockNavigate = jest.fn();
+  useNavigate.mockReturnValue(mockNavigate);
 
-    // Ensure posts that have "herbs" are still visible
-    expect(screen.getByText("Best teas for digestion?")).toBeInTheDocument();
-    expect(screen.getByText("What type of herb is this?")).toBeInTheDocument();
-    expect(screen.getByText("Local herbs for migraine")).toBeInTheDocument();
+  render(
+    <MemoryRouter>
+      <Forum />
+    </MemoryRouter>
+  );
 
-    // Click the X to remove "herbs" tag
-    const removeHerbsTag = await screen.findByTestId("clear-tag-herbs");
-    fireEvent.click(removeHerbsTag);
+  const readMoreButton = screen.getByText(/Read More/i);
+  fireEvent.click(readMoreButton);
 
-    // Ensure all selected tags are gone
-    await waitFor(() => {
-      expect(screen.queryByTestId("selected-tag-health")).toBeNull();
-      expect(screen.queryByTestId("selected-tag-herbs")).toBeNull();
-    });
-
-    // Ensure all posts are now visible again
-    expect(screen.getByText("What type of herb is this?")).toBeInTheDocument();
-    expect(screen.getByText("Best teas for digestion?")).toBeInTheDocument();
-    expect(screen.getByText("Local herbs for migraine")).toBeInTheDocument();
-    expect(screen.getByText("Benefits of turmeric")).toBeInTheDocument();
-  });
+  // Confirm navigation was triggered
+  expect(mockNavigate).toHaveBeenCalledWith("/forum/mock-1", expect.any(Object));
 });

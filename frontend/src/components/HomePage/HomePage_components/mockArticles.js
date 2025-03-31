@@ -1,29 +1,73 @@
 const mockArticles = [
-    {
-      id: 1,
-      title: "The Benefits of Drinking More Water",
-      snippet: "Staying hydrated is key to maintaining overall health. Learn how much water you should drink daily...",
-      url: "/article/water-benefits",
-    },
-    {
-      id: 2,
-      title: "How to Improve Your Mental Health",
-      snippet: "Discover effective techniques to reduce stress and anxiety, and improve your overall mental well-being...",
-      url: "/article/mental-health",
-    },
-    {
-      id: 3,
-      title: "10 Superfoods That Boost Immunity",
-      snippet: "Foods rich in vitamins and antioxidants can help strengthen your immune system. Here are 10 superfoods to add to your diet...",
-      url: "/article/superfoods",
-    },
-    {
-      id: 4,
-      title: "Understanding Sleep and Its Health Benefits",
-      snippet: "Getting enough sleep is crucial for mental and physical health. Learn tips to improve your sleep quality...",
-      url: "/article/sleep-benefits",
-    },
-  ];
-  
-  export default mockArticles;
-  
+  {
+    id: 1,
+    title: "How to Get Rid of Headaches Naturally",
+    url: "https://www.cigna.com/knowledge-center/natural-remedies-for-headaches",
+    displayUrl: "www.cigna.com › knowledge-center › natural-remedies-for-headaches",
+    snippet: "Explore natural methods to alleviate headaches, including hydration, relaxation techniques, and dietary adjustments.",
+  },
+  {
+    id: 2,
+    title: "The Health Benefits of 3 Herbal Teas",
+    url: "https://www.health.harvard.edu/nutrition/the-health-benefits-of-3-herbal-teas",
+    displayUrl: "www.health.harvard.edu › nutrition › the-health-benefits-of-3-herbal-teas",
+    snippet: "Discover how herbal teas like green tea can boost your immune system and promote cardiovascular health.",
+  },
+  {
+    id: 3,
+    title: "Natural Remedies to Get Rid of a Headache",
+    url: "https://www.medicalnewstoday.com/articles/323992",
+    displayUrl: "www.medicalnewsttoday.com › articles › 323992",
+    snippet: "Learn about home and natural remedies for headaches, including hydration, compresses, and relaxation techniques.",
+  },
+  {
+    id: 4,
+    title: "9 Natural Strategies for Headache Relief",
+    url: "https://www.unitypoint.org/news-and-articles/9-natural-strategies-for-headache-relief-infographic",
+    displayUrl: "www.unitypoint.org › news-and-articles › 9-natural-strategies-for-headache-relief-infographic",
+    snippet: "Explore nine natural strategies to relieve headaches, such as drinking water, exercising, and choosing nutritious foods.",
+  },
+  {
+    id: 5,
+    title: "Natural Remedies for Headaches",
+    url: "https://www.prevea.com/resources/natural-remedies-for-headaches",
+    displayUrl: "www.prevea.com › resources › natural-remedies-for-headaches",
+    snippet: "Discover natural ways to relieve headaches, including exercise, hydration, and the use of essential oils.",
+  },
+  {
+    id: 6,
+    title: "Can Drinking Tea Boost Your Immune System?",
+    url: "https://www.everydayhealth.com/diet-nutrition/types-of-tea-that-may-help-support-your-immune-system/",
+    displayUrl: "www.everydayhealth.com › diet-nutrition › types-of-tea-that-may-help-support-your-immune-system",
+    snippet: "Examine the potential immune-boosting benefits of various teas, including green, white, ginger, turmeric, and black teas.",
+  },
+  {
+    id: 7,
+    title: "Ginger Tea",
+    url: "https://en.wikipedia.org/wiki/Ginger_tea",
+    displayUrl: "en.wikipedia.org › wiki › Ginger_tea",
+    snippet: "Learn about ginger tea, a herbal beverage made from ginger root, its history, regional variations, and health benefits.",
+  },
+  {
+    id: 8,
+    title: "Treatment of Influenza",
+    url: "https://en.wikipedia.org/wiki/Treatment_of_influenza",
+    displayUrl: "en.wikipedia.org › wiki › Treatment_of_influenza",
+    snippet: "Explore various treatments for influenza, including nutritional supplements and herbal medicines like green tea.",
+  },
+  {
+    id: 9,
+    title: "Natural Remedies for Headache",
+    url: "https://www.nationalmigrainecentre.org.uk/understanding-migraine/factsheets-and-resources/natural-remedies/",
+    displayUrl: "www.nationalmigrainecentre.org.uk › understanding-migraine › factsheets-and-resources › natural-remedies",
+    snippet: "Consider natural supplements for migraine and other headaches, including plant remedies like feverfew and butterbur.",
+  },
+  {
+    id: 10,
+    title: "Home Remedies for Migraines",
+    url: "https://www.webmd.com/migraines-headaches/ss/slideshow-home-remedies-for-migraines",
+    displayUrl: "www.webmd.com › migraines-headaches › ss › slideshow-home-remedies-for-migraines",
+    snippet: "Discover home remedies for migraines, such as applying ice packs, over-the-counter drugs, and relaxation techniques.",
+  },
+];
+export default mockArticles;

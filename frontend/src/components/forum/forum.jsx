@@ -1,98 +1,124 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BiHome, BiPlus, BiMessageRounded, BiX } from "react-icons/bi";
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
+import { db } from "../../firebase";
+import { BiHome, BiPlus, BiMessageRounded, BiX, BiHeart } from "react-icons/bi";
 import Header from "../shared/Header";
 import SearchBar from "../shared/SearchBar";
 import "./Forum.css";
-
-const mockThreads = [
-  {
-    id: 1,
-    title: "Local herbs for migraine",
-    user: "@username1",
-    date: "Dec 1, 2023",
-    content: "Natural remedies may help prevent the onset of migraine attacks...",
-    likes: 3456,
-    comments: 254,
-    tags: ["health", "migraine", "herbs"],
-  },
-  {
-    id: 2,
-    title: "What type of herb is this?",
-    user: "@username2",
-    date: "Jan 23, 2024",
-    content: "I came across this plant, does anyone know what this is?",
-    likes: 2540,
-    comments: 156,
-    tags: ["plants", "herbs", "identification"],
-  },
-  {
-    id: 3,
-    title: "Benefits of turmeric",
-    user: "@username3",
-    date: "Feb 2, 2024",
-    content: "Turmeric has amazing anti-inflammatory properties...",
-    likes: 1820,
-    comments: 89,
-    tags: ["health", "turmeric", "anti-inflammatory"],
-  },
-  {
-    id: 4,
-    title: "Best teas for digestion?",
-    user: "@username4",
-    date: "Feb 10, 2024",
-    content: "Looking for herbal teas that aid in digestion. Any suggestions?",
-    likes: 1324,
-    comments: 97,
-    tags: ["tea", "digestion", "herbs"],
-  }
-];
+import { useAuth } from "../../context/AuthContext";
 
 const Forum = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTags, setSelectedTags] = useState([]); // Allows multiple selected tags
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [threads, setThreads] = useState([]);
 
-  // Function to handle tag selection
-  const toggleTag = (tag) => {
-    setSelectedTags((prevTags) =>
-      prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]
-    );
+  useEffect(() => {
+    const fetchPosts = () => {
+      const forumCollection = collection(db, "forum");
+      const q = query(forumCollection, orderBy("date", "desc"));
+
+      const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+        const postsWithExtras = await Promise.all(
+          querySnapshot.docs.map(async (docSnap) => {
+            const postData = { id: docSnap.id, ...docSnap.data() };
+
+            // 🧠 Normalize likes to be an array
+            const likesArray = Array.isArray(postData.likes) ? postData.likes : [];
+
+            // 🔁 Fetch comment count
+            const commentsSnapshot = await getDocs(collection(db, "forum", docSnap.id, "comments"));
+            const commentCount = commentsSnapshot.size;
+
+            return {
+              ...postData,
+              commentCount,
+              likes: likesArray.length,
+              isLiked: likesArray.includes(user?.email),
+            };
+          })
+        );
+
+        console.log("📌 Fetched posts from Firestore:", postsWithExtras);
+        setThreads(postsWithExtras);
+      });
+
+      return unsubscribe;
+    };
+
+    if (user?.email) {
+      fetchPosts();
+    }
+  }, [user]);
+
+  const handleToggleLike = async (threadId, isCurrentlyLiked) => {
+    try {
+      const threadRef = doc(db, "forum", threadId);
+
+      await updateDoc(threadRef, {
+        likes: isCurrentlyLiked
+          ? arrayRemove(user.email)
+          : arrayUnion(user.email),
+      });
+
+      console.log(isCurrentlyLiked ? "💔 Unliked" : "❤️ Liked", threadId);
+    } catch (error) {
+      console.error("⚠️ Error toggling like:", error);
+    }
   };
 
-  // Function to clear all selected tags
-  const clearAllTags = () => setSelectedTags([]);
+  const filteredThreads = threads.filter((thread) => {
+    if (!thread || !thread.title) return false;
 
-  // Filter threads based on search and selected tags
-  const filteredThreads = mockThreads.filter((thread) => {
-    const matchesSearch = thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesSearch =
+      thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (Array.isArray(thread.tags) &&
+        thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())));
 
-    const matchesTags = selectedTags.length === 0 || thread.tags.some((tag) => selectedTags.includes(tag));
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.every((tag) => Array.isArray(thread.tags) && thread.tags.includes(tag));
 
     return matchesSearch && matchesTags;
   });
 
   return (
     <div className="forum-page">
-      <Header label="Carelink Forum"/>
-      <SearchBar 
-        placeholder="Search forum posts" 
-        onSearch={(term) => setSearchQuery(term)} 
-        initialValue={searchQuery} 
+      <Header label="Carelink Forum" />
+      <SearchBar
+        placeholder="Search forum posts"
+        onSearch={(term) => setSearchQuery(term)}
+        initialValue={searchQuery}
         autoSearch={true}
       />
 
-      {/* Selected Tags Display */}
       {selectedTags.length > 0 && (
         <div className="selected-tags-container">
           <p>Filtering by: </p>
           {selectedTags.map((tag) => (
-            <span key={tag} className="selected-tag" data-testid={`selected-tag-${tag}`}>
-              {tag} <BiX className="remove-tag" data-testid={`clear-tag-${tag}`} onClick={() => toggleTag(tag)} />
+            <span key={tag} className="selected-tag">
+              {tag}{" "}
+              <BiX
+                className="remove-tag"
+                onClick={() => setSelectedTags(selectedTags.filter((t) => t !== tag))}
+              />
             </span>
           ))}
-          <button className="clear-all-tags" onClick={clearAllTags}>Clear All</button>
+          <button className="clear-all-tags" onClick={() => setSelectedTags([])}>
+            Clear All
+          </button>
         </div>
       )}
 
@@ -107,33 +133,48 @@ const Forum = () => {
                 <div
                   key={thread.id}
                   className="thread-card"
-                  onClick={() => navigate(`/forum/${thread.id}`, { state: { thread } })}
+                  onClick={() => navigate(`/forum/${thread.id}`, { state: { post: thread } })}
                 >
                   <h3>{thread.title}</h3>
-                  <p>{thread.user} • {thread.date}</p>
+                  <div className="thread-meta">
+                    <span className="username">{thread.author || "Anonymous"}</span> •{" "}
+                    <span className="post-date">
+                      {thread.date
+                        ? new Date(thread.date.seconds * 1000).toLocaleDateString()
+                        : "Unknown Date"}
+                    </span>
+                  </div>
                   <p>{thread.content}</p>
-                  
-                  {/* Tag List */}
                   <p className="thread-tags">
                     <strong>Tags: </strong>
-                    {thread.tags.map((tag) => (
-                      <span 
-                        key={tag} 
+                    {(Array.isArray(thread.tags) ? thread.tags : []).map((tag) => (
+                      <span
+                        key={tag}
                         className={`tag ${selectedTags.includes(tag) ? "active" : ""}`}
-                        data-testid={`tag-${tag}`}
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent thread click event
-                          toggleTag(tag);
+                          e.stopPropagation();
+                          setSelectedTags((prevTags) =>
+                            prevTags.includes(tag)
+                              ? prevTags.filter((t) => t !== tag)
+                              : [...prevTags, tag]
+                          );
                         }}
                       >
                         {tag}
                       </span>
                     ))}
                   </p>
-
                   <div className="thread-actions">
-                    <span>❤️ {thread.likes}</span>
-                    <span>💬 {thread.comments}</span>
+                    <span
+                      className={`like-button ${thread.isLiked ? "liked" : ""}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleLike(thread.id, thread.isLiked);
+                      }}
+                    >
+                      {thread.isLiked ? "❤️" : "🤍"} {thread.likes}
+                    </span>
+                    <span>💬 {thread.commentCount}</span>
                   </div>
                 </div>
               ))}
@@ -142,15 +183,20 @@ const Forum = () => {
         </div>
       </div>
 
-      {/* Bottom Navigation Bar */}
       <div className="bottom-bar">
-        <BiHome onClick={() => navigate("/home")} className="bottom-icon" />
-        <BiPlus 
-          onClick={() => navigate("/forum/create")} 
-          className="bottom-icon" 
-          data-testid="create-post-btn" 
-        />
-        <BiMessageRounded className="bottom-icon" />
+        <button onClick={() => navigate("/forum")} className="bottom-icon">
+          <BiHome />
+          <span>Home Feed</span>
+        </button>
+
+        <button onClick={() => navigate("/forum/create")} className="bottom-icon plus-btn">
+          <BiPlus />
+        </button>
+
+        <button onClick={() => navigate("/my-chats")} className="bottom-icon">
+          <BiMessageRounded />
+          <span>My Chats</span>
+        </button>
       </div>
     </div>
   );

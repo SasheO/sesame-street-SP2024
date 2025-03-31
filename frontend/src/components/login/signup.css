@@ -71,4 +71,43 @@
     color: red;
     font-weight: bold;
   }
-  
+/* Container for password field */
+.password-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+/* Ensure password input matches other fields */
+.password-input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 40px; /* Space for eye icon */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Eye icon button */
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%); /* Ensures vertical centering */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #555;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Adjust hover effect */
+.toggle-password:hover {
+  color: #333;
+}

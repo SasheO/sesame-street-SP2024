@@ -1,55 +1,55 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
-import CreatePost from "../../components/Forum/CreatePost";
+import { MemoryRouter } from "react-router-dom";
+import CreatePost from "../../components/forum/CreatePost";
 
-describe("Create Post Page", () => {
-  test("renders create post page correctly", () => {
-    render(
-      <MemoryRouter>
-        <CreatePost />
-      </MemoryRouter>
-    );
+const mockNavigate = jest.fn();
 
-    expect(screen.getByText("Create a New Post")).toBeInTheDocument();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock("../../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: { email: "testuser@example.com", displayName: "Test User" },
+    loading: false,
+  }),
+}));
+
+test("renders create post form", () => {
+  render(
+    <MemoryRouter>
+      <CreatePost />
+    </MemoryRouter>
+  );
+
+  expect(screen.getByText("Create a New Post")).toBeInTheDocument();
+  expect(screen.getByPlaceholderText("Enter a descriptive title...")).toBeInTheDocument();
+  expect(screen.getByPlaceholderText("Write your post here...")).toBeInTheDocument();
+  expect(screen.getByPlaceholderText("e.g. health, wellness, herbal")).toBeInTheDocument();
+});
+
+test("submits a new post and redirects", () => {
+  render(
+    <MemoryRouter>
+      <CreatePost />
+    </MemoryRouter>
+  );
+
+  fireEvent.change(screen.getByPlaceholderText("Enter a descriptive title..."), {
+    target: { value: "New Test Post" },
   });
 
-  test("user can enter post details", () => {
-    render(
-      <MemoryRouter>
-        <CreatePost />
-      </MemoryRouter>
-    );
-
-    fireEvent.change(screen.getByPlaceholderText("Enter a descriptive title..."), {
-      target: { value: "Test Title" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("Write your post here..."), {
-      target: { value: "Test Content" },
-    });
-    fireEvent.change(screen.getByPlaceholderText("e.g. health, wellness, herbs"), {
-      target: { value: "health, herbs" },
-    });
-
-    expect(screen.getByPlaceholderText("Enter a descriptive title...").value).toBe("Test Title");
-    expect(screen.getByPlaceholderText("Write your post here...").value).toBe("Test Content");
-    expect(screen.getByPlaceholderText("e.g. health, wellness, herbs").value).toBe("health, herbs");
+  fireEvent.change(screen.getByPlaceholderText("Write your post here..."), {
+    target: { value: "This is the test post content." },
   });
 
-  
-
-  test("clicking back button navigates back", () => {
-    render(
-      <MemoryRouter initialEntries={["/create-post"]}>
-        <Routes>
-          <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/forum" element={<div>Forum Posts</div>} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    fireEvent.click(screen.getByText("← Back to Forum"));
-
-    expect(screen.getByText("Forum Posts")).toBeInTheDocument();
+  fireEvent.change(screen.getByPlaceholderText("e.g. health, wellness, herbal"), {
+    target: { value: "test, react" },
   });
+
+  fireEvent.click(screen.getByText("Post"));
+
+  expect(mockNavigate).toHaveBeenCalledWith("/forum");
 });

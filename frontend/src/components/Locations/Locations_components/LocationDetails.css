@@ -1,24 +1,11 @@
 .location-details {
   padding: 24px;
-  margin: 20px;
+  margin: 12px auto;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-}
-
-.back-button {
-  background: none;
-  border: none;
-  color: #4A90E2;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-  transition: color 0.2s;
+  width:70%;
 }
 
 h1 {
@@ -33,12 +20,6 @@ h1 {
   margin: 4px 0;
 }
 
-.rating {
-  font-size: 24px;
-  color: #FFD700;
-  margin-top: 12px;
-}
-
 .map-placeholder {
   margin-top: 24px;
   padding: 24px;
@@ -48,4 +29,5 @@ h1 {
   font-size: 16px;
   font-weight: 500;
   color: #666;
+  min-height: 500px;
 }
