@@ -508,6 +508,9 @@ app.post("/edit_patient_requests", (req, res) => {
 });
 
 // TODO: don't think i can sign in or out with
-
+exports.app = onRequest(app); // exports.'app' is the app in firebase.json
+// Export for testing
+// module.exports = app;
+// exports.api = functions.https.onRequest
 // ✅ Export Express API as a Cloud Function
 exports.api = functions.https.onRequest(app);
