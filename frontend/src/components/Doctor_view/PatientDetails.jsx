@@ -34,7 +34,9 @@ const PatientDetails = ({ patient, onBack, editable, onAccept, onDeny, onClick }
       {/* Top controls */}
       <div className="icons-container">
         <IoIosArrowBack className="icons" onClick={onBack} />
+        {isCurrent && (
         <PiDotsThreeVerticalBold className="icons" onClick={() => setShowPatientsPopup(true)} />
+        )}
       </div>
 
       {/* Popup */}
