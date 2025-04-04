@@ -28,7 +28,7 @@ const CreatePost = () => {
         author: user.email || "Anonymous",
         date: serverTimestamp(),
         comments: [],
-        likes: 0,
+        likes: [],
       };
 
       await addDoc(collection(db, "forum"), newPost);

@@ -215,10 +215,10 @@
 }
 
 .like-button:hover {
-  color: red;
+  color:#9b92fc;
 }
 
 /* Filled heart icon for liked posts */
 .liked {
-  color: red;
+  color: #4338CA;
 }
