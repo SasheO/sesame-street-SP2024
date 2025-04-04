@@ -98,12 +98,11 @@ const ForumThread = () => {
     <div className="forum-thread-page">
       <Header label="Forum Post" />
 
-      {/* ✅ Back Button (Styled to Match the Doctor Card) */}
+      <div className="post-container">
       <button className="back-button" onClick={() => navigate(-1)}>
         <BiArrowBack className="back-icon" />
       </button>
 
-      <div className="post-container">
         <h2 className="post-title">{post.title}</h2>
         <p className="post-meta">
           @{post.author} • {post.date?.seconds ? new Date(post.date.seconds * 1000).toLocaleDateString() : "Unknown Date"}
