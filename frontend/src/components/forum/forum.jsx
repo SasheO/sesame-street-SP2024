@@ -35,7 +35,6 @@ const Forum = () => {
           querySnapshot.docs.map(async (docSnap) => {
             const postData = { id: docSnap.id, ...docSnap.data() };
 
-            // Fix: Handle likes stored as objects or undefined
             let likesArray = [];
             if (Array.isArray(postData.likes)) {
               likesArray = postData.likes;
@@ -43,12 +42,14 @@ const Forum = () => {
               likesArray = Object.values(postData.likes);
             }
 
-            const commentsSnapshot = await getDocs(collection(db, "forum", docSnap.id, "comments"));
+            const commentsSnapshot = await getDocs(
+              collection(db, "forum", docSnap.id, "comments")
+            );
             const commentCount = commentsSnapshot.size;
 
             return {
               ...postData,
-              id: docSnap.id, 
+              id: docSnap.id,
               commentCount,
               likes: likesArray.length,
               isLiked: likesArray.includes(user?.email),
@@ -56,7 +57,6 @@ const Forum = () => {
           })
         );
 
-        console.log("📌 Fetched posts from Firestore:", postsWithExtras);
         setThreads(postsWithExtras);
       });
 
@@ -64,48 +64,35 @@ const Forum = () => {
     };
 
     if (user?.email) {
-      fetchPosts();
+      const unsubscribe = fetchPosts();
+      return () => unsubscribe();
     }
   }, [user]);
 
   const handleToggleLike = async (threadId, isCurrentlyLiked) => {
-    console.log("🧠 handleToggleLike triggered");
-    console.log("📌 threadId:", threadId);
-    console.log("📌 isCurrentlyLiked:", isCurrentlyLiked);
-    console.log("👤 user:", user);
-    console.log("📧 user.email:", user?.email, "| type:", typeof user?.email);
-  
     if (!user?.email || typeof user.email !== "string") {
       console.warn("🚫 Invalid or missing user email. Aborting like toggle.");
       return;
     }
-  
+
     try {
       const threadRef = doc(db, "forum", threadId);
-      console.log("📄 threadRef path:", threadRef.path);
-  
       const updatePayload = {
         likes: isCurrentlyLiked
           ? arrayRemove(user.email)
           : arrayUnion(user.email),
       };
-  
-      console.log("📤 updateDoc payload:", updatePayload);
-  
+
       await updateDoc(threadRef, updatePayload);
-      console.log("✅ Firestore like update successful");
-  
+
       setThreads((prevThreads) =>
         prevThreads.map((thread) => {
           if (thread.id === threadId) {
-            console.log("🧮 Updating thread:", thread.id);
-            console.log("   Old likes:", thread.likes, "| Type:", typeof thread.likes);
-      
             const currentCount = typeof thread.likes === "number" ? thread.likes : 0;
             const newLikesCount = isCurrentlyLiked
               ? currentCount - 1
               : currentCount + 1;
-      
+
             return {
               ...thread,
               likes: newLikesCount,
@@ -115,16 +102,10 @@ const Forum = () => {
           return thread;
         })
       );
-      
-  
-      console.log(isCurrentlyLiked ? "💔 Unliked" : "❤️ Liked", threadId);
     } catch (error) {
       console.error("⚠️ Error toggling like:", error);
     }
   };
-  
-
-
 
   const filteredThreads = threads.filter((thread) => {
     if (!thread || !thread.title) return false;
@@ -132,11 +113,15 @@ const Forum = () => {
     const matchesSearch =
       thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (Array.isArray(thread.tags) &&
-        thread.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())));
+        thread.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        ));
 
     const matchesTags =
       selectedTags.length === 0 ||
-      selectedTags.every((tag) => Array.isArray(thread.tags) && thread.tags.includes(tag));
+      selectedTags.every(
+        (tag) => Array.isArray(thread.tags) && thread.tags.includes(tag)
+      );
 
     return matchesSearch && matchesTags;
   });
@@ -159,11 +144,16 @@ const Forum = () => {
               {tag}{" "}
               <BiX
                 className="remove-tag"
-                onClick={() => setSelectedTags(selectedTags.filter((t) => t !== tag))}
+                onClick={() =>
+                  setSelectedTags(selectedTags.filter((t) => t !== tag))
+                }
               />
             </span>
           ))}
-          <button className="clear-all-tags" onClick={() => setSelectedTags([])}>
+          <button
+            className="clear-all-tags"
+            onClick={() => setSelectedTags([])}
+          >
             Clear All
           </button>
         </div>
@@ -180,40 +170,72 @@ const Forum = () => {
                 <div
                   key={thread.id}
                   className="thread-card"
-                  onClick={() => navigate(`/forum/${thread.id}`, { state: { post: thread } })}
+                  onClick={() =>
+                    navigate(`/forum/${thread.id}`, { state: { post: thread } })
+                  }
                 >
                   <h3>{thread.title}</h3>
                   <div className="thread-meta">
-                    <span className="username">{thread.author || "Anonymous"}</span> •{" "}
+                    <span className="username">
+                      {thread.author || "Anonymous"}
+                    </span>{" "}
+                    •{" "}
                     <span className="post-date">
                       {thread.date
-                        ? new Date(thread.date.seconds * 1000).toLocaleDateString()
+                        ? new Date(
+                            thread.date.seconds * 1000
+                          ).toLocaleDateString()
                         : "Unknown Date"}
                     </span>
                   </div>
-                  <p>{thread.content}</p>
+                  <p>
+                    {thread.content?.length > 100 ? (
+                      <>
+                        {thread.content.slice(0, 100)}...
+                        <button
+                          className="read-more-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/forum/${thread.id}`, {
+                              state: { post: thread },
+                            });
+                          }}
+                        >
+                          Read More
+                        </button>
+                      </>
+                    ) : (
+                      thread.content
+                    )}
+                  </p>
                   <p className="thread-tags">
                     <strong>Tags: </strong>
-                    {(Array.isArray(thread.tags) ? thread.tags : []).map((tag) => (
-                      <span
-                        key={tag}
-                        className={`tag ${selectedTags.includes(tag) ? "active" : ""}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedTags((prevTags) =>
-                            prevTags.includes(tag)
-                              ? prevTags.filter((t) => t !== tag)
-                              : [...prevTags, tag]
-                          );
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                    {(Array.isArray(thread.tags) ? thread.tags : []).map(
+                      (tag) => (
+                        <span
+                          key={tag}
+                          className={`tag ${
+                            selectedTags.includes(tag) ? "active" : ""
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedTags((prevTags) =>
+                              prevTags.includes(tag)
+                                ? prevTags.filter((t) => t !== tag)
+                                : [...prevTags, tag]
+                            );
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      )
+                    )}
                   </p>
                   <div className="thread-actions">
                     <span
-                      className={`like-button ${thread.isLiked ? "liked" : ""}`}
+                      className={`like-button ${
+                        thread.isLiked ? "liked" : ""
+                      }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleToggleLike(thread.id, thread.isLiked);
@@ -236,7 +258,10 @@ const Forum = () => {
           <span>Home Feed</span>
         </button>
 
-        <button onClick={() => navigate("/forum/create")} className="bottom-icon plus-btn">
+        <button
+          onClick={() => navigate("/forum/create")}
+          className="bottom-icon plus-btn"
+        >
           <BiPlus />
         </button>
 

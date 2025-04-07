@@ -1,6 +1,6 @@
 /* Tags styling */
 .thread-tags {
-  font-size: 14px;
+  font-size: 10px;
   color: #555;
 }
 
@@ -174,16 +174,6 @@
   transition: all 0.2s ease;
 }
 
-.read-more {
-  color: #007bff;
-  cursor: pointer;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.read-more:hover {
-  text-decoration: underline;
-}
 
 .bottom-bar {
   left: 0;
@@ -222,3 +212,36 @@
 .liked {
   color: #4338CA;
 }
+.read-more-btn {
+  background: none;
+  border: none;
+  color: #0077cc;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+  margin-left: 4px;
+  text-decoration: underline;
+}
+
+.read-more-btn:hover {
+  text-decoration: underline;
+  background: none;
+}
+
+.thread-tags {
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.tag {
+  font-size: 0.75rem;
+  margin-right: 5px;
+  background-color: #e0e0e0;
+  padding: 3px 6px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+
