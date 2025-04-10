@@ -172,6 +172,7 @@
   background: #4F46E5;
   transform: translateX(-50%) scale(1.05);
   transition: all 0.2s ease;
+  border-radius: 50%;
 }
 
 

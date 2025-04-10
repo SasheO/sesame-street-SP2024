@@ -14,7 +14,6 @@ import CreatePost from "./components/Forum/CreatePost";
 import SearchResults from "./components/HomePage/HomePage_components/SearchResults";
 import DoctorsPage from "./components/Doctors/DoctorsPage";
 import DoctorPatientsPage from "./components/Doctor_view/DoctorPatientsPage";
-import DoctorDetails from "./components/Doctors/Doctors_components/DoctorDetails";
 import DummyDoctors from "./components/Doctors/DummyDoctors.json";
 import MyChats from "./components/Forum/MyChats";
 import PatientDetails from './components/Doctor_view/PatientDetails';
