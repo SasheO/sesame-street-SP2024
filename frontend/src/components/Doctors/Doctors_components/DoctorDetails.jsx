@@ -11,8 +11,8 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest,
   const [patientName, setPatientName] = useState(existingRequest?.name || "");
   const [patientEmail, setPatientEmail] = useState(existingRequest?.email || "");
   const [patientPhone, setPatientPhone] = useState(existingRequest?.phone || "");
-  const [patientCondition, setPatientCondition] = useState(existingRequest?.condition || "");
-  const [patientExtraDetails, setPatientExtraDetails] = useState(existingRequest?.extraDetails || "");
+  const [patientCondition, setPatientCondition] = useState(existingRequest?.conditions || "");
+  const [patientExtraDetails, setPatientExtraDetails] = useState(existingRequest?.reason || "");
 
   useEffect(() => {
     // Load the existing request when doctor details are opened
@@ -21,7 +21,7 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest,
       setPatientEmail(existingRequest.email);
       setPatientPhone(existingRequest.phone);
       setPatientCondition(existingRequest.condition);
-      setPatientExtraDetails(existingRequest.extraDetails);
+      setPatientExtraDetails(existingRequest.reason);
     }
   }, [existingRequest]);
 
@@ -37,9 +37,11 @@ const DoctorDetails = ({ doctor, onBack, onDoctorRequest, onDeleteDoctorRequest,
     const updatedRequest = {
       id: doctor.id,
       name: patientName,
+      condition: patientCondition,
       email: patientEmail,
       phone: patientPhone,
       conditions: patientCondition,
+      alertLevel: "✔️",
       reason: patientExtraDetails,
       image: doctor.image,
       notes: ["No notes yet..."],

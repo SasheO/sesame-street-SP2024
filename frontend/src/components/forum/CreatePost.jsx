@@ -43,10 +43,10 @@ const CreatePost = () => {
   return (
     <div className="create-post-page">
       <Header label="Carelink Forum" />
+      <div className="create-post-container">
       <button className="back-button" onClick={() => navigate(-1)}>
         <BiArrowBack className="back-icon" />
       </button>
-      <div className="create-post-container">
         <h2>Create a New Post</h2>
 
         <div className="input-group">
