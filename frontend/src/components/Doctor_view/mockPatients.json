@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Ngozi Umeh",
     "condition": "Diabetes",
-    "alertLevel": "\u26a0\ufe0f",
+    "alertLevel": "⚠️",
     "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
     "type": "current",
     "notes": [
@@ -19,7 +19,7 @@
     "id": 2,
     "name": "Tunde Bakare",
     "condition": "High Blood Pressure",
-    "alertLevel": "\u2714\ufe0f",
+    "alertLevel": "✔️",
     "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
     "type": "current",
     "notes": [
@@ -35,7 +35,7 @@
     "id": 3,
     "name": "Halima Yusuf",
     "condition": "Asthma",
-    "alertLevel": "\u26a0\ufe0f",
+    "alertLevel": "✔️",
     "image": "https://i.pinimg.com/736x/f2/4a/44/f24a442f175659c0e750b869aa1d68d5.jpg",
     "type": "requests",
     "notes": [
